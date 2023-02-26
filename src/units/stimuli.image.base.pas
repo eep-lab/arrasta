@@ -161,7 +161,7 @@ var
     with Canvas do
       begin
         Pen.Width := FPenWidth;
-        Pen.Color := Color;
+        Pen.Color := EdgeColor;
         Brush.Color:= Color;
         Rectangle(ClientRect);
       end;

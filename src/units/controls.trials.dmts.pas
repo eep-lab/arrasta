@@ -227,13 +227,13 @@ begin
         Canvas.TextOut(0, 0, 'BaseLine');
 
       tbC1 :
-        Canvas.Rectangle(RectFromPosition(FStimulus.Comparison1.Position));
+        Canvas.Rectangle(Grid.RectFromPosition(FStimulus.Comparison1.Position));
 
       tbC2 :
-        Canvas.Rectangle(RectFromPosition(FStimulus.Comparison2.Position));
+        Canvas.Rectangle(Grid.RectFromPosition(FStimulus.Comparison2.Position));
 
       tbC3 :
-        Canvas.Rectangle(RectFromPosition(FStimulus.Comparison3.Position));
+        Canvas.Rectangle(Grid.RectFromPosition(FStimulus.Comparison3.Position));
     end;
   end;
 end;
