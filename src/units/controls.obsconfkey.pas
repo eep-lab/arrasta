@@ -259,7 +259,7 @@ end;
 
 procedure TKey.FitScreen;
 begin
-  FImage.BoundsRect := RectFromPosition(Position);
+  FImage.BoundsRect := Grid.RectFromPosition(Position);
   FButtonConfirmation.Top :=
     FImage.BoundsRect.Bottom + 10;
   FButtonConfirmation.Left :=

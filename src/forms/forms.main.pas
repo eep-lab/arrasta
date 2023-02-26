@@ -115,7 +115,7 @@ procedure TBackground.FormClick(Sender: TObject);
 begin
   //LSample.OriginalBounds;
   LSample.Color := clWhite;
-  RandomizePositions(RandomPositions, Grid);
+  Grid.RandomizePositions;
   Button1Click(Self);
   //Item := TDragDropableItem(Components[i]);
 
@@ -238,83 +238,78 @@ begin
   //
   //        end;
 
-  ShowMessage(Sender.ClassName);
-
+  //ShowMessage(Sender.ClassName);
   if Sender is TButton then
   begin
-    for i := Low(RandomPositions.Comparisons) to High(RandomPositions.Comparisons) do
-    begin
-      Item := TDragDropableItem.Create(Self);
-      RandomPositions.Comparisons[i].Item := Item as TObject;
-      Item.Caption := 'B';
-      Item.Parent := Self;
-      Item.SetOriginalBounds(
-        RandomPositions.Comparisons[i].Left,
-        RandomPositions.Comparisons[i].Top,
-        RandomPositions.Comparisons[i].SquareSide,
-        RandomPositions.Comparisons[i].SquareSide);
-      Item.Show;
-
-      if i = 0 then
+    with Grid.RandomPositions do begin
+      for i := Low(Comparisons) to High(Comparisons) do
       begin
-        Item.Caption := 'A';
-        Comparacao := Item;
+        Item := TDragDropableItem.Create(Self);
+        Comparisons[i].Item := Item as TObject;
+        Item.Caption := 'B';
+        Item.Parent := Self;
+        Item.SetOriginalBounds(
+          Comparisons[i].Left,
+          Comparisons[i].Top,
+          Comparisons[i].SquareSide,
+          Comparisons[i].SquareSide);
+        Item.Show;
+
+        if i = 0 then
+        begin
+          Item.Caption := 'A';
+          Comparacao := Item;
+        end;
       end;
-    end;
 
-    for i := Low(RandomPositions.Samples) to High(RandomPositions.Samples) do
-    begin
-      Item := TDragDropableItem.Create(Self);
-      RandomPositions.Samples[i].Item := Item as TObject;
-      Item.Parent := Self;
-      Item.SetOriginalBounds(
-        RandomPositions.Samples[i].Left,
-        RandomPositions.Samples[i].Top,
-        RandomPositions.Samples[i].SquareSide,
-        RandomPositions.Samples[i].SquareSide);
-      Item.Show;
-
-      if i = 0 then
+      for i := Low(Samples) to High(Samples) do
       begin
-        Item.Caption := 'A';
-        LSample := Item;
-        LSample.Target := Comparacao;
-      end;
-    end;
+        Item := TDragDropableItem.Create(Self);
+        Samples[i].Item := Item as TObject;
+        Item.Parent := Self;
+        Item.EdgeColor := clBlue;
+        Item.SetOriginalBounds(
+          Samples[i].Left,
+          Samples[i].Top,
+          Samples[i].SquareSide,
+          Samples[i].SquareSide);
+        Item.Show;
 
-    PanelConfigurations.Hide;
+        if i = 0 then
+        begin
+          Item.Caption := 'A';
+          LSample := Item;
+          LSample.Target := Comparacao;
+        end;
+      end;
+
+      PanelConfigurations.Hide;
+    end;
   end;
 
   if Sender is TBackground then
   begin
-    //Form := TBackground(Sender);
-    //for i := 0 to Form.ComponentCount - 1 do
-    //begin
-    //  if Components[i] is TDragDropableItem then
-    //  begin
-    //    Item := TDragDropableItem(Components[i]);
-    //    Item.Centralize;
-    //  end;
-    //end;
+    with Grid.RandomPositions do begin
+      for i := Low(Comparisons) to High(Comparisons) do
+      begin
+        Item := Comparisons[i].Item as TDragDropableItem;
+        Item.SetOriginalBounds(
+          Comparisons[i].Left,
+          Comparisons[i].Top,
+          Comparisons[i].SquareSide,
+          Comparisons[i].SquareSide);
+      end;
 
-    for i := Low(RandomPositions.Comparisons) to High(RandomPositions.Comparisons) do
-    begin
-      Item := RandomPositions.Comparisons[i].Item as TDragDropableItem;
-      Item.SetOriginalBounds(
-        RandomPositions.Comparisons[i].Left,
-        RandomPositions.Comparisons[i].Top,
-        RandomPositions.Comparisons[i].SquareSide,
-        RandomPositions.Comparisons[i].SquareSide);
-    end;
-
-    for i := Low(RandomPositions.Samples) to High(RandomPositions.Samples) do
-    begin
-      Item := RandomPositions.Samples[i].Item as TDragDropableItem;
-      Item.SetOriginalBounds(
-        RandomPositions.Samples[i].Left,
-        RandomPositions.Samples[i].Top,
-        RandomPositions.Samples[i].SquareSide,
-        RandomPositions.Samples[i].SquareSide);
+      for i := Low(Samples) to High(Samples) do
+      begin
+        Item := Samples[i].Item as TDragDropableItem;
+        Item.Invalidate;
+        Item.SetOriginalBounds(
+          Samples[i].Left,
+          Samples[i].Top,
+          Samples[i].SquareSide,
+          Samples[i].SquareSide);
+      end;
     end;
   end;
 end;
