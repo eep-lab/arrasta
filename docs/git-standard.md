@@ -10,3 +10,8 @@ Padrão de commit:
 Link: https://www.conventionalcommits.org/pt-br/v1.0.0-beta.4/
 
 Obs: sempre que forem feitos comandos do git, especificar aqui.
+
+Padrão de pull (atualizar um braço local com mudanças remotas):
+- Deixar o braço local suficientemente limpo (faça o commit das suas mudanças e de preferência crie um novo braço)
+- Selecione o braço que receberá as atualizações (git checkout -b nomedobraco)
+- git pull upstream olavo_arrasta
