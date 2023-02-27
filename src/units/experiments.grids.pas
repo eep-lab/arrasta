@@ -7,9 +7,21 @@ unit Experiments.Grids;
 interface
 
 uses
-  Classes, SysUtils;
+  {$IFDEF DEBUG}{$IFDEF WINDOWS}
+  Windows.Console,
+  {$ENDIF}{$ENDIF}
+  Classes, SysUtils, fgl;
 
 type
+  TGridType =
+    (gtCircle, gtSquare, gtDistributed);
+
+  TGridOrientation =
+    (goNone, goLeftToRight, goRightToLeft, goTopToBottom, goBottomToTop);
+
+  TCell = array [0..1] of Integer;
+
+  TGridList = specialize TFPGList<Integer>;
   TGridItem = record
     Index : integer;
     Top : integer;
@@ -18,49 +30,59 @@ type
     Item : TObject;
   end;
 
-  TGridItens = array of TGridItem;
+  TGridItems = array of TGridItem;
   TMatrix = array of array of TGridItem;
 
   TRandomPositions = record
-    Samples: TGridItens;
-    Comparisons: TGridItens;
+    Samples: TGridItems;
+    Comparisons: TGridItems;
   end;
+
+  { TGrid }
 
   TGrid = class
     private
-
+      FSeed : integer;
+      FCellsCount: integer;
+      FCellsSize: real;
+      FComparisonsCount: integer;
+      FGrid : TMatrix;
+      FGridList : TGridList;
+      FGridStyle : TGridType;
+      //FGridOrientation : TGridOrientation;
+      FRandomPositions : TRandomPositions;
+      FSamplesCount: integer;
+      procedure SetCellsCount(AValue: integer);
+      procedure SetCellsSize(AValue: real);
+      procedure SetComparisonsCount(AValue: integer);
+      procedure SetGridType(AGridType: TGridType);
+      procedure RandomizeGridList;
+      procedure InvalidateGridList;
+      function DispersionStyle : Boolean;
+      procedure SetSamplesCount(AValue: integer);
+      procedure CreatePositions;
     public
-
+      constructor Create(AN : integer);
+      destructor Destroy; override;
+      property GridType : TGridType read FGridStyle write SetGridType;
+      property CellsCount : integer read FCellsCount write SetCellsCount;
+      property CellsSize : real read FCellsSize write SetCellsSize;
+      property RandomPositions : TRandomPositions read FRandomPositions;
+      property SamplesCount : integer read FSamplesCount write SetSamplesCount;
+      property ComparisonsCount : integer read FComparisonsCount write SetComparisonsCount;
+      property Seed : integer read FSeed write FSeed;
+      {Cria seleção randômica de modelos e comparações em posições diferentes no AGrid}
+      procedure RandomizePositions;
+      function RectFromPosition(APosition: integer) : TRect;
   end;
-
-{Cria grade quadrada como uma matriz AN x AN. Quando ADistribute = true, a
-distância horizontal e vertical entre os estímulos é diferente, e quando false
-é igual}
-function GetCentralGrid(AN: integer; ASquareSide: real;
-  ADistribute : Boolean = True) : TMatrix;
-
-{Cria grade circular considerando j como modelo central e i como comparações em
-torno de um diâmetro. AN = número de estímulos i; ASquareSide = lado do quadrado
-dos estímulos}
-function GetCircularCentralGrid(AN: integer; ASquareSide: real): TMatrix;
-
-function RectFromPosition(APosition : integer) : TRect;
-
-{Cria seleção randômica de modelos e comparações em posições diferentes no AGrid}
-function GetRandomPositionFromGrid(AGrid: TMatrix; ASamples: integer;
-         AComparisons: integer): TRandomPositions;
-
-{Randomiza as posições dos estímulos}
-procedure RandomizePositions(var APositions: TRandomPositions; AGrid: TMatrix);
 
 var
   ScreenInCentimeters : real = 39.624;
-  Grid : TMatrix;
-  RandomPositions: TRandomPositions;
+  Grid : TGrid;
 
 implementation
 
-uses Forms, GUI.Helpers.Grids;
+uses Math, Forms, GUI.Helpers.Grids;
 
 {
   GetPositionFromSegment returns Left or Top position based on:
@@ -84,12 +106,9 @@ begin
   Result := Round(AMeasure*(Screen.Width/ScreenInCentimeters));
 end;
 
-{
-  3x3
-  0..1..2
-  3..4..5
-  6..7..8
-}
+{Cria grade quadrada como uma matriz AN x AN. Quando ADistribute = true, a
+distância horizontal e vertical entre os estímulos é diferente, e quando false
+é igual}
 function GetCentralGrid(AN: integer; ASquareSide: real;
   ADistribute: Boolean): TMatrix;
 var
@@ -133,6 +152,9 @@ begin
   end;
 end;
 
+{Cria grade circular considerando j como modelo central e i como comparações em
+torno de um diâmetro. AN = número de estímulos i; ASquareSide = lado do quadrado
+dos estímulos}
 function GetCircularCentralGrid(AN: integer; ASquareSide: real): TMatrix;
 var
   LIndex      : integer = 0;
@@ -183,13 +205,129 @@ begin
   end;
 end;
 
-function RectFromPosition(APosition: integer): TRect;
+
+{
+  3x3
+  0..1..2
+  3..4..5
+  6..7..8
+}
+function IntToCell(AN: Integer) : TCell;
+begin
+  case AN of
+    0 : Result := [0, 0];
+    1 : Result := [0, 1];
+    2 : Result := [0, 2];
+    3 : Result := [1, 0];
+    4 : Result := [1, 1];
+    5 : Result := [1, 2];
+    6 : Result := [2, 0];
+    7 : Result := [2, 1];
+    8 : Result := [2, 2];
+  end;
+end;
+
+{ TGrid }
+
+procedure TGrid.SetGridType(AGridType: TGridType);
+begin
+  if FGridStyle = AGridType then Exit;
+  FGridStyle := AGridType;
+  case AGridType of
+    gtCircle : FGrid := GetCircularCentralGrid(FSeed, FCellsSize);
+    gtSquare : FGrid := GetCentralGrid(FSeed, FCellsSize, DispersionStyle);
+    gtDistributed: FGrid := GetCentralGrid(FSeed, FCellsSize, DispersionStyle);
+  end;
+end;
+
+procedure TGrid.RandomizeGridList;
+var
+  i : integer;
+begin
+  InvalidateGridList;
+  for i := FCellsCount - 1 downto 0 do
+    FGridList.Exchange(i, RandomRange(0, i + 1));
+end;
+
+procedure TGrid.InvalidateGridList;
+var
+  i : integer;
+begin
+  FGridList.Clear;
+  for i := 0 to FCellsCount - 1 do FGridList.Add(i);
+end;
+
+function TGrid.DispersionStyle: Boolean;
+begin
+  case FGridStyle of
+    gtCircle : Result := False; // it is ignored
+    gtSquare : Result := False;
+    gtDistributed : Result := True;
+  end;
+end;
+
+procedure TGrid.SetSamplesCount(AValue: integer);
+begin
+  if FSamplesCount=AValue then Exit;
+  FSamplesCount:=AValue;
+end;
+
+procedure TGrid.CreatePositions;
+var
+  i : integer;
+begin
+  with FRandomPositions do begin
+      SetLength(Samples, SamplesCount);
+      SetLength(Comparisons, ComparisonsCount);
+
+      for i := low(Samples) to high(Samples) do
+          Samples[i].Index := -1;
+      for i := low(Comparisons) to high(Comparisons) do
+          Comparisons[i].Index := -1;
+  end;
+end;
+
+procedure TGrid.RandomizePositions;
+var
+  Cell : TCell;
+  i : integer;
+
+  {Change positions only}
+  procedure SecureCopy(var A: TGridItem; B : TGridItem);
+  begin
+    A.Index := B.Index;
+    A.Top := B.Top;
+    A.Left := B.Left;
+    A.SquareSide := B.SquareSide;
+    // A.Item := B.Item; // do not override Item Pointer
+  end;
+
+begin
+  RandomizeGridList;
+  with FRandomPositions do begin
+    for i := low(Samples) to high(Samples) do
+    begin
+      Cell := IntToCell(FGridList.First);
+      SecureCopy(Samples[i], FGrid[Cell[0], Cell[1]]);
+      FGridList.Delete(0);
+    end;
+
+    for i := low(Comparisons) to high(Comparisons) do
+    begin
+      Cell := IntToCell(FGridList.First);
+      SecureCopy(Comparisons[i], FGrid[Cell[0], Cell[1]]);
+      FGridList.Delete(0);
+    end;
+  end;
+end;
+
+function TGrid.RectFromPosition(APosition: integer): TRect;
 var
   j, i: Integer;
 begin
-  for j := Low(Grid) to High(Grid) do begin
-    for i := Low(Grid[j]) to High(Grid[j]) do begin
-      with Grid[j][i] do begin
+  for j := Low(FGrid) to High(FGrid) do begin
+    for i := Low(FGrid[j]) to High(FGrid[j]) do begin
+      with FGrid[j][i] do begin
         if Index = APosition then begin
           Result := Rect(Left, Top, Left+SquareSide, Top+SquareSide);
         end;
@@ -198,106 +336,52 @@ begin
   end;
 end;
 
-function IsDifferentPosition(j, i: integer; APositions: TRandomPositions; AGrid: TMatrix): boolean;
-var
-  Item: TGridItem;
+procedure TGrid.SetCellsCount(AValue: integer);
 begin
-  Result := true;
-
-  for Item in APositions.Samples do
-  begin
-    if Item.Index = AGrid[j, i].Index then
-    begin
-      Result := false;
-      break;
-    end;
-  end;
-
-  for Item in APositions.Comparisons do
-  begin
-    if Item.Index = AGrid[j, i].Index then
-    begin
-      Result := false;
-      break;
-    end;
-  end;
+  if FCellsCount=AValue then Exit;
+  FCellsCount:=AValue;
 end;
 
-function GetRandomItem(APositions: TRandomPositions; AGrid: TMatrix): TGridItem;
-var
-  i, j: integer;
+procedure TGrid.SetCellsSize(AValue: real);
 begin
-  repeat
-    i := Random(Length(AGrid));
-    j := Random(Length(AGrid));
-  until IsDifferentPosition(j, i, APositions, AGrid);
-
-  Result := AGrid[j, i];
+  if FCellsSize=AValue then Exit;
+  FCellsSize:=AValue;
 end;
 
-function GetRandomPositionFromGrid(AGrid: TMatrix; ASamples: integer;
-         AComparisons: integer): TRandomPositions;
-var
-  RandomItem: TGridItem;
-  i, j: integer;
-
+procedure TGrid.SetComparisonsCount(AValue: integer);
 begin
-  SetLength(Result.Samples, ASamples);
-  SetLength(Result.Comparisons, AComparisons);
-
-  for i := low(Result.Samples) to high(Result.Samples) do
-      Result.Samples[i].Index := -1;
-  for i := low(Result.Comparisons) to high(Result.Comparisons) do
-      Result.Comparisons[i].Index := -1;
-
-  for i := low(Result.Samples) to high(Result.Samples) do
-  begin
-    RandomItem := GetRandomItem(Result, AGrid);
-    Result.Samples[i] := RandomItem;
-  end;
-
-  for i := low(Result.Comparisons) to high(Result.Comparisons) do
-  begin
-    RandomItem := GetRandomItem(Result, AGrid);
-    Result.Comparisons[i] := RandomItem;
-  end;
-
+  if FComparisonsCount=AValue then Exit;
+  FComparisonsCount:=AValue;
 end;
 
-procedure RandomizePositions(var APositions: TRandomPositions; AGrid: TMatrix);
-var
-  RandomItem: TGridItem;
-  i, j: integer;
-
+constructor TGrid.Create(AN: integer);
 begin
-  for i := low(APositions.Samples) to high(APositions.Samples) do
-      APositions.Samples[i].Index := -1;
-  for i := low(APositions.Comparisons) to high(APositions.Comparisons) do
-      APositions.Comparisons[i].Index := -1;
+  FSeed := AN;
+  FCellsCount:=AN*AN;
+  FCellsSize := 3.0;
+  FGridStyle := gtSquare;
+  FSamplesCount := 1;
+  FComparisonsCount := 4;
+  FGrid := GetCentralGrid(FSeed, FCellsSize, DispersionStyle);
 
-  for i := low(APositions.Samples) to high(APositions.Samples) do
-  begin
-    RandomItem := GetRandomItem(APositions, AGrid);
-    APositions.Samples[i].Index := RandomItem.Index;
-    APositions.Samples[i].Top := RandomItem.Top;
-    APositions.Samples[i].SquareSide := RandomItem.SquareSide;
-    APositions.Samples[i].Left := RandomItem.Left;
-  end;
+  FGridList := TGridList.Create;
+  InvalidateGridList;
 
-  for i := low(APositions.Comparisons) to high(APositions.Comparisons) do
-  begin
-    RandomItem := GetRandomItem(APositions, AGrid);
-    APositions.Comparisons[i].Index := RandomItem.Index;
-    APositions.Comparisons[i].Top := RandomItem.Top;
-    APositions.Comparisons[i].SquareSide := RandomItem.SquareSide;
-    APositions.Comparisons[i].Left := RandomItem.Left;
-  end;
+  CreatePositions;
+  RandomizePositions;
+end;
 
+destructor TGrid.Destroy;
+begin
+  FGridList.Free;
 end;
 
 initialization
-  Grid := GetCentralGrid(3, 3.0, false);
-  RandomPositions := GetRandomPositionFromGrid(Grid, 1, 4);
+  Grid := TGrid.Create(3);
+
+finalization
+  Grid.Free;
+
 
 end.
 
