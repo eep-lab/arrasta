@@ -13,7 +13,7 @@ uses
   Classes, SysUtils, fgl;
 
 type
-  TGridType =
+  TGridStyle =
     (gtCircle, gtSquare, gtDistributed);
 
   TGridOrientation =
@@ -47,24 +47,23 @@ type
       FCellsSize: real;
       FComparisonsCount: integer;
       FGrid : TMatrix;
-      FGridList : TGridList;
-      FGridStyle : TGridType;
-      //FGridOrientation : TGridOrientation;
+      FGridStyle : TGridStyle;
+      FGridOrientation : TGridOrientation;
       FRandomPositions : TRandomPositions;
       FSamplesCount: integer;
       procedure SetCellsCount(AValue: integer);
       procedure SetCellsSize(AValue: real);
       procedure SetComparisonsCount(AValue: integer);
-      procedure SetGridType(AGridType: TGridType);
-      procedure RandomizeGridList;
-      procedure InvalidateGridList;
+      procedure SetGridStyle(AGridStyle: TGridStyle);
+      procedure RandomizeGridList(AGridList: TGridList);
+      function InvalidateGridList(IsSample: Boolean=true): TGridList;
       function DispersionStyle : Boolean;
       procedure SetSamplesCount(AValue: integer);
       procedure CreatePositions;
     public
-      constructor Create(AN : integer);
+      constructor Create(ASeed : integer);
       destructor Destroy; override;
-      property GridType : TGridType read FGridStyle write SetGridType;
+      property GridStyle : TGridStyle read FGridStyle write SetGridStyle;
       property CellsCount : integer read FCellsCount write SetCellsCount;
       property CellsSize : real read FCellsSize write SetCellsSize;
       property RandomPositions : TRandomPositions read FRandomPositions;
@@ -229,32 +228,88 @@ end;
 
 { TGrid }
 
-procedure TGrid.SetGridType(AGridType: TGridType);
+procedure TGrid.SetGridStyle(AGridStyle: TGridStyle);
 begin
-  if FGridStyle = AGridType then Exit;
-  FGridStyle := AGridType;
-  case AGridType of
+  if FGridStyle = AGridStyle then Exit;
+  FGridStyle := AGridStyle;
+  case AGridStyle of
     gtCircle : FGrid := GetCircularCentralGrid(FSeed, FCellsSize);
     gtSquare : FGrid := GetCentralGrid(FSeed, FCellsSize, DispersionStyle);
     gtDistributed: FGrid := GetCentralGrid(FSeed, FCellsSize, DispersionStyle);
   end;
 end;
 
-procedure TGrid.RandomizeGridList;
+procedure TGrid.RandomizeGridList(AGridList: TGridList);
 var
   i : integer;
 begin
-  InvalidateGridList;
-  for i := FCellsCount - 1 downto 0 do
-    FGridList.Exchange(i, RandomRange(0, i + 1));
+  for i := AGridList.Count - 1 downto 0 do
+    AGridList.Exchange(i, RandomRange(0, i + 1));
+  {$IFDEF DEBUG}
+  //for i in FGridList do WriteLn(i);
+  {$ENDIF}
 end;
 
-procedure TGrid.InvalidateGridList;
+function TGrid.InvalidateGridList(IsSample: Boolean): TGridList;
 var
   i : integer;
 begin
-  FGridList.Clear;
-  for i := 0 to FCellsCount - 1 do FGridList.Add(i);
+  Result:= TGridList.Create;
+  {
+    3x3
+    0..1..2
+    3..4..5
+    6..7..8
+  }
+  case FGridOrientation of
+      goNone: begin
+        for i := 0 to FCellsCount - 1 do Result.Add(i);
+      end;
+      goLeftToRight: begin
+        if IsSample then begin
+          Result.Add(0);
+          Result.Add(3);
+          Result.Add(6);
+        end else begin
+          Result.Add(2);
+          Result.Add(5);
+          Result.Add(8);
+        end;
+      end;
+      goRightToLeft: begin
+        if IsSample then begin
+          Result.Add(2);
+          Result.Add(5);
+          Result.Add(8);
+        end else begin
+          Result.Add(0);
+          Result.Add(3);
+          Result.Add(6);
+        end;
+      end;
+      goBottomToTop: begin
+        if IsSample then begin
+          Result.Add(6);
+          Result.Add(7);
+          Result.Add(8);
+        end else begin
+          Result.Add(0);
+          Result.Add(1);
+          Result.Add(2);
+        end;
+      end;
+      goTopToBottom: begin
+        if IsSample then begin
+          Result.Add(0);
+          Result.Add(1);
+          Result.Add(2);
+        end else begin
+          Result.Add(6);
+          Result.Add(7);
+          Result.Add(8);
+        end;
+      end;
+    end;
 end;
 
 function TGrid.DispersionStyle: Boolean;
@@ -291,6 +346,7 @@ procedure TGrid.RandomizePositions;
 var
   Cell : TCell;
   i : integer;
+  LGridList : TGridList;
 
   {Change positions only}
   procedure SecureCopy(var A: TGridItem; B : TGridItem);
@@ -303,20 +359,47 @@ var
   end;
 
 begin
-  RandomizeGridList;
   with FRandomPositions do begin
-    for i := low(Samples) to high(Samples) do
-    begin
-      Cell := IntToCell(FGridList.First);
-      SecureCopy(Samples[i], FGrid[Cell[0], Cell[1]]);
-      FGridList.Delete(0);
-    end;
+    case FGridOrientation of
+      goNone: begin
+        LGridList:= InvalidateGridList;
+        RandomizeGridList(LGridList);
+        for i := low(Samples) to high(Samples) do
+        begin
+          Cell := IntToCell(LGridList.First);
+          SecureCopy(Samples[i], FGrid[Cell[0], Cell[1]]);
+          LGridList.Delete(0);
+        end;
 
-    for i := low(Comparisons) to high(Comparisons) do
-    begin
-      Cell := IntToCell(FGridList.First);
-      SecureCopy(Comparisons[i], FGrid[Cell[0], Cell[1]]);
-      FGridList.Delete(0);
+        for i := low(Comparisons) to high(Comparisons) do
+        begin
+          Cell := IntToCell(LGridList.First);
+          SecureCopy(Comparisons[i], FGrid[Cell[0], Cell[1]]);
+          LGridList.Delete(0);
+        end;
+        LGridList.Free;
+      end;
+      else begin
+        LGridList:= InvalidateGridList(true);
+        RandomizeGridList(LGridList);
+        for i := low(Samples) to high(Samples) do
+        begin
+          Cell := IntToCell(LGridList.First);
+          SecureCopy(Samples[i], FGrid[Cell[0], Cell[1]]);
+          LGridList.Delete(0);
+        end;
+        LGridList.Free;
+
+        LGridList:= InvalidateGridList(false);
+        RandomizeGridList(LGridList);
+        for i := low(Comparisons) to high(Comparisons) do
+        begin
+          Cell := IntToCell(LGridList.First);
+          SecureCopy(Comparisons[i], FGrid[Cell[0], Cell[1]]);
+          LGridList.Delete(0);
+        end;
+        LGridList.Free;
+      end;
     end;
   end;
 end;
@@ -354,18 +437,16 @@ begin
   FComparisonsCount:=AValue;
 end;
 
-constructor TGrid.Create(AN: integer);
+constructor TGrid.Create(ASeed: integer);
 begin
-  FSeed := AN;
-  FCellsCount:=AN*AN;
+  FSeed := ASeed;
+  FCellsCount:=ASeed*ASeed;
   FCellsSize := 3.0;
   FGridStyle := gtSquare;
   FSamplesCount := 1;
-  FComparisonsCount := 4;
+  FComparisonsCount := 3;
+  FGridOrientation:= goRightToLeft;
   FGrid := GetCentralGrid(FSeed, FCellsSize, DispersionStyle);
-
-  FGridList := TGridList.Create;
-  InvalidateGridList;
 
   CreatePositions;
   RandomizePositions;
@@ -373,7 +454,7 @@ end;
 
 destructor TGrid.Destroy;
 begin
-  FGridList.Free;
+
 end;
 
 initialization

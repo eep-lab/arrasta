@@ -56,13 +56,12 @@ lib/x86_64-linux/augusto_experiment.compiled
 src/tests/geometric_progression
 
 experiment.zip
-configuracoes
+*configuracoes*
 *.zip
 
 languages/*win10*.po
 # link
 stimulus_control
-configuracoes
 
 # tests
 src/tests/bias/TrackBias1
