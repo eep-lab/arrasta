@@ -116,6 +116,7 @@ begin
   //LSample.OriginalBounds;
   LSample.Color := clWhite;
   Grid.RandomizePositions;
+  Grid.RandomizeOrientations;
   Button1Click(Self);
   //Item := TDragDropableItem(Components[i]);
 
