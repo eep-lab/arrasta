@@ -10,7 +10,7 @@ uses
   {$IFDEF DEBUG}{$IFDEF WINDOWS}
   Windows.Console,
   {$ENDIF}{$ENDIF}
-  Classes, SysUtils, fgl;
+  Classes, SysUtils, fgl, LatinSquares;
 
 type
   TGridStyle =
@@ -35,11 +35,12 @@ type
 
   TRandomPositions = record
     Samples: TGridItems;
-    Comparisons: TGridItems;
+    SamplesRows : TLatinSquare;
+    Comparisons : TGridItems;
+    ComparisonsRows : TLatinSquare;
   end;
 
   { TGrid }
-
   TGrid = class
     private
       FSeed : integer;
@@ -333,15 +334,37 @@ end;
 procedure TGrid.CreatePositions;
 var
   i : integer;
+  LGridList : TGridList;
 begin
   with FRandomPositions do begin
-      SetLength(Samples, SamplesCount);
-      SetLength(Comparisons, ComparisonsCount);
+    SetLength(Samples, SamplesCount);
+    SetLength(Comparisons, ComparisonsCount);
 
-      for i := low(Samples) to high(Samples) do
-          Samples[i].Index := -1;
-      for i := low(Comparisons) to high(Comparisons) do
-          Comparisons[i].Index := -1;
+    for i := low(Samples) to high(Samples) do
+        Samples[i].Index := -1;
+    for i := low(Comparisons) to high(Comparisons) do
+        Comparisons[i].Index := -1;
+
+    case FGridOrientation of
+        goNone: begin
+          // do nothing for now
+        end;
+        else begin
+          LGridList := InvalidateGridList(True);
+          SamplesRows := TLatinSquare.Create(FSeed);
+          for i := 0 to LGridList.Count-1 do
+            SamplesRows.Signs[i] := LGridList[i];
+          SamplesRows.Invalidate;
+          LGridList.Free;
+
+          LGridList := InvalidateGridList(False);
+          ComparisonsRows := TLatinSquare.Create(FSeed);
+          for i := 0 to LGridList.Count-1 do
+            ComparisonsRows.Signs[i] := LGridList[i];
+          ComparisonsRows.Invalidate;
+          LGridList.Free;
+        end;
+    end;
   end;
 end;
 
@@ -350,6 +373,7 @@ var
   Cell : TCell;
   i : integer;
   LGridList : TGridList;
+  LLatinRow : TLatinRow;
 
   {Change positions only}
   procedure SecureCopy(var A: TGridItem; B : TGridItem);
@@ -383,18 +407,24 @@ begin
         LGridList.Free;
       end;
       else begin
-        LGridList:= InvalidateGridList(true);
-        RandomizeGridList(LGridList);
+        WriteLn(SamplesRows.AsString);
+        LLatinRow := SamplesRows.NextRow;
+        LGridList := TGridList.Create;
+        for i in LLatinRow do LGridList.Add(i);
+        //RandomizeGridList(LGridList);
         for i := low(Samples) to high(Samples) do
         begin
+          writeln('S: ', LGridList.First);
           Cell := IntToCell(LGridList.First);
           SecureCopy(Samples[i], FGrid[Cell[0], Cell[1]]);
           LGridList.Delete(0);
         end;
         LGridList.Free;
 
-        LGridList:= InvalidateGridList(false);
-        RandomizeGridList(LGridList);
+        LLatinRow := ComparisonsRows.NextRow;
+        LGridList := TGridList.Create;
+        for i in LLatinRow do LGridList.Add(i);
+        //RandomizeGridList(LGridList);
         for i := low(Comparisons) to high(Comparisons) do
         begin
           Cell := IntToCell(LGridList.First);
@@ -462,7 +492,7 @@ begin
   FGridStyle := gtSquare;
   FSamplesCount := 1;
   FComparisonsCount := 3;
-  FGridOrientation:= goNone;
+  FGridOrientation:= goTopToBottom;
   FGrid := GetCentralGrid(FSeed, FCellsSize, DispersionStyle);
 
   CreatePositions;
@@ -471,7 +501,11 @@ end;
 
 destructor TGrid.Destroy;
 begin
-
+  with FRandomPositions do
+  begin
+    SamplesRows.Free;
+    ComparisonsRows.Free;
+  end;
 end;
 
 initialization
