@@ -54,6 +54,7 @@ type
       procedure SetCellsCount(AValue: integer);
       procedure SetCellsSize(AValue: real);
       procedure SetComparisonsCount(AValue: integer);
+      procedure SetGridOrientation(AValue: TGridOrientation);
       procedure SetGridStyle(AGridStyle: TGridStyle);
       procedure RandomizeGridList(AGridList: TGridList);
       function InvalidateGridList(IsSample: Boolean=true): TGridList;
@@ -70,8 +71,10 @@ type
       property SamplesCount : integer read FSamplesCount write SetSamplesCount;
       property ComparisonsCount : integer read FComparisonsCount write SetComparisonsCount;
       property Seed : integer read FSeed write FSeed;
+      property GridOrientation: TGridOrientation read FGridOrientation write SetGridOrientation;
       {Cria seleção randômica de modelos e comparações em posições diferentes no AGrid}
       procedure RandomizePositions;
+      procedure RandomizeOrientations;
       function RectFromPosition(APosition: integer) : TRect;
   end;
 
@@ -246,7 +249,7 @@ begin
   for i := AGridList.Count - 1 downto 0 do
     AGridList.Exchange(i, RandomRange(0, i + 1));
   {$IFDEF DEBUG}
-  //for i in FGridList do WriteLn(i);
+  //for i in AGridList do WriteLn(i);
   {$ENDIF}
 end;
 
@@ -437,6 +440,20 @@ begin
   FComparisonsCount:=AValue;
 end;
 
+procedure TGrid.SetGridOrientation(AValue: TGridOrientation);
+begin
+  if FGridOrientation=AValue then Exit;
+  FGridOrientation:=AValue;
+end;
+
+procedure TGrid.RandomizeOrientations;
+var
+  i: integer;
+begin
+  i:= RandomRange(1, 5);
+  SetGridOrientation(TGridOrientation(i));
+end;
+
 constructor TGrid.Create(ASeed: integer);
 begin
   FSeed := ASeed;
@@ -445,7 +462,7 @@ begin
   FGridStyle := gtSquare;
   FSamplesCount := 1;
   FComparisonsCount := 3;
-  FGridOrientation:= goRightToLeft;
+  FGridOrientation:= goNone;
   FGrid := GetCentralGrid(FSeed, FCellsSize, DispersionStyle);
 
   CreatePositions;
