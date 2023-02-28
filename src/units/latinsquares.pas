@@ -8,64 +8,7 @@ uses
   Classes, SysUtils, fgl;
 
 type
-{
-procedure TfRandPosition.RandLatinSquareBalanced;
-var   jumbled, sequence, rotateS, signs: array of integer;
-      i, j, k, size : integer;
-//      s1 : string;
-//      a1 : integer;
 
-  procedure SetArrayLength (aSize : integer);
-  begin
-    SetLength(signs, aSize);
-    SetLength(rotateS, aSize);
-    SetLength(jumbled, aSize);
-    SetLength(sequence, aSize);
-    SetLength(FLatinSquare, aSize, aSize);
-  end;
-
-  procedure Shuffle(var array1 : array of integer ; aSize : integer);   //embaralhar lista
-  var v, aTemp, aRandom : integer;
-  begin
-    for v := 0 to aSize - 1 do array1[v] := v + 1;
-
-    for v := 0 to aSize - 1 do
-      begin
-        aRandom := Round(Random * (aSize - 1));
-        aTemp := array1[aRandom];
-        array1[aRandom] := array1[v];
-        array1[v] := aTemp;
-      end;
-  end;
-
-  procedure Rotate(var array2 : array of integer; aSize, aTimes : integer);   //primeiro elemento torna-se último, elementos restantes para esquerda n vezes
-  var aTemp, v, x : integer;
-  begin
-    for x := 0 to aTimes - 1 do
-      begin
-        aTemp := array2[0];
-        for v := Low(array2) to High(array2) do array2[v] := array2[v + 1];
-        array2[aSize - 1] := aTemp;
-      end;
-  end;
-
-begin
-  //how many?: 1 for each NumPos cicle on seSeqToWrite.
-  Size := Escriba.NumPos;
-  SetArrayLength(Size);
-
-  shuffle(jumbled, size);                      //gerar lista de referência; aleatória
-  shuffle(rotateS, size);                      //gerar lista de rotações; aleatória
-  for i := 0 to size - 1 do signs[i] := i + 1; //gerar lista de elementos; ordenada
-
-  for i := 0 to size - 1 do
-    begin
-      for k := 0 to size - 1 do sequence[k] := jumbled[k]; //gerar lista de trabalho a partir da lista de referência
-      rotate(sequence, size, rotateS[i]);                  //mover elementos da lista de trabalho
-      for j := 0 to size - 1 do FLatinSquare[j, sequence[j] - 1] := signs[i]; //preencher Latin Square
-    end;
-end;
-}
   TLatinRow = specialize TFPGList<Integer>;
   TLatinMatrix = array of TLatinRow;
 
@@ -115,7 +58,7 @@ var
     for i := 0 to ATimes - 1 do
       begin
         LTemp := Array2[0];
-        for j := 0 to FSize-2 do
+        for j := 0 to FSize-2 do // originalmente High(Array2)
           Array2[j] := Array2[j + 1];
         Array2[FSize - 1] := LTemp;
       end;
