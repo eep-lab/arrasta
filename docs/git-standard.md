@@ -13,5 +13,14 @@ Obs: sempre que forem feitos comandos do git, especificar aqui.
 
 Padrão de pull (atualizar um braço local com mudanças remotas):
 - Deixar o braço local suficientemente limpo (faça o commit das suas mudanças e de preferência crie um novo braço)
-- Selecione o braço que receberá as atualizações (git checkout -b nomedobraco)
-- git pull upstream olavo_arrasta
+- Selecione o braço que receberá as atualizações (git checkout -b nomedobraço)
+- git pull upstream olavo-arrasta
+
+Padrão de rotina de trabalho:
+- git checkout olavo-arrasta
+- git pull
+- git checkout -b nomedonovobraço
+- git add arquivosmodificados
+- git commit -m mensagem
+- git push origin nomedonovobraço
+- No github, fazer o pull request
