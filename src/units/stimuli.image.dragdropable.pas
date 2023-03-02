@@ -39,6 +39,7 @@ type
     property Draggable : Boolean read GetDraggable;
     property DropMode : TDropMode read FDropMode write SetDropMode;
     property OnDragDrop : TDragDropEvent read FOnDragDrop write SetOnDragDrop;
+    //procedure Animate;
 
   end;
 
