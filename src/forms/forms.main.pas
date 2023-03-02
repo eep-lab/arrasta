@@ -63,6 +63,7 @@ uses
    , Experiments.Grids
    , Experiments.Arrasta
    , Stimuli.Image.DragDropable
+   , Stimuli.Image.Animation
    , Cheats
    ;
 
@@ -103,6 +104,7 @@ end;
 
 var
   LSample : TDragDropableItem;
+  LAnimation: TAnimation;
 
 procedure TBackground.SampleDblClick(Sender: TObject);
 begin
@@ -113,7 +115,7 @@ procedure TBackground.FormClick(Sender: TObject);
 //var
   //Item: TDragDropableItem;
 begin
-  //LSample.OriginalBounds;
+  LSample.OriginalBounds;
   LSample.Color := clWhite;
   Grid.RandomizePositions;
   Grid.RandomizeOrientations;
@@ -242,6 +244,8 @@ begin
   //ShowMessage(Sender.ClassName);
   if Sender is TButton then
   begin
+    LAnimation := TAnimation.Create(Self);
+    LAnimation.Parent := Self;
     with Grid.RandomPositions do begin
       for i := Low(Comparisons) to High(Comparisons) do
       begin
@@ -268,7 +272,7 @@ begin
         Item := TDragDropableItem.Create(Self);
         Samples[i].Item := Item as TObject;
         Item.Parent := Self;
-        Item.EdgeColor := clBlue;
+        //Item.EdgeColor := clBlue;
         Item.SetOriginalBounds(
           Samples[i].Left,
           Samples[i].Top,
@@ -281,6 +285,9 @@ begin
           Item.Caption := 'A';
           LSample := Item;
           LSample.Target := Comparacao;
+          //LSample.Animate;
+          LAnimation.Animate(LSample);
+          LAnimation.Show;
         end;
       end;
 
