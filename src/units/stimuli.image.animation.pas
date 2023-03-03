@@ -17,15 +17,22 @@ uses SysUtils, Classes, Graphics, Controls, ExtCtrls, Stimuli.Image.Base;
 
 type
 
+  TAnimationStyle = (asCircle, asSquare, asGif);
+
   { TAnimation }
 
   TAnimation = class(TLightImage)
   private
-    FAcum, FStep: double;
+    FAcum: double;
+    //Quanto menor, a velocidade é menor, e vice-versa
+    //Valores ótimos: 0.05 < x < 0.2
+    FStep: double;
     FHeight: integer;
     FWidth: integer;
     FTimer: TTimer;
     FShow: boolean;
+    FGrowing: boolean;
+    FAnimationStyle: TAnimationStyle;
     function easeInOutQuad(t: double): double;
     procedure OnTimer(Sender: TObject);
     procedure OnStopTimer(Sender: TObject);
@@ -49,25 +56,14 @@ uses Forms, FileUtil, LazFileUtils, Session.Configuration.GlobalContainer
 
 procedure TAnimation.Paint;
 var
-  LTextStyle : TTextStyle;
-
-  procedure PaintText(Color : TColor);
+  LTextStyle: TTextStyle;
+  procedure PaintSquare(Color: TColor);
   begin
-    LTextStyle := Canvas.TextStyle;
-    LTextStyle.SingleLine:=False;
-    LTextStyle.Wordbreak:=True;
-    LTextStyle.Clipping:=False;
-    LTextStyle.Alignment:=taCenter;
-    LTextStyle.Layout:=tlCenter;
-    Canvas.TextStyle := LTextStyle;
     with Canvas do
       begin
-        Font.Color:= clWhite xor Color;
         Pen.Width := FPenWidth;
-        Pen.Color := EdgeColor;
-        Brush.Color:= Color;//FBorderColor;
-        //FillRect(Rect(0, 0, Width, Height));
-        if Caption = '' then Rectangle(ClientRect);
+        Pen.Color := clRed;
+        //Brush.Color:= clRed;
         Rectangle(ClientRect);
         TextRect(ClientRect,
           (((ClientRect.Right-ClientRect.Left) div 2) - (TextWidth(Caption)div 2)),
@@ -89,129 +85,98 @@ var
     with Canvas do
       begin
         Pen.Width := FPenWidth;
-        Pen.Color := Color;
-        Brush.Color:= Color;
+        Pen.Color := clRed;
+        //Brush.Color:= Color;
         with LCenter do
           Ellipse(X - LSize, Y - LSize, X + LSize, Y + LSize);
       end;
   end;
 
-  procedure PaintSquare(Color : TColor);
-  begin
-    with Canvas do
-      begin
-        Pen.Width := FPenWidth;
-        Pen.Color := EdgeColor;
-        Brush.Color:= Color;
-        Rectangle(ClientRect);
-      end;
-  end;
-
-  procedure PaintLetterRect(Color : TColor);
-  var
-    R : TRect;
-  begin
-    R := Rect(ClientRect.Left,
-          ClientRect.Top,
-          ClientRect.Right,
-          (ClientRect.Bottom - ClientRect.Top) div 2);
-    LTextStyle := Canvas.TextStyle;
-    LTextStyle.SingleLine:=False;
-    LTextStyle.Wordbreak:=True;
-    LTextStyle.Clipping:=False;
-    LTextStyle.Alignment:=taCenter;
-    LTextStyle.Layout:=tlCenter;
-    Canvas.TextStyle := LTextStyle;
-    Canvas.Font.Size := 15;
-    with Canvas do
-      begin
-        Font.Color:= clWhite xor Color;
-        Pen.Width := FPenWidth;
-        Pen.Color := EdgeColor;
-        Brush.Color := Color; //FBorderColor;
-
-        Rectangle(R);
-        TextRect(R,
-          (((R.Right-R.Left) div 2) - (TextWidth(Caption)div 2)),
-          (((R.Bottom-R.Top) div 2) - (TextHeight(Caption)div 2)),
-          Caption);
-      end;
-  end;
-
-  procedure PaintAnimate(Color: TColor);
-  begin
-    with Canvas do
-      begin
-        Pen.Width := FPenWidth;
-        Pen.Color := clRed;
-        //Brush.Color:= clRed;
-        Rectangle(ClientRect);
-        TextRect(ClientRect,
-          (((ClientRect.Right-ClientRect.Left) div 2) - (TextWidth(Caption)div 2)),
-          (((ClientRect.Bottom-ClientRect.Top) div 2) - (TextHeight(Caption)div 2)),
-          Caption);
-      end;
-  end;
-
 begin
-  case FImageKind of
-    ikLetterRect : PaintLetterRect(Color);
-    ikLetter: PaintText(Color);
-    ikSquare: PaintSquare(Color);
-    ikCircle: PaintCircle(Color);
-    ikBitmap: Canvas.StretchDraw(ClientRect, FBitmap);
-    ikAnimate: PaintAnimate(Color);
+  case FAnimationStyle of
+    asSquare: PaintSquare(Color);
+    asCircle: PaintCircle(Color);
+    asGif: ;
   end;
 end;
 
 procedure TAnimation.OnStartTimer(Sender: TObject);
 begin
-  if false then
-  begin
-    CalculatePreferredSize(FWidth, FHeight, False);
-    AutoSize := False;
-  end;
-  if true then
-    FShow := FHeight <> Height;
+  //if false then
+  //begin
+  //  CalculatePreferredSize(FWidth, FHeight, False);
+  //  AutoSize := False;
+  //end;
+  //if true then
+  //FShow := FHeight <> Height;
+  FShow := true;
   FAcum := 0;
 end;
 
 procedure TAnimation.OnStopTimer(Sender: TObject);
 begin
-  if FShow and false then
-    AutoSize := True;
+  //if FShow and false then
+  //  AutoSize := True;
 end;
 
 procedure TAnimation.OnTimer(Sender: TObject);
 var
   temp: double;
 begin
+  //FAcum := FAcum + FStep;
+  //if FStep > 1 then
+  //  FStep := 1;
+  //temp := easeInOutQuad(FAcum);
+
+  //if true then
+  //begin
+  //  if FShow then
+  //  begin
+  //    Height := round(FHeight * temp);
+  //    if Height >= FHeight then
+  //    begin
+  //      Height := FHeight;
+  //      FTimer.Enabled := False;
+  //    end;
+  //  end
+  //  else
+  //  begin
+  //    temp := FHeight - round(FHeight * temp);
+  //    if temp <= Constraints.MinHeight then
+  //    begin
+  //      Height := Constraints.MinHeight;
+  //      FTimer.Enabled := False;
+  //    end
+  //    else
+  //      Height := trunc(temp);
+  //  end;
+
   FAcum := FAcum + FStep;
   if FStep > 1 then
     FStep := 1;
   temp := easeInOutQuad(FAcum);
-
-  if true then
+  if FGrowing then
   begin
-    if FShow then
+    Height := round(FHeight * temp);
+    Width := Height;
+    if Height >= FHeight then
     begin
-      Height := round(FHeight * temp);
-      if Height >= FHeight then
-      begin
-        Height := FHeight;
-        FTimer.Enabled := False;
-      end;
-    end
-    else
+      Height := FHeight;
+      Width := Height;
+      FGrowing := false;
+      FAcum:= 0;
+    end;
+  end else begin
+    temp := FHeight - round(FHeight * temp);
+    if temp <= Constraints.MinHeight then
     begin
-      temp := FHeight - round(FHeight * temp);
-      if temp <= Constraints.MinHeight then
-      begin
-        Height := Constraints.MinHeight;
-        FTimer.Enabled := False;
-      end
-      else
-        Height := trunc(temp);
+      Height := Constraints.MinHeight;
+      Width := Constraints.MinWidth;
+      FGrowing := true;
+      FAcum:= 0;
+    end else begin
+      Height := trunc(temp);
+      Width := Height;
     end;
   end;
 end;
@@ -243,20 +208,23 @@ begin
   AnchorSideTop.Control := ASibling;
   AnchorSideTop.Side := asrCenter;
   FTimer.Enabled:= true;
+  Constraints.MinHeight := R.Height;
+  Constraints.MinWidth := R.Width;
 end;
 
 constructor TAnimation.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FTimer := TTimer.Create(Self);
-  FStep := 0.1;
-  FTimer.Interval := 15;
+  FStep := 0.06;
+  FTimer.Interval := 100;
+  FGrowing := false;
   FTimer.Enabled := False;
   FTimer.OnTimer := @OnTimer;
   FTimer.OnStartTimer := @OnStartTimer;
   FTimer.OnStopTimer := @OnStopTimer;
   FPenWidth := 10;
-  FImageKind:=ikAnimate;
+  FAnimationStyle := asCircle;
   Visible := False;
   FHeight:= 300;
   Height:= 200;
