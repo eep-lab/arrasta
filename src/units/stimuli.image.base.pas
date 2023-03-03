@@ -28,6 +28,7 @@ type
     FEdge: TColor;
     FOnMouseDown: TMouseEvent;
     FOnResponse: TNotifyEvent;
+    FImageKind: TImageKind;
     function GetRandomPoint : TPoint;
     function easeInOutQuad(t: double): double;
     procedure OnTimer(Sender: TObject);
@@ -39,7 +40,6 @@ type
     procedure SetSchedule(AValue: TSchedule);
   protected
     FSchedule : TSchedule;
-    FImageKind: TImageKind;
     FPenWidth: integer;
     FBitmap: TBitmap;
     procedure MouseDown(Button: TMouseButton;

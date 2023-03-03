@@ -317,6 +317,8 @@ begin
           Samples[i].Top,
           Samples[i].SquareSide,
           Samples[i].SquareSide);
+        LAnimation.Animate(Item);
+        LAnimation.Show;
       end;
     end;
   end;
