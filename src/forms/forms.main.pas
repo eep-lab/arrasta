@@ -41,6 +41,7 @@ type
     procedure EndSession(Sender: TObject);
     procedure BeforeStartSession(Sender: TObject);
     procedure FormPaint(Sender: TObject);
+    procedure JoinAnimation(Sender, Source: TObject; X,Y: Integer);
   private
 
   public
@@ -285,6 +286,7 @@ begin
           Item.Caption := 'A';
           LSample := Item;
           LSample.Target := Comparacao;
+          LSample.OnDragDrop := @JoinAnimation;
           //LSample.Animate;
           LAnimation.Animate(LSample);
           LAnimation.Show;
@@ -360,6 +362,11 @@ begin
   //    Canvas.TextOut(R.Left, R.Top, Grid[j][i].Index.ToString);
   //  end;
   //end;
+end;
+
+procedure TBackground.JoinAnimation(Sender, Source: TObject; X,Y: Integer);
+begin
+  LAnimation.Join(Sender as TDragDropableItem);
 end;
 
 
