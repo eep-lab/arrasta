@@ -28,10 +28,11 @@ type
     //Valores ótimos: 0.05 < x < 0.2
     FStep: double;
     FHeight: integer;
-    FWidth: integer;
+    //FWidth: integer;
     FTimer: TTimer;
     FShow: boolean;
     FGrowing: boolean;
+    FSibling : TLightImage;
     FAnimationStyle: TAnimationStyle;
     function easeInOutQuad(t: double): double;
     procedure OnTimer(Sender: TObject);
@@ -43,6 +44,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Animate(ASibling : TLightImage);
+    procedure Join(ALightImage : TLightImage);
+    procedure Stop;
   end;
 
 implementation
@@ -62,7 +65,7 @@ var
     with Canvas do
       begin
         Pen.Width := FPenWidth;
-        Pen.Color := clRed;
+        Pen.Color := Color;
         //Brush.Color:= clRed;
         Rectangle(ClientRect);
         TextRect(ClientRect,
@@ -85,7 +88,7 @@ var
     with Canvas do
       begin
         Pen.Width := FPenWidth;
-        Pen.Color := clRed;
+        Pen.Color := Color;
         //Brush.Color:= Color;
         with LCenter do
           Ellipse(X - LSize, Y - LSize, X + LSize, Y + LSize);
@@ -102,55 +105,20 @@ end;
 
 procedure TAnimation.OnStartTimer(Sender: TObject);
 begin
-  //if false then
-  //begin
-  //  CalculatePreferredSize(FWidth, FHeight, False);
-  //  AutoSize := False;
-  //end;
-  //if true then
-  //FShow := FHeight <> Height;
   FShow := true;
   FAcum := 0;
+  Color := clRed
 end;
 
 procedure TAnimation.OnStopTimer(Sender: TObject);
 begin
-  //if FShow and false then
-  //  AutoSize := True;
+  Color := clDkGray;
 end;
 
 procedure TAnimation.OnTimer(Sender: TObject);
 var
   temp: double;
 begin
-  //FAcum := FAcum + FStep;
-  //if FStep > 1 then
-  //  FStep := 1;
-  //temp := easeInOutQuad(FAcum);
-
-  //if true then
-  //begin
-  //  if FShow then
-  //  begin
-  //    Height := round(FHeight * temp);
-  //    if Height >= FHeight then
-  //    begin
-  //      Height := FHeight;
-  //      FTimer.Enabled := False;
-  //    end;
-  //  end
-  //  else
-  //  begin
-  //    temp := FHeight - round(FHeight * temp);
-  //    if temp <= Constraints.MinHeight then
-  //    begin
-  //      Height := Constraints.MinHeight;
-  //      FTimer.Enabled := False;
-  //    end
-  //    else
-  //      Height := trunc(temp);
-  //  end;
-
   FAcum := FAcum + FStep;
   if FStep > 1 then
     FStep := 1;
@@ -183,27 +151,24 @@ end;
 
 function TAnimation.easeInOutQuad(t: double): double;
 begin
-  {$ifndef darwin}
   if t < 0.5 then
     Result := 2 * t * t
   else
     Result := -1 + (4 - 2 * t) * t;
-  {$else}
-    Result := 1;
-  {$endif}
 end;
 
 procedure TAnimation.Animate(ASibling : TLightImage);
 var
   R: TRect;
 begin
+  FSibling := ASibling;
   Self.SendToBack;
   Kind := ikAnimate;
   R := ASibling.ClientRect;
-  InflateRect(R, 20, 20);
+  InflateRect(R, 10, 10);
   Self.SetOriginalBounds(ASibling.Left, ASibling.Top, R.Width, R.Height);
   Anchors := [akLeft, akTop];
-  AnchorSideLeft.Control := ASibling ;
+  AnchorSideLeft.Control := ASibling;
   AnchorSideLeft.Side := asrCenter;
   AnchorSideTop.Control := ASibling;
   AnchorSideTop.Side := asrCenter;
@@ -212,25 +177,42 @@ begin
   Constraints.MinWidth := R.Width;
 end;
 
+procedure TAnimation.Join(ALightImage: TLightImage);
+begin
+  Stop;
+  AnchorSideTop.Control := nil;
+  Top := FSibling.Top -10;
+  Left := FSibling.Left -10;
+  Height := FSibling.Height + ALightImage.Height + 30;
+  Width := FSibling.Width + 30;
+
+end;
+
+procedure TAnimation.Stop;
+begin
+  FTimer.Enabled := False;
+end;
+
 constructor TAnimation.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FTimer := TTimer.Create(Self);
-  FStep := 0.06;
+  FStep := 0.09;
   FTimer.Interval := 100;
   FGrowing := false;
   FTimer.Enabled := False;
   FTimer.OnTimer := @OnTimer;
   FTimer.OnStartTimer := @OnStartTimer;
   FTimer.OnStopTimer := @OnStopTimer;
-  FPenWidth := 10;
-  FAnimationStyle := asCircle;
+  FPenWidth := 6;
+  FAnimationStyle := asSquare;
   Visible := False;
-  FHeight:= 300;
+  FHeight:= 220;
   Height:= 200;
   Width:= 300;
   EdgeColor:= clInactiveCaption;
   Canvas.Font.Size := 20;
+  FSibling := nil;
 end;
 
 destructor TAnimation.Destroy;
