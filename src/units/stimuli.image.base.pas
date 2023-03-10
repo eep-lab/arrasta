@@ -30,10 +30,6 @@ type
     FOnResponse: TNotifyEvent;
     FImageKind: TImageKind;
     function GetRandomPoint : TPoint;
-    function easeInOutQuad(t: double): double;
-    procedure OnTimer(Sender: TObject);
-    procedure OnStopTimer(Sender: TObject);
-    procedure OnStartTimer(Sender: TObject);
     procedure SetKind(AValue: TImageKind);
     procedure SetOnMouseDown(AValue: TMouseEvent);
     procedure SetOnResponse(AValue: TNotifyEvent);
@@ -58,7 +54,6 @@ type
     procedure Centralize;
     procedure CentralizeLeft;
     procedure CentralizeRight;
-    procedure Animate(ASibling : TLightImage);
     property Schedule : TSchedule read FSchedule write SetSchedule;
     property EdgeColor : TColor read FEdge write FEdge;
     property Kind: TImageKind read FImageKind write SetKind;
@@ -207,21 +202,6 @@ var
       end;
   end;
 
-  procedure PaintAnimate(Color: TColor);
-  begin
-    with Canvas do
-      begin
-        Pen.Width := FPenWidth;
-        Pen.Color := clRed;
-        //Brush.Color:= clRed;
-        Rectangle(ClientRect);
-        TextRect(ClientRect,
-          (((ClientRect.Right-ClientRect.Left) div 2) - (TextWidth(Caption)div 2)),
-          (((ClientRect.Bottom-ClientRect.Top) div 2) - (TextHeight(Caption)div 2)),
-          Caption);
-      end;
-  end;
-
 begin
   case FImageKind of
     ikLetterRect : PaintLetterRect(Color);
@@ -229,108 +209,12 @@ begin
     ikSquare: PaintSquare(Color);
     ikCircle: PaintCircle(Color);
     ikBitmap: Canvas.StretchDraw(ClientRect, FBitmap);
-    ikAnimate: PaintAnimate(Color);
   end;
-end;
-
-var
-  FAcum, FStep: double;
-  FHeight: integer = 200;
-  FWidth: integer;
-  Timer: TTimer;
-  FShow: boolean;
-
-procedure TLightImage.OnStartTimer(Sender: TObject);
-begin
-  if false then
-  begin
-    CalculatePreferredSize(FWidth, FHeight, False);
-    AutoSize := False;
-  end;
-  if true then
-    FShow := FHeight <> Height;
-  FAcum := 0;
-end;
-
-procedure TLightImage.OnStopTimer(Sender: TObject);
-begin
-  if FShow and false then
-    AutoSize := True;
-end;
-
-procedure TLightImage.OnTimer(Sender: TObject);
-var
-  temp: double;
-begin
-  FAcum := FAcum + FStep;
-  if FStep > 1 then
-    FStep := 1;
-  temp := easeInOutQuad(FAcum);
-
-  if true then
-  begin
-    if FShow then
-    begin
-      Height := round(FHeight * temp);
-      if Height >= FHeight then
-      begin
-        Height := FHeight;
-        Timer.Enabled := False;
-      end;
-    end
-    else
-    begin
-      temp := FHeight - round(FHeight * temp);
-      if temp <= Constraints.MinHeight then
-      begin
-        Height := Constraints.MinHeight;
-        Timer.Enabled := False;
-      end
-      else
-        Height := trunc(temp);
-    end;
-  end;
-end;
-
-function TLightImage.easeInOutQuad(t: double): double;
-begin
-  {$ifndef darwin}
-  if t < 0.5 then
-    Result := 2 * t * t
-  else
-    Result := -1 + (4 - 2 * t) * t;
-  {$else}
-    Result := 1;
-  {$endif}
-end;
-
-procedure TLightImage.Animate(ASibling : TLightImage);
-var
-  R: TRect;
-begin
-  Self.SendToBack;
-  Kind := ikAnimate;
-  R := ASibling.ClientRect;
-  InflateRect(R, 20, 20);
-  Self.SetOriginalBounds(ASibling.Left, ASibling.Top, R.Width, R.Height);
-  Anchors := [akLeft, akTop];
-  AnchorSideLeft.Control := ASibling ;
-  AnchorSideLeft.Side := asrCenter;
-  AnchorSideTop.Control := ASibling;
-  AnchorSideTop.Side := asrCenter;
-  Timer.Enabled:= true;
 end;
 
 constructor TLightImage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Timer := TTimer.Create(Self);
-  FStep := 0.1;
-  Timer.Interval := 15;
-  Timer.Enabled := False;
-  Timer.OnTimer := @OnTimer;
-  Timer.OnStartTimer := @OnStartTimer;
-  Timer.OnStopTimer := @OnStopTimer;
   FPenWidth := 10;
   FImageKind:=ikAnimate;
   Visible := False;
