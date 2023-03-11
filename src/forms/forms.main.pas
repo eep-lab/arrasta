@@ -1,9 +1,7 @@
 {
   Stimulus Control
   Copyright (C) 2014-2021 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
-
   The present file is distributed under the terms of the GNU General Public License (GPL v3.0).
-
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 }
@@ -41,6 +39,7 @@ type
     procedure EndSession(Sender: TObject);
     procedure BeforeStartSession(Sender: TObject);
     procedure FormPaint(Sender: TObject);
+    procedure JoinAnimation(Sender, Source: TObject; X,Y: Integer);
   private
 
   public
@@ -63,6 +62,7 @@ uses
    , Experiments.Grids
    , Experiments.Arrasta
    , Stimuli.Image.DragDropable
+   , Stimuli.Image.Animation
    , Cheats
    ;
 
@@ -103,6 +103,7 @@ end;
 
 var
   LSample : TDragDropableItem;
+  LAnimation: TAnimation;
 
 procedure TBackground.SampleDblClick(Sender: TObject);
 begin
@@ -113,7 +114,7 @@ procedure TBackground.FormClick(Sender: TObject);
 //var
   //Item: TDragDropableItem;
 begin
-  //LSample.OriginalBounds;
+  LSample.OriginalBounds;
   LSample.Color := clWhite;
   Grid.RandomizePositions;
   Grid.RandomizeOrientations;
@@ -242,6 +243,8 @@ begin
   //ShowMessage(Sender.ClassName);
   if Sender is TButton then
   begin
+    LAnimation := TAnimation.Create(Self);
+    LAnimation.Parent := Self;
     with Grid.RandomPositions do begin
       for i := Low(Comparisons) to High(Comparisons) do
       begin
@@ -268,7 +271,7 @@ begin
         Item := TDragDropableItem.Create(Self);
         Samples[i].Item := Item as TObject;
         Item.Parent := Self;
-        Item.EdgeColor := clBlue;
+        //Item.EdgeColor := clBlue;
         Item.SetOriginalBounds(
           Samples[i].Left,
           Samples[i].Top,
@@ -281,6 +284,10 @@ begin
           Item.Caption := 'A';
           LSample := Item;
           LSample.Target := Comparacao;
+          LSample.OnDragDrop := @JoinAnimation;
+          //LSample.Animate;
+          LAnimation.Animate(LSample);
+          LAnimation.Show;
         end;
       end;
 
@@ -310,6 +317,8 @@ begin
           Samples[i].Top,
           Samples[i].SquareSide,
           Samples[i].SquareSide);
+        LAnimation.Animate(Item);
+        LAnimation.Show;
       end;
     end;
   end;
@@ -351,6 +360,11 @@ begin
   //    Canvas.TextOut(R.Left, R.Top, Grid[j][i].Index.ToString);
   //  end;
   //end;
+end;
+
+procedure TBackground.JoinAnimation(Sender, Source: TObject; X,Y: Integer);
+begin
+  LAnimation.Join(Sender as TDragDropableItem);
 end;
 
 
