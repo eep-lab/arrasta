@@ -1,9 +1,7 @@
 {
   Stimulus Control
   Copyright (C) 2014-2021 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
-
   The present file is distributed under the terms of the GNU General Public License (GPL v3.0).
-
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 }
@@ -17,7 +15,7 @@ uses SysUtils, Classes, Graphics, Controls, Schedules;
 
 type
 
-  TImageKind = (ikLetter, ikSquare, ikCircle, ikLetterRect, ikBitmap);
+  TImageKind = (ikLetter, ikSquare, ikCircle, ikLetterRect, ikBitmap, ikAnimate);
 
   { TLightImage }
 
@@ -25,12 +23,10 @@ type
   private
     FOriginalBounds: TRect;
     FFileName: string;
-    FBitmap: TBitmap;
     FEdge: TColor;
-    FImageKind: TImageKind;
     FOnMouseDown: TMouseEvent;
     FOnResponse: TNotifyEvent;
-    FPenWidth: integer;
+    FImageKind: TImageKind;
     function GetRandomPoint : TPoint;
     procedure SetKind(AValue: TImageKind);
     procedure SetOnMouseDown(AValue: TMouseEvent);
@@ -38,6 +34,8 @@ type
     procedure SetSchedule(AValue: TSchedule);
   protected
     FSchedule : TSchedule;
+    FPenWidth: integer;
+    FBitmap: TBitmap;
     procedure MouseDown(Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
@@ -65,7 +63,11 @@ type
 
 implementation
 
-uses Forms, FileUtil, LazFileUtils, Session.Configuration.GlobalContainer, Dialogs;
+uses Forms, FileUtil, LazFileUtils, Session.Configuration.GlobalContainer
+     , Dialogs
+     , Types
+     , ExtCtrls
+     ;
 
 { TLightImage }
 
@@ -212,7 +214,7 @@ constructor TLightImage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FPenWidth := 10;
-  FImageKind:=ikLetter;
+  FImageKind:=ikAnimate;
   Visible := False;
   Height:= 200;
   Width:= 300;
