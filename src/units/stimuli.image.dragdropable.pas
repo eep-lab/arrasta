@@ -39,6 +39,7 @@ type
     property Draggable : Boolean read GetDraggable;
     property DropMode : TDropMode read FDropMode write SetDropMode;
     property OnDragDrop : TDragDropEvent read FOnDragDrop write SetOnDragDrop;
+    //procedure Animate;
 
   end;
 
@@ -132,13 +133,18 @@ end;
 
 procedure TDragDropableItem.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
+var
+  LTarget : TDragDropableItem;
 begin
   if Assigned(Target) then begin
     if Button in [mbLeft] then begin
       FIsDragging := False;
       if Target is TDragDropableItem then begin
+        LTarget := Target as TDragDropableItem;
         if IntersectsWith(Target) then begin
           Color := clGreen;
+          Left := LTarget.Left;
+          Top := LTarget.Top - Height - 10;
           if Assigned(OnDragDrop) then OnDragDrop(Target, Self, X, Y);
           Exit;
         end else begin
