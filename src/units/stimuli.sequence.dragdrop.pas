@@ -23,6 +23,7 @@ uses
 type
 
   TDragDropableItems = specialize TFPGList<TDragDropableItem>;
+  TAnimations = specialize TFPGList<TAnimation>;
 
   { TDragDropStimuli }
 
@@ -32,6 +33,7 @@ type
     FComparisons : TDragDropableItems;
     FSamples : TDragDropableItems;
     FAnimation : TAnimation;
+    FDoneAnimations : TAnimations;
     procedure OtherDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure RightDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure SetFocus(Sender: TObject; Button: TMouseButton;
@@ -94,6 +96,7 @@ procedure TDragDropStimuli.ResetGrid;
 var
   i : integer;
   LItem : TDragDropableItem;
+  LAnimation : TAnimation;
 begin
   Grid.RandomizePositions;
   Grid.RandomizeOrientations;
@@ -113,6 +116,7 @@ begin
     begin
       LItem := Samples[i].Item as TDragDropableItem;
       LItem.OriginalBounds;
+      LItem.Draggable := True;
       LItem.Color := clWhite;
       LItem.Invalidate;
       LItem.SetOriginalBounds(
@@ -125,6 +129,10 @@ begin
     FAnimation.Animate(LItem);
     FAnimation.Show;
   end;
+
+  for LAnimation in FDoneAnimations do
+    LAnimation.Free;
+  FDoneAnimations.Clear;
 end;
 
 procedure TDragDropStimuli.Stop;
@@ -169,6 +177,8 @@ procedure TDragDropStimuli.RightDragDrop(Sender, Source: TObject; X, Y: Integer
 var
   Sample : TDragDropableItem;
   Comparison : TDragDropableItem;
+  LAnimation : TAnimation;
+  FDragDropDone : Boolean = False;
 begin
   Sample := Source as TDragDropableItem;
   Comparison := Sender as TDragDropableItem;
@@ -176,13 +186,39 @@ begin
   Sample.Color := clGreen;
   Sample.Left := Comparison.Left;
   Sample.Top := Comparison.Top - Sample.Height - 10;
-  FAnimation.Join(Comparison);
+
+  LAnimation := TAnimation.Create(Parent);
+  LAnimation.Parent := Parent;
+  LAnimation.Join(Sample, Comparison);
+  LAnimation.SendToBack;
+  LAnimation.Show;
+  FDoneAnimations.Add(LAnimation);
+
+  Sample.Draggable:=False;
+
+  for Sample in FSamples do
+    if Sample.Draggable then begin
+      FDragDropDone := False;
+      FAnimation.Animate(Sample);
+      Break;
+    end else begin
+      FDragDropDone := True;
+    end;
+  if FDragDropDone then begin
+    FAnimation.Stop;
+    FAnimation.Hide;
+  end;
 end;
 
 procedure TDragDropStimuli.SetFocus(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+var
+  LSample : TDragDropableItem;
 begin
-  FAnimation.Animate(Sender as TLightImage);
+  LSample := Sender as TDragDropableItem;
+  if LSample.Draggable then
+    if FAnimation.Sibling <> (LSample as TLightImage) then
+      FAnimation.Animate(LSample);
 end;
 
 function TDragDropStimuli.GetRandomSample: TDragDropableItem;
@@ -190,8 +226,8 @@ begin
   Result := FSamples[RandomRange(0, FSamples.Count)];
 end;
 
-procedure TDragDropStimuli.WrongDragDrop(Sender, Source: TObject; X, Y: Integer
-  );
+procedure TDragDropStimuli.WrongDragDrop(Sender, Source: TObject;
+  X, Y: Integer);
 var
   Sample : TDragDropableItem;
 begin
@@ -210,9 +246,11 @@ begin
   inherited Create(AOwner);
   FSamples := TDragDropableItems.Create;
   FComparisons := TDragDropableItems.Create;
-  FAnimation := TAnimation.Create(Self);
-
   LComparisons := TDragDropableItems.Create;
+
+  FAnimation := TAnimation.Create(Self);
+  FDoneAnimations := TAnimations.Create;
+
   with Grid.RandomPositions do
   begin
     for i := low(Comparisons) to high(Comparisons) do
@@ -268,6 +306,7 @@ end;
 
 destructor TDragDropStimuli.Destroy;
 begin
+  FDoneAnimations.Free;
   FSamples.Free;
   FComparisons.Free;
   inherited Destroy;
