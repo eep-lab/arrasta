@@ -208,7 +208,7 @@ begin
   FHeight:= 220;
   Height:= 200;
   Width:= 300;
-  EdgeColor:= clInactiveCaption;
+  Color:= clDkGray;
   Canvas.Font.Size := 20;
   FSibling := nil;
 end;
