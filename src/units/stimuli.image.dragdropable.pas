@@ -19,6 +19,7 @@ type
   private
     FDropMode: TDropMode;
     FIsDragging : Boolean;
+    FCanDrag : Boolean;
     FOnOtherDragDrop: TDragDropEvent;
     FOnRightDragDrop: TDragDropEvent;
     FOnWrongDragDrop: TDragDropEvent;
@@ -43,7 +44,7 @@ type
     destructor Destroy;
     procedure AddTarget(ATarget : TObject);
     property Targets : TDragDropTargets read FTargets;
-    property Draggable : Boolean read GetDraggable;
+    property Draggable : Boolean read GetDraggable write FCanDrag;
     property DropMode : TDropMode read FDropMode write SetDropMode;
     property OnRightDragDrop : TDragDropEvent read FOnRightDragDrop write SetOnRightDragDrop;
     property OnWrongDragDrop : TDragDropEvent read FOnWrongDragDrop write SetOnWrongDragDrop;
@@ -59,7 +60,7 @@ uses Graphics;
 
 function TDragDropableItem.GetDraggable: Boolean;
 begin
-  Result := FTargets.Count > 0;
+  Result := (FTargets.Count > 0) and FCanDrag;
 end;
 
 procedure TDragDropableItem.SetDropMode(AValue: TDropMode);
@@ -186,6 +187,7 @@ constructor TDragDropableItem.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FTargets := TDragDropTargets.Create;
+  FCanDrag := True;
   Kind := ikLetter;
 end;
 
