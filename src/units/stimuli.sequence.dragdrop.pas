@@ -126,7 +126,7 @@ begin
         Samples[i].SquareSide);
 
     end;
-    FAnimation.Animate(LItem);
+    FAnimation.Animate(GetRandomSample);
     FAnimation.Show;
   end;
 
