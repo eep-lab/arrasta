@@ -34,6 +34,8 @@ type
     FAnimation : TAnimation;
     procedure OtherDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure RightDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure SetFocus(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure SetParent(AValue: TWinControl);
     function GetRandomSample : TDragDropableItem;
     procedure WrongDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -177,6 +179,12 @@ begin
   FAnimation.Join(Comparison);
 end;
 
+procedure TDragDropStimuli.SetFocus(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  FAnimation.Animate(Sender as TLightImage);
+end;
+
 function TDragDropStimuli.GetRandomSample: TDragDropableItem;
 begin
   Result := FSamples[RandomRange(0, FSamples.Count)];
@@ -228,6 +236,7 @@ begin
     for i := low(Samples) to high(Samples) do
     begin
       LItem := TDragDropableItem.Create(Self);
+      LItem.OnMouseDown := @SetFocus;
       LItem.OnRightDragDrop:=@RightDragDrop;
       LItem.OnWrongDragDrop:=@WrongDragDrop;
       LItem.OnOtherDragDrop:=@OtherDragDrop;
