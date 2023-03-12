@@ -5,11 +5,13 @@ unit Stimuli.Image.DragDropable;
 interface
 
 uses
-  Classes, SysUtils, LCLIntf, Controls, Stimuli, Stimuli.Image.Base;
+  Classes, SysUtils, LCLIntf, Controls, fgl, Stimuli, Stimuli.Image.Base;
 
 type
 
   { TDragDropableItem }
+
+  TDragDropTargets = specialize TFPGList<TObject>;
 
   TDropMode = (dropRect, dropCircle);
 
@@ -17,15 +19,18 @@ type
   private
     FDropMode: TDropMode;
     FIsDragging : Boolean;
-    FOnDragDrop: TDragDropEvent;
+    FOnOtherDragDrop: TDragDropEvent;
+    FOnRightDragDrop: TDragDropEvent;
+    FOnWrongDragDrop: TDragDropEvent;
     FStartPosition : TPoint;
     FStartMouseDown : TPoint;
-    FTarget: TObject;
+    FTargets: TDragDropTargets;
     function GetDraggable: Boolean;
     procedure SetDropMode(AValue: TDropMode);
-    procedure SetOnDragDrop(AValue: TDragDropEvent);
-    procedure SetTarget(AValue: TObject);
-    function IntersectsWith(Sender : TObject) : Boolean;
+    procedure SetOnOtherDragDrop(AValue: TDragDropEvent);
+    procedure SetOnRightDragDrop(AValue: TDragDropEvent);
+    function IntersectsWith(Sender : TDragDropableItem) : Boolean;
+    procedure SetOnWrongDragDrop(AValue: TDragDropEvent);
   protected
     procedure DragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure MouseDown(Button: TMouseButton;
@@ -35,12 +40,15 @@ type
       Shift:TShiftState; X,Y:Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
-    property Target : TObject read FTarget write SetTarget;
+    destructor Destroy;
+    procedure AddTarget(ATarget : TObject);
+    property Targets : TDragDropTargets read FTargets;
     property Draggable : Boolean read GetDraggable;
     property DropMode : TDropMode read FDropMode write SetDropMode;
-    property OnDragDrop : TDragDropEvent read FOnDragDrop write SetOnDragDrop;
+    property OnRightDragDrop : TDragDropEvent read FOnRightDragDrop write SetOnRightDragDrop;
+    property OnWrongDragDrop : TDragDropEvent read FOnWrongDragDrop write SetOnWrongDragDrop;
+    property OnOtherDragDrop : TDragDropEvent read FOnOtherDragDrop write SetOnOtherDragDrop;
     //procedure Animate;
-
   end;
 
 implementation
@@ -51,7 +59,7 @@ uses Graphics;
 
 function TDragDropableItem.GetDraggable: Boolean;
 begin
-  Result := FTarget <> nil;
+  Result := FTargets.Count > 0;
 end;
 
 procedure TDragDropableItem.SetDropMode(AValue: TDropMode);
@@ -60,19 +68,19 @@ begin
   FDropMode := AValue;
 end;
 
-procedure TDragDropableItem.SetOnDragDrop(AValue: TDragDropEvent);
+procedure TDragDropableItem.SetOnOtherDragDrop(AValue: TDragDropEvent);
 begin
-  if FOnDragDrop = AValue then Exit;
-  FOnDragDrop := AValue;
+  if FOnOtherDragDrop=AValue then Exit;
+  FOnOtherDragDrop:=AValue;
 end;
 
-procedure TDragDropableItem.SetTarget(AValue: TObject);
+procedure TDragDropableItem.SetOnRightDragDrop(AValue: TDragDropEvent);
 begin
-  if FTarget = AValue then Exit;
-  FTarget := AValue;
+  if FOnRightDragDrop = AValue then Exit;
+  FOnRightDragDrop := AValue;
 end;
 
-function TDragDropableItem.IntersectsWith(Sender: TObject): Boolean;
+function TDragDropableItem.IntersectsWith(Sender: TDragDropableItem): Boolean;
 var
   LControl : TControl;
 
@@ -87,8 +95,8 @@ var
         Result := False;
   end;
 begin
-  if Sender is TControl then begin
-    LControl := TDragDropableItem(Target);
+  if Sender is TDragDropableItem then begin
+    LControl := TDragDropableItem(Sender);
     case DropMode of
       dropRect : begin
         Result := BoundsRect.IntersectsWith(LControl.BoundsRect);
@@ -100,6 +108,12 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TDragDropableItem.SetOnWrongDragDrop(AValue: TDragDropEvent);
+begin
+  if FOnWrongDragDrop=AValue then Exit;
+  FOnWrongDragDrop:=AValue;
 end;
 
 procedure TDragDropableItem.DragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -134,24 +148,34 @@ end;
 procedure TDragDropableItem.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
+  i : integer;
   LTarget : TDragDropableItem;
+  LIntersected : Boolean;
 begin
-  if Assigned(Target) then begin
+  if Draggable then begin
     if Button in [mbLeft] then begin
       FIsDragging := False;
-      if Target is TDragDropableItem then begin
-        LTarget := Target as TDragDropableItem;
-        if IntersectsWith(Target) then begin
-          Color := clGreen;
-          Left := LTarget.Left;
-          Top := LTarget.Top - Height - 10;
-          if Assigned(OnDragDrop) then OnDragDrop(Target, Self, X, Y);
-          Exit;
-        end else begin
-          Color := clRed;
-          Left := FStartPosition.X;
-          Top  := FStartPosition.Y;
+      for i := 0 to FTargets.Count -1 do begin
+        if Targets[i] is TDragDropableItem then begin
+          LTarget := Targets[i] as TDragDropableItem;
+          LIntersected := IntersectsWith(LTarget);
+          if LIntersected then Break;
         end;
+      end;
+
+      if LIntersected then begin
+        case i of
+          0 :
+            if Assigned(OnRightDragDrop) then
+              OnRightDragDrop(LTarget, Self, X, Y);
+
+          else
+            if Assigned(OnWrongDragDrop) then
+              OnWrongDragDrop(LTarget, Self, X, Y);
+        end
+      end else begin
+        if Assigned(OnOtherDragDrop) then
+          OnOtherDragDrop(nil, Self, X, Y);
       end;
     end;
   end;
@@ -160,8 +184,19 @@ end;
 constructor TDragDropableItem.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FTarget := nil;
+  FTargets := TDragDropTargets.Create;
   Kind := ikLetter;
+end;
+
+destructor TDragDropableItem.Destroy;
+begin
+  FTargets.Clear;
+  FTargets.Free;
+end;
+
+procedure TDragDropableItem.AddTarget(ATarget: TObject);
+begin
+  FTargets.Add(ATarget);
 end;
 
 end.

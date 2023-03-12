@@ -42,6 +42,8 @@ type
     procedure BeforeStartSession(Sender: TObject);
     procedure FormPaint(Sender: TObject);
     procedure JoinAnimation(Sender, Source: TObject; X,Y: Integer);
+    procedure Wrong(Sender, Source: TObject; X,Y: Integer);
+    procedure Other(Sender, Source: TObject; X,Y: Integer);
   private
 
   public
@@ -127,147 +129,15 @@ end;
 
 procedure TBackground.Button1Click(Sender: TObject);
 var
-  //LComparison : TDragDropableItem;
-  //LComparison1 : TDragDropableItem;
-  //LComparison2 : TDragDropableItem;
-  //LComparison3 : TDragDropableItem;
-  //LComparison4 : TDragDropableItem;
-  //LComparison5 : TDragDropableItem;
-  //LComparison6 : TDragDropableItem;
-  //LComparison7 : TDragDropableItem;
-  //LComparison8 : TDragDropableItem;
-  //Modelo : TDragDropableItem;
-  Comparacao : TDragDropableItem;
   Item : TDragDropableItem;
   i: Integer;
 begin
-  //LComparison := TDragDropableItem.Create(Self);
-  //LComparison.Caption := 'A';
-  //LComparison.Parent := Self;
-  //LComparison.SetOriginalBounds(
-  //  Grid[0, 0].Left, Grid[0, 0].Top, Grid[0, 0].SquareSide, Grid[0, 0].SquareSide);
-  //LComparison.Show;
-  //
-  //LComparison1 := TDragDropableItem.Create(Self);
-  //LComparison1.Caption := 'B';
-  //LComparison1.Parent := Self;
-  //LComparison1.SetOriginalBounds(
-  //  Grid[0, 1].Left, Grid[0, 1].Top, Grid[0, 1].SquareSide, Grid[0, 1].SquareSide);
-  //LComparison1.Show;
-  //
-  //LComparison2 := TDragDropableItem.Create(Self);
-  //LComparison2.Caption := 'B';
-  //LComparison2.Parent := Self;
-  //LComparison2.SetOriginalBounds(
-  //  Grid[0, 2].Left, Grid[0, 2].Top, Grid[0, 2].SquareSide, Grid[0, 2].SquareSide);
-  //LComparison2.Show;
-  //
-  //
-  //LComparison3 := TDragDropableItem.Create(Self);
-  //LComparison3.Caption := 'B';
-  //LComparison3.Parent := Self;
-  //LComparison3.SetOriginalBounds(
-  //  Grid[0, 3].Left, Grid[0, 3].Top, Grid[0, 3].SquareSide, Grid[0, 3].SquareSide);
-  //LComparison3.Show;
-  //
-  //  LComparison4 := TDragDropableItem.Create(Self);
-  //LComparison4.Caption := 'B';
-  //LComparison4.Parent := Self;
-  //LComparison4.SetOriginalBounds(
-  //  Grid[0, 4].Left, Grid[0, 4].Top, Grid[0, 4].SquareSide, Grid[0, 4].SquareSide);
-  //LComparison4.Show;
-  //
-  //
-  //  LComparison5 := TDragDropableItem.Create(Self);
-  //LComparison5.Caption := 'B';
-  //LComparison5.Parent := Self;
-  //LComparison5.SetOriginalBounds(
-  //  Grid[0, 5].Left, Grid[0, 5].Top, Grid[0, 5].SquareSide, Grid[0, 5].SquareSide);
-  //LComparison5.Show;
-  //
-  //  LComparison6 := TDragDropableItem.Create(Self);
-  //LComparison6.Caption := 'B';
-  //LComparison6.Parent := Self;
-  //LComparison6.SetOriginalBounds(
-  //  Grid[0, 6].Left, Grid[0, 6].Top, Grid[0, 6].SquareSide, Grid[0, 6].SquareSide);
-  //LComparison6.Show;
-  //
-  //
-  //  LComparison7 := TDragDropableItem.Create(Self);
-  //LComparison7.Caption := 'B';
-  //LComparison7.Parent := Self;
-  //LComparison7.SetOriginalBounds(
-  //  Grid[0, 7].Left, Grid[0, 7].Top, Grid[0, 7].SquareSide, Grid[0, 7].SquareSide);
-  //LComparison7.Show;
-  //
-  //  LComparison8 := TDragDropableItem.Create(Self);
-  //LComparison8.Caption := 'B';
-  //LComparison8.Parent := Self;
-  //LComparison8.SetOriginalBounds(
-  //  Grid[0, 8].Left, Grid[0, 8].Top, Grid[0, 8].SquareSide, Grid[0, 8].SquareSide);
-  //LComparison8.Show;
-  //
-  //
-  //LSample := TDragDropableItem.Create(Self);
-  //LSample.Caption := 'A';
-  //LSample.Parent := Self;
-  //LSample.SetOriginalBounds(
-  //  Grid[1, 0].Left, Grid[1, 0].Top, Grid[1, 0].SquareSide, Grid[1, 0].SquareSide);
-  //LSample.Target := LComparison;
-  //LSample.Show;
-
-  //for j := Low(Grid) to High(Grid) do
-  //    for i := Low(Grid[j]) to High(Grid[j]) do
-  //        begin
-  //          Item := TDragDropableItem.Create(Self);
-  //          Item.Caption := 'B';
-  //          Item.Parent := Self;
-  //          Item.SetOriginalBounds(
-  //            Grid[j, i].Left, Grid[j, i].Top, Grid[j, i].SquareSide, Grid[j, i].SquareSide);
-  //          Item.Show;
-  //
-  //          if (i = 0) and (j = 0) then
-  //          begin
-  //            Item.Caption := 'A';
-  //            Comparacao := Item;
-  //
-  //          end;
-  //
-  //          if (i = 0) and (j = 1) then
-  //          begin
-  //            Item.Caption := 'A';
-  //            Item.Target := Comparacao;
-  //            Modelo := Item;
-  //          end;
-  //
-  //        end;
-
   //ShowMessage(Sender.ClassName);
   if Sender is TButton then
   begin
     LAnimation := TAnimation.Create(Self);
     LAnimation.Parent := Self;
     with Grid.RandomPositions do begin
-      for i := Low(Comparisons) to High(Comparisons) do
-      begin
-        Item := TDragDropableItem.Create(Self);
-        Comparisons[i].Item := Item as TObject;
-        Item.Caption := 'B';
-        Item.Parent := Self;
-        Item.SetOriginalBounds(
-          Comparisons[i].Left,
-          Comparisons[i].Top,
-          Comparisons[i].SquareSide,
-          Comparisons[i].SquareSide);
-        Item.Show;
-
-        if i = 0 then
-        begin
-          Item.Caption := 'A';
-          Comparacao := Item;
-        end;
-      end;
-
       for i := Low(Samples) to High(Samples) do
       begin
         Item := TDragDropableItem.Create(Self);
@@ -280,19 +150,40 @@ begin
           Samples[i].SquareSide,
           Samples[i].SquareSide);
         Item.Show;
-
         if i = 0 then
         begin
-          Item.Caption := 'A';
+          Item.Caption := 'A'+(i+1).ToString;
           LSample := Item;
-          LSample.Target := Comparacao;
-          LSample.OnDragDrop := @JoinAnimation;
+          LSample.OnRightDragDrop := @JoinAnimation;
+          LSample.OnWrongDragDrop := @Wrong;
+          LSample.OnOtherDragDrop := @Other;
           //LSample.Animate;
           LAnimation.Animate(LSample);
           LAnimation.Show;
         end;
       end;
 
+      for i := Low(Comparisons) to High(Comparisons) do
+        begin
+          Item := TDragDropableItem.Create(Self);
+          Comparisons[i].Item := Item as TObject;
+          LSample.AddTarget(Comparisons[i].Item);
+          Item.Caption := 'B'+(i+1).ToString;
+          Item.Parent := Self;
+          Item.SetOriginalBounds(
+            Comparisons[i].Left,
+            Comparisons[i].Top,
+            Comparisons[i].SquareSide,
+            Comparisons[i].SquareSide);
+          Item.Show;
+
+
+          if i = 0 then
+          begin
+            Item.Caption := 'B'+(i+1).ToString;
+          end;
+        end;
+      LSample.BringToFront;
       PanelConfigurations.Hide;
     end;
   end;
@@ -365,8 +256,35 @@ begin
 end;
 
 procedure TBackground.JoinAnimation(Sender, Source: TObject; X,Y: Integer);
+var
+  Sample : TDragDropableItem;
+  Comparison : TDragDropableItem;
 begin
-  LAnimation.Join(Sender as TDragDropableItem);
+  Sample := Source as TDragDropableItem;
+  Comparison := Sender as TDragDropableItem;
+
+  Sample.Color := clGreen;
+  Sample.Left := Comparison.Left;
+  Sample.Top := Comparison.Top - Sample.Height - 10;
+  LAnimation.Join(Comparison);
+end;
+
+procedure TBackground.Wrong(Sender, Source: TObject; X, Y: Integer);
+var
+  Sample : TDragDropableItem;
+begin
+  Sample := Source as TDragDropableItem;
+  Sample.Color := clRed;
+  LAnimation.Animate(Sample);
+end;
+
+procedure TBackground.Other(Sender, Source: TObject; X, Y: Integer);
+var
+  Item : TDragDropableItem;
+begin
+  Item := Source as TDragDropableItem;
+  Item.OriginalBounds;
+  Item.Color := clWhite;
 end;
 
 
