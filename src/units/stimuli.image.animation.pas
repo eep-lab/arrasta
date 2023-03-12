@@ -42,8 +42,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Animate(ASibling : TLightImage);
-    procedure Join(ALightImage : TLightImage);
+    procedure Join(ATopItem, ABottomItem : TLightImage);
     procedure Stop;
+    property Sibling : TLightImage read FSibling;
   end;
 
 implementation
@@ -175,15 +176,14 @@ begin
   Constraints.MinWidth := R.Width;
 end;
 
-procedure TAnimation.Join(ALightImage: TLightImage);
+procedure TAnimation.Join(ATopItem, ABottomItem: TLightImage);
 begin
   Stop;
   AnchorSideTop.Control := nil;
-  Top := FSibling.Top -10;
-  Left := FSibling.Left -10;
-  Height := FSibling.Height + ALightImage.Height + 30;
-  Width := FSibling.Width + 30;
-
+  Top := ATopItem.Top -10;
+  Left := ATopItem.Left -15;
+  Height := ATopItem.Height + ABottomItem.Height + 30;
+  Width := ATopItem.Width + 30;
 end;
 
 procedure TAnimation.Stop;
