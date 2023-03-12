@@ -39,9 +39,6 @@ type
     procedure EndSession(Sender: TObject);
     procedure BeforeStartSession(Sender: TObject);
     procedure FormPaint(Sender: TObject);
-    procedure JoinAnimation(Sender, Source: TObject; X,Y: Integer);
-    procedure Wrong(Sender, Source: TObject; X,Y: Integer);
-    procedure Other(Sender, Source: TObject; X,Y: Integer);
   private
 
   public
@@ -63,8 +60,6 @@ uses
    , SessionSimple
    , Experiments.Grids
    , Experiments.Arrasta
-   , Stimuli.Image.DragDropable
-   , Stimuli.Image.Animation
    , Stimuli.Sequence.DragDrop
    , Cheats
    ;
@@ -105,8 +100,6 @@ begin
 end;
 
 var
-  //LSample : TDragDropableItem;
-  //LAnimation: TAnimation;
   LStimuli: TDragDropStimuli;
 
 procedure TBackground.SampleDblClick(Sender: TObject);
@@ -115,110 +108,16 @@ begin
 end;
 
 procedure TBackground.FormClick(Sender: TObject);
-//var
-  //Item: TDragDropableItem;
 begin
-  //LSample.OriginalBounds;
-  //LSample.Color := clWhite;
-  //Grid.RandomizePositions;
-  //Grid.RandomizeOrientations;
-  //Button1Click(Self);
-  //Item := TDragDropableItem(Components[i]);
   LStimuli.ResetGrid;
 end;
 
 procedure TBackground.Button1Click(Sender: TObject);
-//var
-//  Item : TDragDropableItem;
-//  i: Integer;
 begin
   LStimuli := TDragDropStimuli.Create(self);
+  LStimuli.Parent := Background;
   LStimuli.Start;
   PanelConfigurations.Hide;
-
-  //ShowMessage(Sender.ClassName);
-  //if Sender is TButton then
-  //begin
-  //  LAnimation := TAnimation.Create(Self);
-  //  LAnimation.Parent := Self;
-  //  with Grid.RandomPositions do begin
-  //    for i := Low(Samples) to High(Samples) do
-  //    begin
-  //      Item := TDragDropableItem.Create(Self);
-  //      Samples[i].Item := Item as TObject;
-  //      Item.Parent := Self;
-  //      //Item.EdgeColor := clBlue;
-  //      Item.SetOriginalBounds(
-  //        Samples[i].Left,
-  //        Samples[i].Top,
-  //        Samples[i].SquareSide,
-  //        Samples[i].SquareSide);
-  //      Item.Show;
-  //      if i = 0 then
-  //      begin
-  //        Item.Caption := 'A'+(i+1).ToString;
-  //        LSample := Item;
-  //        LSample.OnRightDragDrop := @JoinAnimation;
-  //        LSample.OnWrongDragDrop := @Wrong;
-  //        LSample.OnOtherDragDrop := @Other;
-  //        //LSample.Animate;
-  //        LAnimation.Animate(LSample);
-  //        LAnimation.Show;
-  //      end;
-  //    end;
-  //
-  //    for i := Low(Comparisons) to High(Comparisons) do
-  //      begin
-  //        Item := TDragDropableItem.Create(Self);
-  //        Comparisons[i].Item := Item as TObject;
-  //        LSample.AddTarget(Comparisons[i].Item);
-  //        Item.Caption := 'B'+(i+1).ToString;
-  //        Item.Parent := Self;
-  //        Item.SetOriginalBounds(
-  //          Comparisons[i].Left,
-  //          Comparisons[i].Top,
-  //          Comparisons[i].SquareSide,
-  //          Comparisons[i].SquareSide);
-  //        Item.Show;
-  //
-  //
-  //        if i = 0 then
-  //        begin
-  //          Item.Caption := 'B'+(i+1).ToString;
-  //        end;
-  //      end;
-  //    LSample.BringToFront;
-  //    PanelConfigurations.Hide;
-  //  end;
-  //end;
-  //
-  //if Sender is TBackground then
-  //begin
-  //  with Grid.RandomPositions do begin
-  //    for i := Low(Comparisons) to High(Comparisons) do
-  //    begin
-  //      Item := Comparisons[i].Item as TDragDropableItem;
-  //      Item.SetOriginalBounds(
-  //        Comparisons[i].Left,
-  //        Comparisons[i].Top,
-  //        Comparisons[i].SquareSide,
-  //        Comparisons[i].SquareSide);
-  //    end;
-  //
-  //    for i := Low(Samples) to High(Samples) do
-  //    begin
-  //      Item := Samples[i].Item as TDragDropableItem;
-  //      Item.Invalidate;
-  //      Item.SetOriginalBounds(
-  //        Samples[i].Left,
-  //        Samples[i].Top,
-  //        Samples[i].SquareSide,
-  //        Samples[i].SquareSide);
-  //      LAnimation.Animate(Item);
-  //      LAnimation.Show;
-  //    end;
-  //  end;
-  //end;
 end;
 
 procedure TBackground.FormCreate(Sender: TObject);
@@ -257,38 +156,6 @@ begin
   //    Canvas.TextOut(R.Left, R.Top, Grid[j][i].Index.ToString);
   //  end;
   //end;
-end;
-
-procedure TBackground.JoinAnimation(Sender, Source: TObject; X,Y: Integer);
-//var
-//  Sample : TDragDropableItem;
-//  Comparison : TDragDropableItem;
-begin
-  //Sample := Source as TDragDropableItem;
-  //Comparison := Sender as TDragDropableItem;
-  //
-  //Sample.Color := clGreen;
-  //Sample.Left := Comparison.Left;
-  //Sample.Top := Comparison.Top - Sample.Height - 10;
-  //LAnimation.Join(Comparison);
-end;
-
-procedure TBackground.Wrong(Sender, Source: TObject; X, Y: Integer);
-//var
-//  Sample : TDragDropableItem;
-begin
-  //Sample := Source as TDragDropableItem;
-  //Sample.Color := clRed;
-  //LAnimation.Animate(Sample);
-end;
-
-procedure TBackground.Other(Sender, Source: TObject; X, Y: Integer);
-//var
-//  Item : TDragDropableItem;
-begin
-  //Item := Source as TDragDropableItem;
-  //Item.OriginalBounds;
-  //Item.Color := clWhite;
 end;
 
 

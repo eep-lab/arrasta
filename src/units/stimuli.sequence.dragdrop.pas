@@ -12,37 +12,49 @@ unit Stimuli.Sequence.DragDrop;
 interface
 
 uses
-  Classes, SysUtils, Controls, ExtCtrls, Schedules, Graphics
+  Classes, SysUtils, Controls, ExtCtrls, fgl, Schedules, Graphics
   , Stimuli
   , Stimuli.Abstract
   , Stimuli.Image.DragDropable
   , Stimuli.Image.Animation
   , Stimuli.Image.Base
-  , Experiments.Grids
-  , Forms.Main
   ;
 
 type
+
+  TDragDropableItems = specialize TFPGList<TDragDropableItem>;
 
   { TDragDropStimuli }
 
   TDragDropStimuli = class(TStimulus, IStimuli)
   private
-    LComparison : TDragDropableItem;
-    LItem : TDragDropableItem;
-    FSample : TDragDropableItem;
+    FParent: TWinControl;
+    FComparisons : TDragDropableItems;
+    FSamples : TDragDropableItems;
     FAnimation : TAnimation;
+    procedure OtherDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure RightDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure SetParent(AValue: TWinControl);
+    function GetRandomSample : TDragDropableItem;
+    procedure WrongDragDrop(Sender, Source: TObject; X, Y: Integer);
   public
     constructor Create(AOwner : TComponent); override;
+    destructor Destroy; override;
     procedure ResetGrid;
     function AsInterface : IStimuli;
     procedure DoExpectedResponse;
     procedure LoadFromParameters(AParameters : TStringList);
     procedure Start;
     procedure Stop;
+    property Parent : TWinControl read FParent write SetParent;
   end;
 
 implementation
+
+uses
+  Math
+  , Experiments.Grids
+  ;
 
 { TDragDropStimuli }
 
@@ -63,94 +75,24 @@ end;
 
 procedure TDragDropStimuli.Start;
 var
-  i : integer;
+  LItem : TDragDropableItem;
 begin
-  FAnimation := TAnimation.Create(self);
-  FAnimation.Parent := Background;
-
-  with Grid.RandomPositions do
+  for LItem in FComparisons do
+    LItem.Show;
+  for LItem in FSamples do
   begin
-    for i := low(Samples) to high(Samples) do
-    begin
-      LItem := TDragDropableItem.Create(Self);
-      Samples[i].Item := LItem as TObject;
-      LItem.Parent := Background;
-      LItem.SetOriginalBounds(
-        Samples[i].Left,
-        Samples[i].Top,
-        Samples[i].SquareSide,
-        Samples[i].SquareSide);
-      LItem.Show;
-
-      if i = 0 then
-      begin
-        LItem.Caption := 'A'+(i+1).ToString;
-        FSample := LItem;
-        //FSample.AddTarget(LComparison);
-        //FSample.OnRightDragDrop := @JoinAnimation;
-        //FSample.OnRightDragDrop := @Wrong;
-        //FSample.OnRightDragDrop := @Other;
-        FAnimation.Animate(FSample);
-        FAnimation.Show;
-      end;
-    end;
-
-    for i := low(Comparisons) to high(Comparisons) do
-    begin
-      LItem := TDragDropableItem.Create(self);
-      Comparisons[i].Item := LItem as TObject;
-      FSample.AddTarget(Comparisons[i].Item);
-      LItem.Caption := 'B'+(i+1).ToString;
-      LItem.Parent := Background;
-      LItem.SetOriginalBounds(
-        Comparisons[i].Left,
-        Comparisons[i].Top,
-        Comparisons[i].SquareSide,
-        Comparisons[i].SquareSide);
-      LItem.Show;
-
-      if i = 0 then
-      begin
-        LItem.Caption := 'B'+(i+1).ToString;
-        //LComparison := LItem;
-      end;
-    end;
-    FSample.BringToFront;
+    LItem.Show;
+    LItem.BringToFront;
   end;
-
-  //with Grid.RandomPositions do
-  //begin
-  //  for i := low(Comparisons) to high(Comparisons) do
-  //  begin
-  //    LItem := Comparisons[i].Item as TDragDropableItem;
-  //    LItem.SetOriginalBounds(
-  //      Comparisons[i].Left,
-  //      Comparisons[i].Top,
-  //      Comparisons[i].SquareSide,
-  //      Comparisons[i].SquareSide);
-  //  end;
-  //
-  //  for i := low(Samples) to high(Samples) do
-  //  begin
-  //    LItem := Samples[i].Item as TDragDropableItem;
-  //    LItem.Invalidate;
-  //    LItem.SetOriginalBounds(
-  //      Samples[i].Left,
-  //      Samples[i].Top,
-  //      Samples[i].SquareSide,
-  //      Samples[i].SquareSide);
-  //    FAnimation.Animate(LItem);
-  //    FAnimation.Show;
-  //  end;
-  //end;
+  FAnimation.Animate(GetRandomSample);
+  FAnimation.Show;
 end;
 
 procedure TDragDropStimuli.ResetGrid;
 var
   i : integer;
+  LItem : TDragDropableItem;
 begin
-  FSample.OriginalBounds;
-  FSample.Color := clWhite;
   Grid.RandomizePositions;
   Grid.RandomizeOrientations;
 
@@ -168,41 +110,158 @@ begin
     for i := low(Samples) to high(Samples) do
     begin
       LItem := Samples[i].Item as TDragDropableItem;
+      LItem.OriginalBounds;
+      LItem.Color := clWhite;
       LItem.Invalidate;
       LItem.SetOriginalBounds(
         Samples[i].Left,
         Samples[i].Top,
         Samples[i].SquareSide,
         Samples[i].SquareSide);
-      FAnimation.Animate(LItem);
-      FAnimation.Show;
+
     end;
+    FAnimation.Animate(LItem);
+    FAnimation.Show;
   end;
 end;
 
 procedure TDragDropStimuli.Stop;
 var
+  LItem : TDragDropableItem;
+begin
+  for LItem in FComparisons do
+    LItem.Hide;
+  for LItem in FSamples do
+    LItem.Hide;
+
+  FAnimation.Stop;
+  FAnimation.Hide;
+end;
+
+procedure TDragDropStimuli.SetParent(AValue: TWinControl);
+var
+  LItem : TDragDropableItem;
+begin
+  if FParent=AValue then Exit;
+  FParent:=AValue;
+  FAnimation.Parent := AValue;
+  for LItem in FSamples do
+    LItem.Parent := AValue;
+
+  for LItem in FComparisons do
+    LItem.Parent := AValue;
+end;
+
+procedure TDragDropStimuli.OtherDragDrop(Sender, Source: TObject; X, Y: Integer
+  );
+var
+  LItem : TDragDropableItem;
+begin
+  LItem := Source as TDragDropableItem;
+  LItem.OriginalBounds;
+  LItem.Color := clWhite;
+end;
+
+procedure TDragDropStimuli.RightDragDrop(Sender, Source: TObject; X, Y: Integer
+  );
+var
+  Sample : TDragDropableItem;
+  Comparison : TDragDropableItem;
+begin
+  Sample := Source as TDragDropableItem;
+  Comparison := Sender as TDragDropableItem;
+
+  Sample.Color := clGreen;
+  Sample.Left := Comparison.Left;
+  Sample.Top := Comparison.Top - Sample.Height - 10;
+  FAnimation.Join(Comparison);
+end;
+
+function TDragDropStimuli.GetRandomSample: TDragDropableItem;
+begin
+  Result := FSamples[RandomRange(0, FSamples.Count)];
+end;
+
+procedure TDragDropStimuli.WrongDragDrop(Sender, Source: TObject; X, Y: Integer
+  );
+var
+  Sample : TDragDropableItem;
+begin
+  Sample := Source as TDragDropableItem;
+  Sample.Color := clRed;
+  FAnimation.Animate(Sample);
+end;
+
+constructor TDragDropStimuli.Create(AOwner: TComponent);
+var
+  LItem : TDragDropableItem;
+  LComparison : TDragDropableItem;
+  LComparisons : TDragDropableItems;
   i : integer;
 begin
-  with Grid.RandomPositions do begin
+  inherited Create(AOwner);
+  FSamples := TDragDropableItems.Create;
+  FComparisons := TDragDropableItems.Create;
+  FAnimation := TAnimation.Create(Self);
+
+  LComparisons := TDragDropableItems.Create;
+  with Grid.RandomPositions do
+  begin
     for i := low(Comparisons) to high(Comparisons) do
     begin
-      LItem := Comparisons[i].Item as TDragDropableItem;
-      LItem.Destroy;
+      LItem := TDragDropableItem.Create(self);
+      LItem.Caption := 'B'+(i+1).ToString;
+      LItem.SetOriginalBounds(
+        Comparisons[i].Left,
+        Comparisons[i].Top,
+        Comparisons[i].SquareSide,
+        Comparisons[i].SquareSide);
+
+      Comparisons[i].Item := LItem as TObject;
+      FComparisons.Add(LItem);
+      LComparisons.Add(LItem);
+      if i = 0 then
+        LItem.Caption := 'B'+(i+1).ToString;
+
     end;
 
     for i := low(Samples) to high(Samples) do
     begin
-      LItem := Samples[i].Item as TDragDropableItem;
-      LItem.Destroy;
-      FAnimation.Destroy;
+      LItem := TDragDropableItem.Create(Self);
+      LItem.OnRightDragDrop:=@RightDragDrop;
+      LItem.OnWrongDragDrop:=@WrongDragDrop;
+      LItem.OnOtherDragDrop:=@OtherDragDrop;
+      LItem.SetOriginalBounds(
+        Samples[i].Left,
+        Samples[i].Top,
+        Samples[i].SquareSide,
+        Samples[i].SquareSide);
+      LItem.Caption := 'A'+(i+1).ToString;
+      case i of
+        0 : // do nothing;
+
+        else begin
+          // making sure that we have always
+          // the right comparison as the first one
+          // inside the sample targets
+          LComparisons.Exchange(0, i);
+        end;
+      end;
+      for LComparison in LComparisons do
+        LItem.AddTarget(LComparison);
+
+      Samples[i].Item := LItem as TObject;
+      FSamples.Add(LItem);
     end;
   end;
+  LComparisons.Free;
 end;
 
-constructor TDragDropStimuli.Create(AOwner: TComponent);
+destructor TDragDropStimuli.Destroy;
 begin
-  inherited Create(AOwner);
+  FSamples.Free;
+  FComparisons.Free;
+  inherited Destroy;
 end;
 
 end.
