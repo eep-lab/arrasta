@@ -1,5 +1,3 @@
-{todo: Transformar em classe}
-
 unit Experiments.Grids;
 
 {$mode ObjFPC}{$H+}
@@ -490,7 +488,7 @@ begin
   FCellsCount:=ASeed*ASeed;
   FCellsSize := 3.0;
   FGridStyle := gtSquare;
-  FSamplesCount := 2;
+  FSamplesCount := 3;
   FComparisonsCount := 3;
   FGridOrientation:= goTopToBottom;
   FGrid := GetCentralGrid(FSeed, FCellsSize, DispersionStyle);
