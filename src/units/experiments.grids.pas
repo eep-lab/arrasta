@@ -490,7 +490,7 @@ begin
   FCellsCount:=ASeed*ASeed;
   FCellsSize := 3.0;
   FGridStyle := gtSquare;
-  FSamplesCount := 1;
+  FSamplesCount := 2;
   FComparisonsCount := 3;
   FGridOrientation:= goTopToBottom;
   FGrid := GetCentralGrid(FSeed, FCellsSize, DispersionStyle);
