@@ -135,6 +135,7 @@ begin
       end;
     end;
   end;
+  if Assigned(OnMouseDown) then OnMouseDown(Self, Button, Shift, X, Y);
 end;
 
 procedure TDragDropableItem.MouseMove(Shift: TShiftState; X, Y: Integer);
