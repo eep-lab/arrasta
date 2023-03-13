@@ -85,13 +85,16 @@ var
 begin
   for LItem in FComparisons do
     LItem.Show;
+
+  FAnimation.Animate(GetRandomSample);
+  FAnimation.Show;
+  FAnimation.BringToFront;
+
   for LItem in FSamples do
   begin
     LItem.Show;
     LItem.BringToFront;
   end;
-  FAnimation.Animate(GetRandomSample);
-  FAnimation.Show;
 end;
 
 procedure TDragDropStimuli.ResetGrid;
