@@ -88,6 +88,10 @@ type
 var
   ScreenInCentimeters : real = 39.624;
   Grid : TGrid;
+  BorderTop    : TRect;
+  BorderBottom : TRect;
+  BorderLeft   : TRect;
+  BorderRight  : TRect;
 
 implementation
 
@@ -115,6 +119,30 @@ begin
   Result := Round(AMeasure*(Screen.Width/ScreenInCentimeters));
 end;
 
+procedure SetBorders(ASize: integer);
+begin
+  BorderTop := Rect(
+    0,
+    0,
+    Screen.Width,
+    ASize);
+  BorderBottom := Rect(
+    0,
+    BorderTop.Height + Screen.Height-(ASize*2),
+    Screen.Width,
+    Screen.Height);
+  BorderLeft := Rect(
+    0,
+    0,
+    ASize,
+    Screen.Height);
+  BorderRight := Rect(
+    BorderLeft.Width + Screen.Width-(ASize*2),
+    0,
+    Screen.Width,
+    Screen.Height);
+end;
+
 {Cria grade quadrada como uma matriz AN x AN. Quando ADistribute = true, a
 distância horizontal e vertical entre os estímulos é diferente, e quando false
 é igual}
@@ -134,6 +162,7 @@ begin
   Result := Default(TMatrix);
   SetLength(Result, AN, AN);
   LSquareSide := CmToScreenPixels(ASquareSide);
+  SetBorders(LSquareSide div 2);
   if ADistribute then begin
     LInterSpaceW := (Screen.Width -  (LSquareSide * AN)) div AN;
     LInterSpaceH := (Screen.Height - (LSquareSide * AN)) div AN;
@@ -185,6 +214,7 @@ begin
   SetLength(Result[0], AN);
   SetLength(Result[1], 1);
   LSquareSide := CmToScreenPixels(ASquareSide);
+  SetBorders(LSquareSide div 2);
   LDegree := BaseDegree;
   LDegreeI := BaseDegree div AN;
   LRect := GetCentralRect(Screen.Width, Screen.Height, LSquareSide div 2);
