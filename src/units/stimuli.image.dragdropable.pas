@@ -39,7 +39,7 @@ type
     procedure SetOnRightDragDrop(AValue: TDragDropEvent);
     function IntersectsWith(Sender : TDragDropableItem) : Boolean;
     procedure SetOnWrongDragDrop(AValue: TDragDropEvent);
-    function NoColision : Boolean;
+    procedure BorderColision;
   protected
     procedure DragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure MouseDown(Button: TMouseButton;
@@ -125,12 +125,23 @@ begin
   FOnWrongDragDrop:=AValue;
 end;
 
-function TDragDropableItem.NoColision: Boolean;
+procedure TDragDropableItem.BorderColision;
 begin
-  Result := not BoundsRect.IntersectsWith(BorderTop);
-  Result := Result and (not BoundsRect.IntersectsWith(BorderBottom));
-  Result := Result and (not BoundsRect.IntersectsWith(BorderLeft));
-  Result := Result and (not BoundsRect.IntersectsWith(BorderRight));
+  if BoundsRect.IntersectsWith(BorderTop) then begin
+    Top := BorderTop.Bottom + 1;
+  end;
+
+  if BoundsRect.IntersectsWith(BorderBottom) then begin
+    Top := BorderBottom.Top - Height - 1;
+  end;
+
+  if BoundsRect.IntersectsWith(BorderLeft) then begin
+    Left := BorderLeft.Right + 1;
+  end;
+
+  if BoundsRect.IntersectsWith(BorderRight) then begin
+    Left := BorderRight.Left - Width - 1;
+  end;
 end;
 
 procedure TDragDropableItem.DragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -157,9 +168,10 @@ end;
 
 procedure TDragDropableItem.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  if FIsDragging and NoColision then begin
+  if FIsDragging then begin
     Left := Left - (FStartMouseDown.X -X);
     Top := Top - (FStartMouseDown.Y -Y);
+    BorderColision;
   end;
 end;
 

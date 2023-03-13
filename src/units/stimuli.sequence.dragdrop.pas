@@ -170,7 +170,7 @@ var
   LItem : TDragDropableItem;
 begin
   LItem := Source as TDragDropableItem;
-  LItem.OriginalBounds;
+  //LItem.OriginalBounds;
   LItem.Color := clWhite;
 end;
 
