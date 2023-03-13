@@ -20,20 +20,24 @@ type
   { TBackground }
 
   TBackground = class(TForm)
-    Button1: TButton;
+    ButtonStart: TButton;
     ButtonStartAll: TButton;
     CheckBoxCheatsMode : TCheckBox;
     EditParticipant: TEdit;
     FloatSpinEditScreenWidth: TFloatSpinEdit;
     IniPropStorage: TIniPropStorage;
+    LabelSamples: TLabel;
+    LabelComparisons: TLabel;
     LabelScreenWidth: TLabel;
     PageControl1: TPageControl;
     PanelConfigurations: TPanel;
     RadioGroupDesign1: TRadioGroup;
+    SpinEditSamples: TSpinEdit;
+    SpinEditComparisons: TSpinEdit;
     TabSheet1: TTabSheet;
     procedure FormClick(Sender: TObject);
     procedure SampleDblClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure ButtonStartClick(Sender: TObject);
     procedure ButtonStartAllClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure EndSession(Sender: TObject);
@@ -112,9 +116,10 @@ begin
   LStimuli.ResetGrid;
 end;
 
-procedure TBackground.Button1Click(Sender: TObject);
+procedure TBackground.ButtonStartClick(Sender: TObject);
 begin
-  LStimuli := TDragDropStimuli.Create(self);
+  LStimuli := TDragDropStimuli.Create(
+    Self, SpinEditSamples.Value, SpinEditComparisons.Value);
   LStimuli.Parent := Background;
   LStimuli.Start;
   PanelConfigurations.Hide;

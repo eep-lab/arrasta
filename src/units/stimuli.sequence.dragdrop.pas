@@ -42,7 +42,9 @@ type
     function GetRandomSample : TDragDropableItem;
     procedure WrongDragDrop(Sender, Source: TObject; X, Y: Integer);
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(AOwner : TComponent);
+    constructor Create(AOwner : TComponent; ASamples: integer;
+      AComparisons: integer); overload;
     destructor Destroy; override;
     procedure ResetGrid;
     function AsInterface : IStimuli;
@@ -237,6 +239,12 @@ begin
 end;
 
 constructor TDragDropStimuli.Create(AOwner: TComponent);
+begin
+  Create(AOwner, 3, 3);
+end;
+
+constructor TDragDropStimuli.Create(AOwner: TComponent; ASamples: integer;
+  AComparisons: integer);
 var
   LItem : TDragDropableItem;
   LComparison : TDragDropableItem;
@@ -244,6 +252,8 @@ var
   i : integer;
 begin
   inherited Create(AOwner);
+  Grid := TGrid.Create(3, ASamples, AComparisons);
+
   FSamples := TDragDropableItems.Create;
   FComparisons := TDragDropableItems.Create;
   LComparisons := TDragDropableItems.Create;
@@ -309,6 +319,7 @@ begin
   FDoneAnimations.Free;
   FSamples.Free;
   FComparisons.Free;
+  Grid.Free;
   inherited Destroy;
 end;
 
