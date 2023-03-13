@@ -42,7 +42,7 @@ type
     function GetRandomSample : TDragDropableItem;
     procedure WrongDragDrop(Sender, Source: TObject; X, Y: Integer);
   public
-    constructor Create(AOwner : TComponent);
+    constructor Create(AOwner : TComponent); override; overload;
     constructor Create(AOwner : TComponent; ASamples: integer;
       AComparisons: integer); overload;
     destructor Destroy; override;
