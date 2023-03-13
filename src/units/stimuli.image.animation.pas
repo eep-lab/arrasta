@@ -160,6 +160,7 @@ procedure TAnimation.Animate(ASibling : TLightImage);
 var
   R: TRect;
 begin
+  ASibling.EdgeColor := clNone;
   FSibling := ASibling;
   Kind := ikAnimate;
   R := ASibling.ClientRect;
@@ -179,6 +180,7 @@ procedure TAnimation.Join(ATopItem, ABottomItem: TLightImage);
 begin
   Stop;
   AnchorSideTop.Control := nil;
+  ATopItem.EdgeColor:=clInactiveCaption;
   Top := ATopItem.Top -10;
   Left := ATopItem.Left -15;
   Height := ATopItem.Height + ABottomItem.Height + 30;
