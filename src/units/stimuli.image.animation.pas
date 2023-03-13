@@ -65,7 +65,7 @@ var
       begin
         Pen.Width := FPenWidth;
         Pen.Color := Color;
-        //Brush.Color:= clRed;
+        Brush.Style:= bsClear;
         Rectangle(ClientRect);
         TextRect(ClientRect,
           (((ClientRect.Right-ClientRect.Left) div 2) - (TextWidth(Caption)div 2)),
@@ -161,7 +161,6 @@ var
   R: TRect;
 begin
   FSibling := ASibling;
-  Self.SendToBack;
   Kind := ikAnimate;
   R := ASibling.ClientRect;
   InflateRect(R, 10, 10);
