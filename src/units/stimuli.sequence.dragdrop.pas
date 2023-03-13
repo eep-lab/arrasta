@@ -131,6 +131,7 @@ begin
         Samples[i].SquareSide);
 
     end;
+    FAnimation.Sibling.EdgeColor:=clInactiveCaption;
     FAnimation.Animate(GetRandomSample);
     FAnimation.Show;
   end;
@@ -207,6 +208,7 @@ begin
       FAnimation.Animate(Sample);
       Break;
     end else begin
+      Sample.EdgeColor:=clInactiveCaption;
       FDragDropDone := True;
     end;
   if FDragDropDone then begin
@@ -221,9 +223,14 @@ var
   LSample : TDragDropableItem;
 begin
   LSample := Sender as TDragDropableItem;
-  if LSample.Draggable then
+  if LSample.Draggable then begin
     if FAnimation.Sibling <> (LSample as TLightImage) then
+    begin
+      if Assigned(FAnimation.Sibling) then
+        FAnimation.Sibling.EdgeColor:=clInactiveCaption;
       FAnimation.Animate(LSample);
+    end;
+  end;
 end;
 
 function TDragDropStimuli.GetRandomSample: TDragDropableItem;
