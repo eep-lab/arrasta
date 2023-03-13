@@ -68,7 +68,8 @@ type
       procedure SetSamplesCount(AValue: integer);
       procedure CreatePositions;
     public
-      constructor Create(ASeed : integer);
+      constructor Create(ASeed : integer;
+        ASamples : integer = 3; AComparisons : integer = 3);
       destructor Destroy; override;
       property GridStyle : TGridStyle read FGridStyle write SetGridStyle;
       property CellsCount : integer read FCellsCount write SetCellsCount;
@@ -412,14 +413,14 @@ begin
         LGridList.Free;
       end;
       else begin
-        WriteLn(SamplesRows.AsString);
+        //WriteLn(SamplesRows.AsString);
         LLatinRow := SamplesRows.NextRow;
         LGridList := TGridList.Create;
         for i in LLatinRow do LGridList.Add(i);
         //RandomizeGridList(LGridList);
         for i := low(Samples) to high(Samples) do
         begin
-          writeln('S: ', LGridList.First);
+          //writeln('S: ', LGridList.First);
           Cell := IntToCell(LGridList.First);
           SecureCopy(Samples[i], FGrid[Cell[0], Cell[1]]);
           LGridList.Delete(0);
@@ -489,14 +490,15 @@ begin
   SetGridOrientation(TGridOrientation(i));
 end;
 
-constructor TGrid.Create(ASeed: integer);
+constructor TGrid.Create(ASeed: integer; ASamples: integer;
+  AComparisons: integer);
 begin
   FSeed := ASeed;
   FCellsCount:=ASeed*ASeed;
   FCellsSize := 3.0;
   FGridStyle := gtSquare;
-  FSamplesCount := 3;
-  FComparisonsCount := 3;
+  FSamplesCount := ASamples;
+  FComparisonsCount := AComparisons;
   FGridOrientation:= goTopToBottom;
   FGrid := GetCentralGrid(FSeed, FCellsSize, DispersionStyle);
 
@@ -512,13 +514,6 @@ begin
     ComparisonsRows.Free;
   end;
 end;
-
-initialization
-  Grid := TGrid.Create(3);
-
-finalization
-  Grid.Free;
-
 
 end.
 
