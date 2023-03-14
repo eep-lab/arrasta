@@ -41,6 +41,7 @@ type
     procedure SetParent(AValue: TWinControl);
     function GetRandomSample : TDragDropableItem;
     procedure WrongDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure Animate(ASample : TDragDropableItem);
   public
     constructor Create(AOwner : TComponent); override; overload;
     constructor Create(AOwner : TComponent; ASamples: integer;
@@ -60,6 +61,7 @@ implementation
 uses
   Math
   , Experiments.Grids
+  , Stimuli.Helpers.DragDropChannel
   ;
 
 { TDragDropStimuli }
@@ -86,8 +88,7 @@ begin
   for LItem in FComparisons do
     LItem.Show;
 
-  FAnimation.Animate(GetRandomSample);
-  FAnimation.Show;
+  Animate(GetRandomSample);
   FAnimation.BringToFront;
 
   for LItem in FSamples do
@@ -132,8 +133,7 @@ begin
 
     end;
     FAnimation.Sibling.EdgeColor:=clInactiveCaption;
-    FAnimation.Animate(GetRandomSample);
-    FAnimation.Show;
+    Animate(GetRandomSample);
   end;
 
   for LAnimation in FDoneAnimations do
@@ -205,7 +205,7 @@ begin
   for Sample in FSamples do
     if Sample.Draggable then begin
       FDragDropDone := False;
-      FAnimation.Animate(Sample);
+      Animate(Sample);
       Break;
     end else begin
       Sample.EdgeColor:=clInactiveCaption;
@@ -228,7 +228,7 @@ begin
     begin
       if Assigned(FAnimation.Sibling) then
         FAnimation.Sibling.EdgeColor:=clInactiveCaption;
-      FAnimation.Animate(LSample);
+      Animate(LSample);
     end;
   end;
 end;
@@ -245,7 +245,15 @@ var
 begin
   Sample := Source as TDragDropableItem;
   Sample.Color := clRed;
-  FAnimation.Animate(Sample);
+  //FAnimation.Animate(Sample);
+end;
+
+procedure TDragDropStimuli.Animate(ASample: TDragDropableItem);
+begin
+  FAnimation.Animate(ASample);
+  FAnimation.Show;
+  DragDropChannel.Update(ASample.BoundsRect, ASample.Target.BoundsRect);
+  Parent.Invalidate;
 end;
 
 constructor TDragDropStimuli.Create(AOwner: TComponent);
@@ -263,7 +271,7 @@ var
 begin
   inherited Create(AOwner);
   Grid := TGrid.Create(3, ASamples, AComparisons);
-
+  DragDropChannel := TDragDropChannel.Create;
   FSamples := TDragDropableItems.Create;
   FComparisons := TDragDropableItems.Create;
   LComparisons := TDragDropableItems.Create;

@@ -34,6 +34,7 @@ type
     FStartMouseDown : TPoint;
     FTargets: TDragDropTargets;
     function GetDraggable: Boolean;
+    function GetTarget: TDragDropableItem;
     procedure SetDropMode(AValue: TDropMode);
     procedure SetOnOtherDragDrop(AValue: TDragDropEvent);
     procedure SetOnRightDragDrop(AValue: TDragDropEvent);
@@ -52,23 +53,31 @@ type
     destructor Destroy;
     procedure AddTarget(ATarget : TObject);
     property Targets : TDragDropTargets read FTargets;
+    property Target : TDragDropableItem read GetTarget;
     property Draggable : Boolean read GetDraggable write FCanDrag;
     property DropMode : TDropMode read FDropMode write SetDropMode;
     property OnRightDragDrop : TDragDropEvent read FOnRightDragDrop write SetOnRightDragDrop;
     property OnWrongDragDrop : TDragDropEvent read FOnWrongDragDrop write SetOnWrongDragDrop;
     property OnOtherDragDrop : TDragDropEvent read FOnOtherDragDrop write SetOnOtherDragDrop;
-    //procedure Animate;
   end;
 
 implementation
 
-uses Graphics, Experiments.Grids;
+uses Graphics, Experiments.Grids, Stimuli.Helpers.DragDropChannel;
 
 { TDragDropableItem }
 
 function TDragDropableItem.GetDraggable: Boolean;
 begin
   Result := (FTargets.Count > 0) and FCanDrag;
+end;
+
+function TDragDropableItem.GetTarget: TDragDropableItem;
+begin
+  if Targets.Count > 0 then
+    Result := Targets[0] as TDragDropableItem
+  else
+    Result := nil;
 end;
 
 procedure TDragDropableItem.SetDropMode(AValue: TDropMode);
@@ -126,6 +135,8 @@ begin
 end;
 
 procedure TDragDropableItem.BorderColision;
+var
+  Point : TPoint;
 begin
   if BoundsRect.IntersectsWith(BorderTop) then begin
     Top := BorderTop.Bottom + 1;
@@ -167,10 +178,15 @@ begin
 end;
 
 procedure TDragDropableItem.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+  Point : TPoint;
 begin
   if FIsDragging then begin
-    Left := Left - (FStartMouseDown.X -X);
-    Top := Top - (FStartMouseDown.Y -Y);
+    //Left := Left - (FStartMouseDown.X -X);
+    //Top := Top - (FStartMouseDown.Y -Y);
+    Point := DragDropChannel.NextPoint;
+    Top  := Point.Y;
+    Left := Point.X;
     BorderColision;
   end;
 end;
