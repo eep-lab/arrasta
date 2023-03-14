@@ -590,9 +590,9 @@
         <UnitName Value="Windows.Console"/>
       </Unit80>
       <Unit81>
-        <Filename Value="src/units/latinsquares.pas"/>
+        <Filename Value="src/units/stimuli.helpers.dragdropchannel.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="LatinSquares"/>
+        <UnitName Value="Stimuli.Helpers.DragDropChannel"/>
       </Unit81>
     </Units>
   </ProjectOptions>
