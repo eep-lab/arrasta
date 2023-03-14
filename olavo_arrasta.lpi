@@ -181,7 +181,7 @@
         <PackageName Value="LCL"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="81">
+    <Units Count="82">
       <Unit0>
         <Filename Value="olavo_arrasta.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -589,6 +589,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Windows.Console"/>
       </Unit80>
+      <Unit81>
+        <Filename Value="src/units/latinsquares.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="LatinSquares"/>
+      </Unit81>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

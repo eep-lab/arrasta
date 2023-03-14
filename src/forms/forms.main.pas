@@ -65,7 +65,9 @@ uses
    , Experiments.Grids
    , Experiments.Arrasta
    , Stimuli.Sequence.DragDrop
+   , Stimuli.Helpers.DragDropChannel
    , Cheats
+   , FPImage
    ;
 
 { TBackground }
@@ -144,23 +146,21 @@ begin
 end;
 
 procedure TBackground.FormPaint(Sender: TObject);
-//var
-//  j, i: Integer;
-//  R : TRect;
+var
+  Point : TPoint;
+  LColor: TFPColor;
 begin
-  //Canvas.Pen.Color := clBlack;
-  //if DoDraw then
-  //for j := Low(Grid) to High(Grid) do begin
-  //  for i := Low(Grid[j]) to High(Grid[j]) do begin
-  //    R := Rect(
-  //      Grid[j][i].Left,
-  //      Grid[j][i].Top,
-  //      Grid[j][i].Left+Grid[j][i].SquareSide,
-  //      Grid[j][i].Top +Grid[j][i].SquareSide);
-  //    Canvas.Rectangle(R);
-  //    Canvas.TextOut(R.Left, R.Top, Grid[j][i].Index.ToString);
-  //  end;
-  //end;
+  LColor.Blue  := 0;
+  LColor.Green := 0;
+  LColor.Red   := 255;
+  LColor.Alpha := 255;
+  //Canvas.Pen.Color := clRed;
+  //Canvas.Pen.Style := psDash;
+  if Assigned(DragDropChannel) then
+    if Length(DragDropChannel.Line) > 0 then begin
+      for Point in DragDropChannel.Line do
+        Canvas.DrawPixel(Point.X, Point.Y, LColor);
+    end;
 end;
 
 
