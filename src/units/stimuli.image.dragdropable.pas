@@ -1,3 +1,10 @@
+{
+  Stimulus Control
+  Copyright (C) 2014-2023 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
+  The present file is distributed under the terms of the GNU General Public License (GPL v3.0).
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+}
 unit Stimuli.Image.DragDropable;
 
 {$mode ObjFPC}{$H+}
@@ -19,6 +26,7 @@ type
   private
     FDropMode: TDropMode;
     FIsDragging : Boolean;
+    FCanDrag : Boolean;
     FOnOtherDragDrop: TDragDropEvent;
     FOnRightDragDrop: TDragDropEvent;
     FOnWrongDragDrop: TDragDropEvent;
@@ -31,6 +39,7 @@ type
     procedure SetOnRightDragDrop(AValue: TDragDropEvent);
     function IntersectsWith(Sender : TDragDropableItem) : Boolean;
     procedure SetOnWrongDragDrop(AValue: TDragDropEvent);
+    procedure BorderColision;
   protected
     procedure DragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure MouseDown(Button: TMouseButton;
@@ -43,7 +52,7 @@ type
     destructor Destroy;
     procedure AddTarget(ATarget : TObject);
     property Targets : TDragDropTargets read FTargets;
-    property Draggable : Boolean read GetDraggable;
+    property Draggable : Boolean read GetDraggable write FCanDrag;
     property DropMode : TDropMode read FDropMode write SetDropMode;
     property OnRightDragDrop : TDragDropEvent read FOnRightDragDrop write SetOnRightDragDrop;
     property OnWrongDragDrop : TDragDropEvent read FOnWrongDragDrop write SetOnWrongDragDrop;
@@ -53,13 +62,13 @@ type
 
 implementation
 
-uses Graphics;
+uses Graphics, Experiments.Grids;
 
 { TDragDropableItem }
 
 function TDragDropableItem.GetDraggable: Boolean;
 begin
-  Result := FTargets.Count > 0;
+  Result := (FTargets.Count > 0) and FCanDrag;
 end;
 
 procedure TDragDropableItem.SetDropMode(AValue: TDropMode);
@@ -116,6 +125,25 @@ begin
   FOnWrongDragDrop:=AValue;
 end;
 
+procedure TDragDropableItem.BorderColision;
+begin
+  if BoundsRect.IntersectsWith(BorderTop) then begin
+    Top := BorderTop.Bottom + 1;
+  end;
+
+  if BoundsRect.IntersectsWith(BorderBottom) then begin
+    Top := BorderBottom.Top - Height - 1;
+  end;
+
+  if BoundsRect.IntersectsWith(BorderLeft) then begin
+    Left := BorderLeft.Right + 1;
+  end;
+
+  if BoundsRect.IntersectsWith(BorderRight) then begin
+    Left := BorderRight.Left - Width - 1;
+  end;
+end;
+
 procedure TDragDropableItem.DragDrop(Sender, Source: TObject; X, Y: Integer);
 begin
 
@@ -135,6 +163,7 @@ begin
       end;
     end;
   end;
+  if Assigned(OnMouseDown) then OnMouseDown(Self, Button, Shift, X, Y);
 end;
 
 procedure TDragDropableItem.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -142,6 +171,7 @@ begin
   if FIsDragging then begin
     Left := Left - (FStartMouseDown.X -X);
     Top := Top - (FStartMouseDown.Y -Y);
+    BorderColision;
   end;
 end;
 
@@ -185,6 +215,7 @@ constructor TDragDropableItem.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FTargets := TDragDropTargets.Create;
+  FCanDrag := True;
   Kind := ikLetter;
 end;
 

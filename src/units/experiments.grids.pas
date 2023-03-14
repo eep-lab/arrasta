@@ -1,5 +1,10 @@
-{todo: Transformar em classe}
-
+{
+  Stimulus Control
+  Copyright (C) 2014-2023 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
+  The present file is distributed under the terms of the GNU General Public License (GPL v3.0).
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+}
 unit Experiments.Grids;
 
 {$mode ObjFPC}{$H+}
@@ -63,7 +68,8 @@ type
       procedure SetSamplesCount(AValue: integer);
       procedure CreatePositions;
     public
-      constructor Create(ASeed : integer);
+      constructor Create(ASeed : integer;
+        ASamples : integer = 3; AComparisons : integer = 3);
       destructor Destroy; override;
       property GridStyle : TGridStyle read FGridStyle write SetGridStyle;
       property CellsCount : integer read FCellsCount write SetCellsCount;
@@ -82,6 +88,10 @@ type
 var
   ScreenInCentimeters : real = 39.624;
   Grid : TGrid;
+  BorderTop    : TRect;
+  BorderBottom : TRect;
+  BorderLeft   : TRect;
+  BorderRight  : TRect;
 
 implementation
 
@@ -109,6 +119,30 @@ begin
   Result := Round(AMeasure*(Screen.Width/ScreenInCentimeters));
 end;
 
+procedure SetBorders(ASize: integer);
+begin
+  BorderTop := Rect(
+    0,
+    0,
+    Screen.Width,
+    ASize);
+  BorderBottom := Rect(
+    0,
+    BorderTop.Height + Screen.Height-(ASize*2),
+    Screen.Width,
+    Screen.Height);
+  BorderLeft := Rect(
+    0,
+    0,
+    ASize,
+    Screen.Height);
+  BorderRight := Rect(
+    BorderLeft.Width + Screen.Width-(ASize*2),
+    0,
+    Screen.Width,
+    Screen.Height);
+end;
+
 {Cria grade quadrada como uma matriz AN x AN. Quando ADistribute = true, a
 distância horizontal e vertical entre os estímulos é diferente, e quando false
 é igual}
@@ -128,6 +162,7 @@ begin
   Result := Default(TMatrix);
   SetLength(Result, AN, AN);
   LSquareSide := CmToScreenPixels(ASquareSide);
+  SetBorders(LSquareSide div 2);
   if ADistribute then begin
     LInterSpaceW := (Screen.Width -  (LSquareSide * AN)) div AN;
     LInterSpaceH := (Screen.Height - (LSquareSide * AN)) div AN;
@@ -179,6 +214,7 @@ begin
   SetLength(Result[0], AN);
   SetLength(Result[1], 1);
   LSquareSide := CmToScreenPixels(ASquareSide);
+  SetBorders(LSquareSide div 2);
   LDegree := BaseDegree;
   LDegreeI := BaseDegree div AN;
   LRect := GetCentralRect(Screen.Width, Screen.Height, LSquareSide div 2);
@@ -407,14 +443,14 @@ begin
         LGridList.Free;
       end;
       else begin
-        WriteLn(SamplesRows.AsString);
+        //WriteLn(SamplesRows.AsString);
         LLatinRow := SamplesRows.NextRow;
         LGridList := TGridList.Create;
         for i in LLatinRow do LGridList.Add(i);
         //RandomizeGridList(LGridList);
         for i := low(Samples) to high(Samples) do
         begin
-          writeln('S: ', LGridList.First);
+          //writeln('S: ', LGridList.First);
           Cell := IntToCell(LGridList.First);
           SecureCopy(Samples[i], FGrid[Cell[0], Cell[1]]);
           LGridList.Delete(0);
@@ -484,14 +520,15 @@ begin
   SetGridOrientation(TGridOrientation(i));
 end;
 
-constructor TGrid.Create(ASeed: integer);
+constructor TGrid.Create(ASeed: integer; ASamples: integer;
+  AComparisons: integer);
 begin
   FSeed := ASeed;
   FCellsCount:=ASeed*ASeed;
   FCellsSize := 3.0;
   FGridStyle := gtSquare;
-  FSamplesCount := 1;
-  FComparisonsCount := 3;
+  FSamplesCount := ASamples;
+  FComparisonsCount := AComparisons;
   FGridOrientation:= goTopToBottom;
   FGrid := GetCentralGrid(FSeed, FCellsSize, DispersionStyle);
 
@@ -507,13 +544,6 @@ begin
     ComparisonsRows.Free;
   end;
 end;
-
-initialization
-  Grid := TGrid.Create(3);
-
-finalization
-  Grid.Free;
-
 
 end.
 

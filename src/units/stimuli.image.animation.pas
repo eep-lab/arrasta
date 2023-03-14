@@ -1,6 +1,6 @@
 {
   Stimulus Control
-  Copyright (C) 2014-2021 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
+  Copyright (C) 2014-2023 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
   The present file is distributed under the terms of the GNU General Public License (GPL v3.0).
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
@@ -42,8 +42,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Animate(ASibling : TLightImage);
-    procedure Join(ALightImage : TLightImage);
+    procedure Join(ATopItem, ABottomItem : TLightImage);
     procedure Stop;
+    property Sibling : TLightImage read FSibling;
   end;
 
 implementation
@@ -64,7 +65,7 @@ var
       begin
         Pen.Width := FPenWidth;
         Pen.Color := Color;
-        //Brush.Color:= clRed;
+        Brush.Style:= bsClear;
         Rectangle(ClientRect);
         TextRect(ClientRect,
           (((ClientRect.Right-ClientRect.Left) div 2) - (TextWidth(Caption)div 2)),
@@ -159,8 +160,8 @@ procedure TAnimation.Animate(ASibling : TLightImage);
 var
   R: TRect;
 begin
+  ASibling.EdgeColor := clNone;
   FSibling := ASibling;
-  Self.SendToBack;
   Kind := ikAnimate;
   R := ASibling.ClientRect;
   InflateRect(R, 10, 10);
@@ -175,15 +176,15 @@ begin
   Constraints.MinWidth := R.Width;
 end;
 
-procedure TAnimation.Join(ALightImage: TLightImage);
+procedure TAnimation.Join(ATopItem, ABottomItem: TLightImage);
 begin
   Stop;
   AnchorSideTop.Control := nil;
-  Top := FSibling.Top -10;
-  Left := FSibling.Left -10;
-  Height := FSibling.Height + ALightImage.Height + 30;
-  Width := FSibling.Width + 30;
-
+  ATopItem.EdgeColor:=clInactiveCaption;
+  Top := ATopItem.Top -10;
+  Left := ATopItem.Left -15;
+  Height := ATopItem.Height + ABottomItem.Height + 30;
+  Width := ATopItem.Width + 30;
 end;
 
 procedure TAnimation.Stop;
@@ -208,7 +209,7 @@ begin
   FHeight:= 220;
   Height:= 200;
   Width:= 300;
-  EdgeColor:= clInactiveCaption;
+  Color:= clDkGray;
   Canvas.Font.Size := 20;
   FSibling := nil;
 end;
