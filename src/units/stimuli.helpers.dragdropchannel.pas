@@ -74,7 +74,7 @@ begin
   if LLength > 0 then
     Result := FBresenhamLine[FIndex];
   if FIndex < LLength-1 then
-    Inc(FIndex, 10);
+    Inc(FIndex, 5);
 
   if FIndex >= LLength then
     FIndex := LLength-1;
