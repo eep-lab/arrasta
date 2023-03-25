@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Compiler Value="C:\lazarus-trunck\fpc\bin\x86_64-win64\fpc.exe" Date="1447450093"/>
+  <Params Value=" -MObjFPC -Scghi -O1 -gw3 -gl -WG -l -vewnhibq -FiC:\Users\Administrator\OneDrive\Documentos\GitHub\stimulus_control\src\tests\bgrabitmap\lib\x86_64-win64 -FuC:\lazarus-trunck\config_lazarus\onlinepackagemanager\packages\bgrabitmap-master\bgrabitmap\lib\x86_64-win64-win32-3.3.1 -FuC:\lazarus-trunck\lazarus\lcl\units\x86_64-win64\win32 -FuC:\lazarus-trunck\lazarus\lcl\units\x86_64-win64 -FuC:\lazarus-trunck\lazarus\components\freetype\lib\x86_64-win64 -FuC:\lazarus-trunck\lazarus\components\lazutils\lib\x86_64-win64 -FuC:\lazarus-trunck\lazarus\packager\units\x86_64-win64 -FuC:\Users\Administrator\OneDrive\Documentos\GitHub\stimulus_control\src\tests\bgrabitmap\ -FUC:\Users\Administrator\OneDrive\Documentos\GitHub\stimulus_control\src\tests\bgrabitmap\lib\x86_64-win64\ -FEC:\Users\Administrator\OneDrive\Documentos\GitHub\stimulus_control\src\tests\bgrabitmap\ -oC:\Users\Administrator\OneDrive\Documentos\GitHub\stimulus_control\src\tests\bgrabitmap\project1.exe -dLCL -dLCLwin32 project1.lpr"/>
+</CONFIG>
