@@ -20,11 +20,11 @@ type
 
   TDragDropTargets = specialize TFPGList<TObject>;
 
-  TDropMode = (dropRect, dropCircle);
+  TDropShape = (dropRect, dropCircle);
 
   TDragDropableItem = class (TLightImage, IDragDropable)
   private
-    FDropMode: TDropMode;
+    FDropShape: TDropShape;
     FIsDragging : Boolean;
     FCanDrag : Boolean;
     FOnOtherDragDrop: TDragDropEvent;
@@ -35,7 +35,7 @@ type
     FTargets: TDragDropTargets;
     function GetDraggable: Boolean;
     function GetTarget: TDragDropableItem;
-    procedure SetDropMode(AValue: TDropMode);
+    procedure SetDropShape(AValue: TDropShape);
     procedure SetOnOtherDragDrop(AValue: TDragDropEvent);
     procedure SetOnRightDragDrop(AValue: TDragDropEvent);
     function IntersectsWith(Sender : TDragDropableItem) : Boolean;
@@ -55,7 +55,7 @@ type
     property Targets : TDragDropTargets read FTargets;
     property Target : TDragDropableItem read GetTarget;
     property Draggable : Boolean read GetDraggable write FCanDrag;
-    property DropMode : TDropMode read FDropMode write SetDropMode;
+    property DropShape : TDropShape read FDropShape write SetDropShape;
     property OnRightDragDrop : TDragDropEvent read FOnRightDragDrop write SetOnRightDragDrop;
     property OnWrongDragDrop : TDragDropEvent read FOnWrongDragDrop write SetOnWrongDragDrop;
     property OnOtherDragDrop : TDragDropEvent read FOnOtherDragDrop write SetOnOtherDragDrop;
@@ -80,10 +80,10 @@ begin
     Result := nil;
 end;
 
-procedure TDragDropableItem.SetDropMode(AValue: TDropMode);
+procedure TDragDropableItem.SetDropShape(AValue: TDropShape);
 begin
-  if FDropMode = AValue then Exit;
-  FDropMode := AValue;
+  if FDropShape = AValue then Exit;
+  FDropShape := AValue;
 end;
 
 procedure TDragDropableItem.SetOnOtherDragDrop(AValue: TDragDropEvent);
@@ -115,7 +115,7 @@ var
 begin
   if Sender is TDragDropableItem then begin
     LControl := TDragDropableItem(Sender);
-    case DropMode of
+    case DropShape of
       dropRect : begin
         Result := BoundsRect.IntersectsWith(LControl.BoundsRect);
       end;
