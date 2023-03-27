@@ -24,12 +24,18 @@ type
   // LGTimestamps for stm and response data.
   TLoggers = (LGData, LGTimestamps);
 
-  function GetSaveDataProc(ADataLogger: TLoggers): TDataProcedure;
-  function GetLogger(ADataLogger: TLoggers) : TRegData;
-  function CreateLogger(ADataLogger: TLoggers;
+  function GetSaveDataProc(ALogger: TLoggers): TDataProcedure;
+  function GetLogger(ALogger: TLoggers) : TRegData;
+  function CreateLogger(ALogger: TLoggers;
     AFilename, AHeader : string) : string;
 
-  procedure FreeLogger(ADataLogger: TLoggers; AFooter : string);
+  procedure FreeLogger(ALogger: TLoggers; AFooter : string);
+  function LoggerAlive(Logger : TLoggers) : Boolean;
+  function MockHeader : string;
+
+var
+  DataFilename : string = '';
+  TimestampsFilename : string = '';
 
 resourcestring
   HSUBJECT_NAME      = 'Nome_Sujeito:';
@@ -42,31 +48,46 @@ resourcestring
 
 implementation
 
-uses Forms;
+uses
+  Forms
+  , SysUtils
+  , Session.Configuration.GlobalContainer
+  , Timestamps;
 
 var
-  GTimestampLogger,
-  GDataLogger : TRegData;
+  TimestampsLog : TRegData = nil;
+  DataLog : TRegData = nil;
 
-function GetSaveDataProc(ADataLogger: TLoggers): TDataProcedure;
+function GetSaveDataProc(ALogger: TLoggers): TDataProcedure;
 var LRegdata : TRegData;
 begin
-  LRegdata := GetLogger(ADataLogger);
+  LRegdata := GetLogger(ALogger);
   Result := @LRegdata.SaveData;
 end;
 
-function GetLogger(ADataLogger: TLoggers): TRegData;
+function GetLogger(ALogger: TLoggers): TRegData;
+var
+  FileName : string;
 begin
-  case ADataLogger of
-    LGTimestamps: Result := GTimestampLogger;
-    LGData: Result := GDataLogger;
+  if not LoggerAlive(ALogger) then begin
+    FileName := GlobalContainer.RootData + '001';
+    case ALogger of
+      LGTimestamps:
+        TimestampsFilename := CreateLogger(ALogger, FileName, MockHeader);
+      LGData:
+        DataFilename := CreateLogger(ALogger, FileName, MockHeader);
+    end;
+  end;
+  case ALogger of
+    LGTimestamps: Result := TimestampsLog;
+    LGData: Result := DataLog;
   end;
 end;
 
-procedure FreeLogger(ADataLogger: TLoggers; AFooter: string);
+procedure FreeLogger(ALogger: TLoggers; AFooter: string);
 var LRegdata : TRegData;
 begin
-  LRegdata := GetLogger(ADataLogger);
+  LRegdata := GetLogger(ALogger);
   with LRegdata do
     begin
       SaveData(AFooter);
@@ -74,7 +95,22 @@ begin
     end;
 end;
 
-function CreateLogger(ADataLogger: TLoggers; AFilename, AHeader: string) : string;
+function LoggerAlive(Logger: TLoggers): Boolean;
+begin
+  case Logger of
+    LGTimestamps: Result := Assigned(TimestampsLog);
+    LGData: Result := Assigned(DataLog);
+  end;
+end;
+
+function MockHeader: string;
+begin
+  Result := HSUBJECT_NAME + #9 + 'Sujeito X' + LineEnding +
+            HSESSION_NAME + #9 + 'Sessão X' + LineEnding +
+            HBEGIN_TIME + #9 + DateTimeToStr(Date) + #9 + TimeToStr(Time) + LineEnding;
+end;
+
+function CreateLogger(ALogger: TLoggers; AFilename, AHeader: string) : string;
 var
   LRegData : TRegData;
 
@@ -88,14 +124,14 @@ var
 
   function RegData:TRegData;
   begin
-    Result := TRegData.Create(Application, AFilename + Ext(ADataLogger));
+    Result := TRegData.Create(Application, AFilename + Ext(ALogger));
     Result.SaveData(AHeader);
   end;
 begin
   LRegData := RegData;
-  case ADataLogger of
-    LGTimestamps: GTimestampLogger := LRegData;
-    LGData: GDataLogger := LRegData;
+  case ALogger of
+    LGTimestamps: TimestampsLog := LRegData;
+    LGData: DataLog := LRegData;
   end;
   Result := LRegData.FileName;
 end;

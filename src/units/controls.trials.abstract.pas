@@ -439,6 +439,7 @@ end;
 constructor TTrial.Create(AOwner: TCustomControl);
 begin
   inherited Create(AOwner);
+  FLogEvent := GetSaveDataProc(LGTimestamps);
   FConfigurations.Id := -1;
   FConfigurations.NumComp := 0;
   FConfigurations.Name := T_NONE;
