@@ -22,10 +22,11 @@ type
   { TBackground }
 
   TBackground = class(TForm)
-    ButtonStartTrial: TButton;
     ButtonStartAll: TButton;
+    ButtonStartTrial: TButton;
     EditParticipant: TEdit;
     FloatSpinEditScreenWidth: TFloatSpinEdit;
+    GroupBoxDesign: TGroupBox;
     GroupBoxComplexity: TGroupBox;
     IniPropStorage: TIniPropStorage;
     LabelDragMoveFactor: TLabel;
@@ -33,8 +34,8 @@ type
     LabelSamples: TLabel;
     LabelScreenWidth: TLabel;
     PanelConfigurations: TPanel;
-    RadioGroupDesign: TRadioGroup;
     RadioGroupHelpType: TRadioGroup;
+    RadioGroupRelation: TRadioGroup;
     SpinEditDragMoveFactor: TSpinEdit;
     SpinEditComparisons: TSpinEdit;
     SpinEditSamples: TSpinEdit;
@@ -45,9 +46,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure EndSession(Sender: TObject);
     procedure BeforeStartSession(Sender: TObject);
-    procedure FormPaint(Sender: TObject);
     procedure SpinEditSamplesChange(Sender: TObject);
-    procedure SpinEditSamplesEditingDone(Sender: TObject);
     procedure TabControlDesignChange(Sender: TObject);
   private
 
@@ -96,7 +95,7 @@ begin
   Session.Backgrounds.Background := Self;
 
   LExperiment := TabControlDesign.Tabs[TabControlDesign.TabIndex];
-  LDesign     := RadioGroupDesign.Items[RadioGroupDesign.ItemIndex];
+  LDesign     := RadioGroupRelation.Items[RadioGroupRelation.ItemIndex];
   LHelpTp     := RadioGroupHelpType.Items[RadioGroupHelpType.ItemIndex];
 
   ConfigurationFilename :=
@@ -104,7 +103,8 @@ begin
       LDesign,
       SpinEditSamples.Value,
       SpinEditComparisons.Value,
-      RadioGroupHelpType.ItemIndex);
+      RadioGroupHelpType.ItemIndex,
+      SpinEditDragMoveFactor.Value);
 
   LName := LExperiment + #32 + LDesign + #32 + LHelpTp;
   GSession.Play(LName, EditParticipant.Text);
@@ -136,7 +136,7 @@ begin
   LTrial := TDragDrop.Create(Self);
   with LTrial.Configurations.Parameters do begin
     Values['Style.Samples.DragMode'] := DragMouseMoveMode.ToString;
-    Values['Relation'] := RadioGroupDesign.Items[RadioGroupDesign.ItemIndex];
+    Values['Relation'] := RadioGroupRelation.Items[RadioGroupRelation.ItemIndex];
     Values['Samples'] := SpinEditSamples.Value.ToString;
     Values['Comparisons'] := SpinEditComparisons.Value.ToString;
     Values['DragMoveFactor'] := SpinEditDragMoveFactor.Value.ToString;
@@ -163,11 +163,6 @@ begin
   CopyFile(ConfigurationFilename, GSession.BaseFilename+'.ini');
 end;
 
-procedure TBackground.FormPaint(Sender: TObject);
-begin
-
-end;
-
 procedure TBackground.SpinEditSamplesChange(Sender: TObject);
 begin
   SpinEditComparisons.Enabled := SpinEditSamples.Value <> 3;
@@ -176,27 +171,22 @@ begin
   SpinEditComparisons.Invalidate;
 end;
 
-procedure TBackground.SpinEditSamplesEditingDone(Sender: TObject);
-begin
-
-end;
-
 procedure TBackground.TabControlDesignChange(Sender: TObject);
 begin
-  RadioGroupDesign.Items.Clear;
+  RadioGroupRelation.Items.Clear;
   case TabControlDesign.TabIndex of
     0 : begin
-      RadioGroupDesign.Items.Append('A-A');
-      RadioGroupDesign.Items.Append('B-B');
-      RadioGroupDesign.Items.Append('C-C');
+      RadioGroupRelation.Items.Append('A-A');
+      RadioGroupRelation.Items.Append('B-B');
+      RadioGroupRelation.Items.Append('C-C');
     end;
     1 : begin
-      RadioGroupDesign.Items.Append('A-B');
-      RadioGroupDesign.Items.Append('B-A');
-      RadioGroupDesign.Items.Append('A-C');
-      RadioGroupDesign.Items.Append('C-A');
-      RadioGroupDesign.Items.Append('C-B');
-      RadioGroupDesign.Items.Append('B-C');
+      RadioGroupRelation.Items.Append('A-B');
+      RadioGroupRelation.Items.Append('B-A');
+      RadioGroupRelation.Items.Append('A-C');
+      RadioGroupRelation.Items.Append('C-A');
+      RadioGroupRelation.Items.Append('C-B');
+      RadioGroupRelation.Items.Append('B-C');
     end;
   end;
 end;

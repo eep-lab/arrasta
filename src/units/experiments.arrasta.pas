@@ -17,7 +17,8 @@ function MakeConfigurationFile(
   ADesign : string;
   ASamples: integer;
   AComparisons: integer;
-  AHelpType: integer) : string;
+  AHelpType: integer;
+  AFactor: integer) : string;
 
 implementation
 
@@ -28,11 +29,11 @@ uses FileMethods
    ;
 
 function MakeConfigurationFile(ADesign: string; ASamples: integer;
-  AComparisons: integer; AHelpType: integer): string;
+  AComparisons: integer; AHelpType: integer; AFactor: integer): string;
 begin
   Result := NewConfigurationFile;
   Experiments.DragDrop.WriteToConfigurationFile(
-    ADesign, ASamples, AComparisons, AHelpType);
+    ADesign, ASamples, AComparisons, AHelpType, AFactor);
   ConfigurationFile.Invalidate;
   ConfigurationFile.UpdateFile;
 end;

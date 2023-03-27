@@ -9,7 +9,6 @@ object Background: TBackground
   ClientWidth = 814
   Color = clWhite
   OnCreate = FormCreate
-  OnPaint = FormPaint
   Position = poScreenCenter
   SessionProperties = 'CheckBoxCheatsMode.Checked;EditParticipant.Text;FloatSpinEditScreenWidth.Value;LabelDragMoveFactor.Visible;PageControl1.ActivePage;RadioGroupCondition.ItemIndex;RadioGroupDesign.ItemIndex;RadioGroupDesign.Items;RadioGroupDesign1.ItemIndex;RadioGroupDesign2.ItemIndex;RadioGroupHelpType.ItemIndex;RadioGroupRestriction.ItemIndex;SpinEditComparisons.Enabled;SpinEditComparisons.Value;SpinEditDragMoveFactor.Visible;SpinEditParticipant.Value;SpinEditSamples.Value;TabControlDesign.TabIndex;SpinEditDragMoveFactor.Value'
   LCLVersion = '2.3.0.0'
@@ -45,7 +44,6 @@ object Background: TBackground
       OnClick = ButtonStartAllClick
       ParentFont = False
       TabOrder = 1
-      Visible = False
     end
     object FloatSpinEditScreenWidth: TFloatSpinEdit
       Left = 8
@@ -69,11 +67,11 @@ object Background: TBackground
     end
     object GroupBoxComplexity: TGroupBox
       Left = 8
-      Height = 200
+      Height = 176
       Top = 88
       Width = 304
       Caption = 'Complexidade'
-      ClientHeight = 180
+      ClientHeight = 156
       ClientWidth = 300
       TabOrder = 3
       object LabelSamples: TLabel
@@ -174,56 +172,64 @@ object Background: TBackground
         Visible = False
       end
     end
-    object TabControlDesign: TTabControl
-      Left = 1
-      Height = 138
-      Top = 301
-      Width = 320
-      OnChange = TabControlDesignChange
-      TabIndex = 0
-      Tabs.Strings = (
-        'Identidade'
-        'Arbritrariedade'
-      )
-      Align = alClient
-      BorderSpacing.Top = 300
-      BorderSpacing.Bottom = 60
+    object GroupBoxDesign: TGroupBox
+      Left = 8
+      Height = 184
+      Top = 272
+      Width = 304
+      Caption = 'Delineamento'
+      ClientHeight = 164
+      ClientWidth = 300
       TabOrder = 4
-      object RadioGroupDesign: TRadioGroup
-        Left = 8
-        Height = 72
-        Top = 24
-        Width = 305
-        AutoFill = True
-        Caption = 'Delineamento'
-        ChildSizing.LeftRightSpacing = 6
-        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-        ChildSizing.EnlargeVertical = crsHomogenousChildResize
-        ChildSizing.ShrinkHorizontal = crsScaleChilds
-        ChildSizing.ShrinkVertical = crsScaleChilds
-        ChildSizing.Layout = cclTopToBottomThenLeftToRight
-        ChildSizing.ControlsPerLine = 1
-        ClientHeight = 52
-        ClientWidth = 301
-        ColumnLayout = clVerticalThenHorizontal
-        Columns = 3
-        ItemIndex = 0
-        Items.Strings = (
-          'A-A'
-          'B-B'
-          'C-C'
+      object TabControlDesign: TTabControl
+        Left = 0
+        Height = 164
+        Top = 0
+        Width = 300
+        OnChange = TabControlDesignChange
+        TabIndex = 0
+        Tabs.Strings = (
+          'Identidade'
+          'Arbritrariedade'
         )
-        ParentFont = False
-        TabOrder = 1
-      end
-      object ButtonStartTrial: TButton
-        Left = 8
-        Height = 25
-        Top = 104
-        Width = 128
-        Caption = 'Começar Tentativa'
-        OnClick = ButtonStartTrialClick
-        TabOrder = 2
+        Align = alClient
+        TabOrder = 0
+        object RadioGroupRelation: TRadioGroup
+          Left = 8
+          Height = 72
+          Top = 24
+          Width = 305
+          AutoFill = True
+          Caption = 'Relação'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclTopToBottomThenLeftToRight
+          ChildSizing.ControlsPerLine = 1
+          ClientHeight = 52
+          ClientWidth = 301
+          ColumnLayout = clVerticalThenHorizontal
+          Columns = 3
+          ItemIndex = 0
+          Items.Strings = (
+            'A-A'
+            'B-B'
+            'C-C'
+          )
+          ParentFont = False
+          TabOrder = 1
+        end
+        object ButtonStartTrial: TButton
+          Left = 8
+          Height = 25
+          Top = 104
+          Width = 128
+          Caption = 'Começar Tentativa'
+          OnClick = ButtonStartTrialClick
+          TabOrder = 2
+        end
       end
     end
   end
