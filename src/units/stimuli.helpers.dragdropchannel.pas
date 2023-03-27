@@ -5,7 +5,7 @@ unit Stimuli.Helpers.DragDropChannel;
 interface
 
 uses
-  Classes, SysUtils, Canvas.Helpers;
+  Classes, SysUtils, Graphics, Canvas.Helpers;
 
 type
 
@@ -13,6 +13,7 @@ type
 
   TDragDropChannel = class(TObject)
   private
+    FParent : TCanvas;
     FDragArea     : TPoints;
     FBresenhamLine : TPoints;
     FIndex        : integer;
@@ -20,18 +21,21 @@ type
     constructor Create; overload;
     constructor Create(AOrigin, ADestin : TRect); overload;
     destructor Destroy; override;
+    procedure Paint; virtual;
     procedure Update(AOrigin, ADestin : TRect);
-    function IntersectWith(ARect : TRect) : Boolean;
     function NextPoint : TPoint;
-    property DragArea : TPoints read FBresenhamLine;
     property Line : TPoints read FBresenhamLine;
+    property Canvas : TCanvas read FParent write FParent;
   end;
 
 
 var
   DragDropChannel : TDragDropChannel;
+  ChannelDragMouseMoveFactor : integer;
 
 implementation
+
+uses FPImage;
 
 { TDragDropChannel }
 
@@ -51,6 +55,21 @@ begin
   inherited Destroy;
 end;
 
+procedure TDragDropChannel.Paint;
+var
+  Point : TPoint;
+  LColor: TFPColor;
+begin
+  if Length(Line) > 0 then begin
+    LColor.Blue  := 0;
+    LColor.Green := 0;
+    LColor.Red   := 255;
+    LColor.Alpha := 255;
+    for Point in Line do
+      Canvas.DrawPixel(Point.X, Point.Y, LColor);
+  end;
+end;
+
 procedure TDragDropChannel.Update(AOrigin, ADestin: TRect);
 begin
   FIndex := 0;
@@ -61,11 +80,6 @@ begin
     ADestin.Top);
 end;
 
-function TDragDropChannel.IntersectWith(ARect: TRect): Boolean;
-begin
-
-end;
-
 function TDragDropChannel.NextPoint: TPoint;
 var
   LLength : integer;
@@ -74,27 +88,11 @@ begin
   if LLength > 0 then
     Result := FBresenhamLine[FIndex];
   if FIndex < LLength-1 then
-    Inc(FIndex, 5);
+    Inc(FIndex, ChannelDragMouseMoveFactor);
 
   if FIndex >= LLength then
     FIndex := LLength-1;
 end;
-
-//function TDragDropChannel.NearMe(X, Y: Integer): Boolean;
-//const
-//  Tolerance : integer = 10;
-//var
-//  Point : TPoint;
-//begin
-//  Result := False;
-//  if Length(FLine) < 1 then Exit;
-//  for Point in FLine do
-//    Result := Result or
-//      ((X >= (Point.X-Tolerance)) and
-//       (X <= (Point.X+Tolerance))
-//       {(Y >= (Point.Y-Tolerance)) and
-//       (Y <= (Point.Y+Tolerance))});
-//end;
 
 end.
 
