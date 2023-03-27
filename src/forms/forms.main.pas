@@ -1,7 +1,9 @@
 {
   Stimulus Control
   Copyright (C) 2014-2023 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
+
   The present file is distributed under the terms of the GNU General Public License (GPL v3.0).
+
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 }
@@ -20,29 +22,33 @@ type
   { TBackground }
 
   TBackground = class(TForm)
-    ButtonStart: TButton;
+    ButtonStartTrial: TButton;
     ButtonStartAll: TButton;
-    CheckBoxCheatsMode : TCheckBox;
     EditParticipant: TEdit;
     FloatSpinEditScreenWidth: TFloatSpinEdit;
+    GroupBoxComplexity: TGroupBox;
     IniPropStorage: TIniPropStorage;
-    LabelSamples: TLabel;
+    LabelDragMoveFactor: TLabel;
     LabelComparisons: TLabel;
+    LabelSamples: TLabel;
     LabelScreenWidth: TLabel;
-    PageControl1: TPageControl;
     PanelConfigurations: TPanel;
-    RadioGroupDesign1: TRadioGroup;
-    SpinEditSamples: TSpinEdit;
+    RadioGroupDesign: TRadioGroup;
+    RadioGroupHelpType: TRadioGroup;
+    SpinEditDragMoveFactor: TSpinEdit;
     SpinEditComparisons: TSpinEdit;
-    TabSheet1: TTabSheet;
-    procedure FormClick(Sender: TObject);
-    procedure SampleDblClick(Sender: TObject);
-    procedure ButtonStartClick(Sender: TObject);
+    SpinEditSamples: TSpinEdit;
+    TabControlDesign: TTabControl;
+    procedure ButtonStartTrialClick(Sender: TObject);
+    procedure RadioGroupHelpTypeClick(Sender: TObject);
     procedure ButtonStartAllClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure EndSession(Sender: TObject);
     procedure BeforeStartSession(Sender: TObject);
     procedure FormPaint(Sender: TObject);
+    procedure SpinEditSamplesChange(Sender: TObject);
+    procedure SpinEditSamplesEditingDone(Sender: TObject);
+    procedure TabControlDesignChange(Sender: TObject);
   private
 
   public
@@ -64,7 +70,8 @@ uses
    , SessionSimple
    , Experiments.Grids
    , Experiments.Arrasta
-   , Stimuli.Sequence.DragDrop
+   , Controls.Trials.DragDrop
+   , Stimuli.Image.DragDropable
    , Cheats
    ;
 
@@ -76,52 +83,65 @@ var
 
 procedure TBackground.ButtonStartAllClick(Sender: TObject);
 var
-  LName : string;
-  LDesign : string;
+  LName       : string;
+  LDesign     : string;
+  LHelpTp     : string;
+  LExperiment : string;
 begin
-  GlobalContainer.RootData :=
-    GlobalContainer.RootData +
-    EditParticipant.Text +
-    DirectorySeparator;
+  GlobalContainer.RootData := GlobalContainer.RootData +
+    EditParticipant.Text + DirectorySeparator;
   ForceDirectories(GlobalContainer.RootData);
-  CheatsModeOn := CheckBoxCheatsMode.Checked;
+  CheatsModeOn := False;
   PanelConfigurations.Hide;
   Session.Backgrounds.Background := Self;
 
-  case PageControl1.TabIndex of
-    0:begin
-      LDesign := RadioGroupDesign1.Items[RadioGroupDesign1.ItemIndex];
-    end;
-  end;
+  LExperiment := TabControlDesign.Tabs[TabControlDesign.TabIndex];
+  LDesign     := RadioGroupDesign.Items[RadioGroupDesign.ItemIndex];
+  LHelpTp     := RadioGroupHelpType.Items[RadioGroupHelpType.ItemIndex];
 
   ConfigurationFilename :=
-    Experiments.Arrasta.MakeConfigurationFile(LDesign, PageControl1.TabIndex);
+    Experiments.Arrasta.MakeConfigurationFile(
+      LDesign,
+      SpinEditSamples.Value,
+      SpinEditComparisons.Value,
+      RadioGroupHelpType.ItemIndex);
 
-  LName := 'Experimento ' + (PageControl1.TabIndex+1).ToString +
-           ' Delineamento:' + LDesign;
-
+  LName := LExperiment + #32 + LDesign + #32 + LHelpTp;
   GSession.Play(LName, EditParticipant.Text);
 end;
 
+procedure TBackground.RadioGroupHelpTypeClick(Sender: TObject);
 var
-  LStimuli: TDragDropStimuli;
-
-procedure TBackground.SampleDblClick(Sender: TObject);
+  LVisible : Boolean;
 begin
-
+  case RadioGroupHelpType.ItemIndex of
+    0 : LVisible:=False;
+    1 : LVisible:=True;
+  end;
+  SpinEditDragMoveFactor.Visible := LVisible;
+  LabelDragMoveFactor.Visible:=LVisible;
 end;
 
-procedure TBackground.FormClick(Sender: TObject);
-begin
-  LStimuli.ResetGrid;
-end;
+var
+  LTrial  : TDragDrop;
 
-procedure TBackground.ButtonStartClick(Sender: TObject);
+procedure TBackground.ButtonStartTrialClick(Sender: TObject);
+var
+  DragMouseMoveMode : TDragMouseMoveMode;
 begin
-  LStimuli := TDragDropStimuli.Create(
-    Self, SpinEditSamples.Value, SpinEditComparisons.Value);
-  LStimuli.Parent := Background;
-  LStimuli.Start;
+  case RadioGroupHelpType.ItemIndex of
+    0 : DragMouseMoveMode := dragFree;
+    1 : DragMouseMoveMode := dragChannel;
+  end;
+  LTrial := TDragDrop.Create(Self);
+  with LTrial.Configurations.Parameters do begin
+    Values['Style.Samples.DragMode'] := DragMouseMoveMode.ToString;
+    Values['Relation'] := RadioGroupDesign.Items[RadioGroupDesign.ItemIndex];
+    Values['Samples'] := SpinEditSamples.Value.ToString;
+    Values['Comparisons'] := SpinEditComparisons.Value.ToString;
+    Values['DragMoveFactor'] := SpinEditDragMoveFactor.Value.ToString;
+  end;
+  LTrial.Play(False);
   PanelConfigurations.Hide;
 end;
 
@@ -144,23 +164,41 @@ begin
 end;
 
 procedure TBackground.FormPaint(Sender: TObject);
-//var
-//  j, i: Integer;
-//  R : TRect;
 begin
-  //Canvas.Pen.Color := clBlack;
-  //if DoDraw then
-  //for j := Low(Grid) to High(Grid) do begin
-  //  for i := Low(Grid[j]) to High(Grid[j]) do begin
-  //    R := Rect(
-  //      Grid[j][i].Left,
-  //      Grid[j][i].Top,
-  //      Grid[j][i].Left+Grid[j][i].SquareSide,
-  //      Grid[j][i].Top +Grid[j][i].SquareSide);
-  //    Canvas.Rectangle(R);
-  //    Canvas.TextOut(R.Left, R.Top, Grid[j][i].Index.ToString);
-  //  end;
-  //end;
+
+end;
+
+procedure TBackground.SpinEditSamplesChange(Sender: TObject);
+begin
+  SpinEditComparisons.Enabled := SpinEditSamples.Value <> 3;
+  SpinEditComparisons.MinValue := SpinEditSamples.Value;
+  SpinEditComparisons.Value := SpinEditSamples.Value;
+  SpinEditComparisons.Invalidate;
+end;
+
+procedure TBackground.SpinEditSamplesEditingDone(Sender: TObject);
+begin
+
+end;
+
+procedure TBackground.TabControlDesignChange(Sender: TObject);
+begin
+  RadioGroupDesign.Items.Clear;
+  case TabControlDesign.TabIndex of
+    0 : begin
+      RadioGroupDesign.Items.Append('A-A');
+      RadioGroupDesign.Items.Append('B-B');
+      RadioGroupDesign.Items.Append('C-C');
+    end;
+    1 : begin
+      RadioGroupDesign.Items.Append('A-B');
+      RadioGroupDesign.Items.Append('B-A');
+      RadioGroupDesign.Items.Append('A-C');
+      RadioGroupDesign.Items.Append('C-A');
+      RadioGroupDesign.Items.Append('C-B');
+      RadioGroupDesign.Items.Append('B-C');
+    end;
+  end;
 end;
 
 

@@ -1,6 +1,6 @@
 {
   Stimulus Control
-  Copyright (C) 2014-2021 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
+  Copyright (C) 2014-2023 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
 
   The present file is distributed under the terms of the GNU General Public License (GPL v3.0).
 
@@ -138,6 +138,7 @@ type
     procedure Show; virtual;
     procedure SetFocus; virtual;
     procedure HideCounter;
+    procedure LoadMockParameters; virtual;
     property Configurations: TCfgTrial read FConfigurations write SetConfigurations;
     property Data: string read FData write FData;
     property FileName : string read FFilename write FFilename;
@@ -438,6 +439,7 @@ end;
 constructor TTrial.Create(AOwner: TCustomControl);
 begin
   inherited Create(AOwner);
+  FLogEvent := GetSaveDataProc(LGTimestamps);
   FConfigurations.Id := -1;
   FConfigurations.NumComp := 0;
   FConfigurations.Name := T_NONE;
@@ -615,6 +617,11 @@ end;
 procedure TTrial.HideCounter;
 begin
   FShowCounter := False;
+end;
+
+procedure TTrial.LoadMockParameters;
+begin
+  AbstractError;
 end;
 
 procedure TTrial.BeginStarter;

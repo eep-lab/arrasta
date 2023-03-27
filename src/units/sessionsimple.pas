@@ -41,15 +41,13 @@ uses
 , Session.ConfigurationFile
 , Session.Configuration.GlobalContainer
 , Session.EndCriteria
-  ;
+;
 
 { TSession }
 
 var
   Header : string;
   FirstFilename: string = '001';
-  DataFilename : string = '';
-  TimestampsFilename : string = '';
 
 procedure TSession.PlayBloc;
 begin

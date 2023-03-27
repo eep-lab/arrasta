@@ -24,7 +24,7 @@ type
 
   { TRS232 }
 
-  TRS232 = class (TObject)
+  TRS232 = class(TObject)
     private
       FBlockSerial : TBlockSerial;
       function GetCommPortNumber : ShortInt;

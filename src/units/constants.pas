@@ -1,6 +1,6 @@
 {
   Stimulus Control
-  Copyright (C) 2014-2021 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
+  Copyright (C) 2014-2023 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
 
   The present file is distributed under the terms of the GNU General Public License (GPL v3.0).
 
@@ -292,6 +292,7 @@ const
   T_MTS = 'MTS';
   T_DMTS = 'DMTS';
   T_DMTSA = 'DMTSA';
+  T_DRAG_DROP = 'DRAG_DROP';
   T_Simple = 'SIMPLE';
   T_LIK = 'LIKERT';
   T_PFR = 'PERFORMANCE';
