@@ -1,13 +1,16 @@
 {
   Stimulus Control
   Copyright (C) 2014-2023 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
+
   The present file is distributed under the terms of the GNU General Public License (GPL v3.0).
+
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 }
 unit Stimuli.Image.DragDropable;
 
 {$mode ObjFPC}{$H+}
+{$modeswitch TypeHelpers}
 
 interface
 
@@ -20,10 +23,13 @@ type
 
   TDragDropTargets = specialize TFPGList<TObject>;
 
+  TDragMouseMoveMode = (dragFree, dragChannel);
+
   TDropShape = (dropRect, dropCircle);
 
   TDragDropableItem = class (TLightImage, IDragDropable)
   private
+    FDragMouseMoveMode: TDragMouseMoveMode;
     FDropShape: TDropShape;
     FIsDragging : Boolean;
     FCanDrag : Boolean;
@@ -35,6 +41,7 @@ type
     FTargets: TDragDropTargets;
     function GetDraggable: Boolean;
     function GetTarget: TDragDropableItem;
+    procedure SetDragMouseMoveMode(AValue: TDragMouseMoveMode);
     procedure SetDropShape(AValue: TDropShape);
     procedure SetOnOtherDragDrop(AValue: TDragDropEvent);
     procedure SetOnRightDragDrop(AValue: TDragDropEvent);
@@ -42,7 +49,7 @@ type
     procedure SetOnWrongDragDrop(AValue: TDragDropEvent);
     procedure BorderColision;
   protected
-    procedure DragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure DragDrop(Sender, Source: TObject; X, Y: Integer); reintroduce;
     procedure MouseDown(Button: TMouseButton;
       Shift:TShiftState; X,Y:Integer); override;
     procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
@@ -52,18 +59,53 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy;
     procedure AddTarget(ATarget : TObject);
+    procedure UpdateDragMouseMoveMode;
     property Targets : TDragDropTargets read FTargets;
     property Target : TDragDropableItem read GetTarget;
     property Draggable : Boolean read GetDraggable write FCanDrag;
+    property DragMouseMoveMode  : TDragMouseMoveMode read FDragMouseMoveMode write SetDragMouseMoveMode;
     property DropShape : TDropShape read FDropShape write SetDropShape;
     property OnRightDragDrop : TDragDropEvent read FOnRightDragDrop write SetOnRightDragDrop;
     property OnWrongDragDrop : TDragDropEvent read FOnWrongDragDrop write SetOnWrongDragDrop;
     property OnOtherDragDrop : TDragDropEvent read FOnOtherDragDrop write SetOnOtherDragDrop;
   end;
 
+type
+
+  { TDragMouseMoveModeHelper }
+
+  TDragMouseMoveModeHelper = type helper for TDragMouseMoveMode
+    function ToString : string;
+  end;
+
+  { TCustomStringHelper }
+
+  TCustomStringHelper = type helper(TStringHelper) for string
+    function ToDragMouseMoveMode : TDragMouseMoveMode;
+  end;
+
 implementation
 
 uses Graphics, Experiments.Grids, Stimuli.Helpers.DragDropChannel;
+
+{ TCustomStringHelper }
+
+function TCustomStringHelper.ToDragMouseMoveMode: TDragMouseMoveMode;
+begin
+  case UpperCase(Self) of
+    'DRAGFREE', 'FREE' : Result := dragFree;
+    'DRAGCHANNEL', 'CHANNEL' : Result := dragChannel;
+    else
+      RunError(107);
+  end;
+end;
+
+{ TDragMouseMoveModeHelper }
+
+function TDragMouseMoveModeHelper.ToString: string;
+begin
+  WriteStr(Result, Self);
+end;
 
 { TDragDropableItem }
 
@@ -78,6 +120,13 @@ begin
     Result := Targets[0] as TDragDropableItem
   else
     Result := nil;
+end;
+
+procedure TDragDropableItem.SetDragMouseMoveMode(AValue: TDragMouseMoveMode);
+begin
+  if FDragMouseMoveMode=AValue then Exit;
+  FDragMouseMoveMode:=AValue;
+  UpdateDragMouseMoveMode;
 end;
 
 procedure TDragDropableItem.SetDropShape(AValue: TDropShape);
@@ -102,17 +151,12 @@ function TDragDropableItem.IntersectsWith(Sender: TDragDropableItem): Boolean;
 var
   LControl : TControl;
 
-  function InsideCircle(ACenterX, ACenterY, ARadius, AX, AY : integer): Boolean;
-  var Delta : integer;
+  function IntersectsWithCircle(ABoundsRect : TRect): Boolean;
   begin
-    Delta := ((AX - ACenterX) * (AX - ACenterX)) +
-             ((AY - ACenterY) * (AY - ACenterY));
-    if (Delta <= (ARadius * ARadius)) then
-        Result := True
-    else
-        Result := False;
+    // todo: implement me
   end;
 begin
+  Result := False;
   if Sender is TDragDropableItem then begin
     LControl := TDragDropableItem(Sender);
     case DropShape of
@@ -120,9 +164,7 @@ begin
         Result := BoundsRect.IntersectsWith(LControl.BoundsRect);
       end;
       dropCircle : begin
-        //Result := InsideCircle(
-        //  LControl.BoundsRect.CenterPoint.X,
-        //  LControl.BoundsRect.CenterPoint.Y,
+        Result := IntersectsWithCircle(LControl.BoundsRect);
       end;
     end;
   end;
@@ -157,7 +199,7 @@ end;
 
 procedure TDragDropableItem.DragDrop(Sender, Source: TObject; X, Y: Integer);
 begin
-
+  inherited DragDrop(Sender, X, Y);
 end;
 
 procedure TDragDropableItem.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -182,11 +224,17 @@ var
   Point : TPoint;
 begin
   if FIsDragging then begin
-    //Left := Left - (FStartMouseDown.X -X);
-    //Top := Top - (FStartMouseDown.Y -Y);
-    Point := DragDropChannel.NextPoint;
-    Top  := Point.Y;
+    case DragMouseMoveMode of
+      dragFree : begin
+        Point.X := Left - (FStartMouseDown.X -X);
+        Point.Y := Top - (FStartMouseDown.Y -Y);
+      end;
+      dragChannel : begin
+        Point := DragDropChannel.NextPoint;
+      end;
+    end;
     Left := Point.X;
+    Top  := Point.Y;
     BorderColision;
   end;
 end;
@@ -230,9 +278,10 @@ end;
 constructor TDragDropableItem.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FDragMouseMoveMode := dragChannel;
   FTargets := TDragDropTargets.Create;
   FCanDrag := True;
-  Kind := ikLetter;
+  //Kind := ikLetter;
 end;
 
 destructor TDragDropableItem.Destroy;
@@ -244,6 +293,19 @@ end;
 procedure TDragDropableItem.AddTarget(ATarget: TObject);
 begin
   FTargets.Add(ATarget);
+end;
+
+procedure TDragDropableItem.UpdateDragMouseMoveMode;
+begin
+  case DragMouseMoveMode of
+    dragFree : begin
+      // do nothing
+    end;
+    dragChannel : begin
+      if Targets.Count > 0 then
+        DragDropChannel.Update(BoundsRect, Target.BoundsRect);
+    end;
+  end;
 end;
 
 end.
