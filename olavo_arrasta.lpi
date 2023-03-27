@@ -181,7 +181,7 @@
         <PackageName Value="LCL"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="82">
+    <Units Count="84">
       <Unit0>
         <Filename Value="olavo_arrasta.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -594,6 +594,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Stimuli.Helpers.DragDropChannel"/>
       </Unit81>
+      <Unit82>
+        <Filename Value="src/units/controls.trials.dragdrop.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Controls.Trials.DragDrop"/>
+      </Unit82>
+      <Unit83>
+        <Filename Value="src/units/experiments.dragdrop.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Experiments.DragDrop"/>
+      </Unit83>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -603,7 +613,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="src/forms;src/units;src/schedules;dependency/epiktimer"/>
+      <OtherUnitFiles Value="src/forms;src/units;src/schedules;dependency/epiktimer;dependency/synaser"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
