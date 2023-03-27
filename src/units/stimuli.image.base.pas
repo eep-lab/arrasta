@@ -15,12 +15,13 @@ uses SysUtils, Classes, Graphics, Controls, Schedules;
 
 type
 
-  TImageKind = (ikLetter, ikSquare, ikCircle, ikLetterRect, ikBitmap, ikAnimate);
+  TImageKind = (ikLetter, ikSquare, ikCircle, ikLetterRect, ikBitmap);
 
   { TLightImage }
 
   TLightImage = class(TGraphicControl)
   private
+    FDefaultExt: string;
     FOriginalBounds: TRect;
     FFileName: string;
     FEdge: TColor;
@@ -28,6 +29,7 @@ type
     FOnResponse: TNotifyEvent;
     FImageKind: TImageKind;
     function GetRandomPoint : TPoint;
+    procedure SetDefaultExt(AValue: string);
     procedure SetKind(AValue: TImageKind);
     procedure SetOnMouseDown(AValue: TMouseEvent);
     procedure SetOnResponse(AValue: TNotifyEvent);
@@ -52,6 +54,7 @@ type
     procedure Centralize;
     procedure CentralizeLeft;
     procedure CentralizeRight;
+    property DefaultExt : string read FDefaultExt write SetDefaultExt;
     property Schedule : TSchedule read FSchedule write SetSchedule;
     property EdgeColor : TColor read FEdge write FEdge;
     property Kind: TImageKind read FImageKind write SetKind;
@@ -89,6 +92,12 @@ function TLightImage.GetRandomPoint : TPoint;
 begin
   Result.X := BoundsRect.Left + 5 + Random(Width - 5);
   Result.Y := BoundsRect.Top + 5 + Random(Height - 5);
+end;
+
+procedure TLightImage.SetDefaultExt(AValue: string);
+begin
+  if FDefaultExt=AValue then Exit;
+  FDefaultExt:=AValue;
 end;
 
 procedure TLightImage.SetKind(AValue: TImageKind);
@@ -213,8 +222,9 @@ end;
 constructor TLightImage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FDefaultExt:='.PNG';
   FPenWidth := 10;
-  FImageKind:=ikAnimate;
+  FImageKind:=ikBitmap;
   Visible := False;
   Height:= 200;
   Width:= 300;
@@ -254,8 +264,8 @@ var
   begin
     LPNG := TPortableNetworkGraphic.Create;
     LPNG.LoadFromFile(FFileName);
-    Width := LPNG.Width;
-    Height := LPNG.Height;
+    //Width := LPNG.Width;
+    //Height := LPNG.Height;
     FBitmap.Assign(LPNG);
     FBitmap.Transparent:=True;
     FBitmap.TransparentColor:=clFuchsia;
@@ -277,7 +287,7 @@ begin
   if FileExists(AFilename) then
     FFileName := AFilename
   else
-    FFileName := GlobalContainer.RootMedia + AFilename;
+    FFileName := GlobalContainer.RootMedia + AFilename + DefaultExt;
 
   if not FileExists(FFileName) then
   begin
