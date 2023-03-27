@@ -72,7 +72,7 @@ uses Constants
    , Session.Configuration.GlobalContainer
    , Session.EndCriteria
    , Controls.Trials.HTMLMessage
-   , Controls.Trials.DMTS
+   , Controls.Trials.DragDrop
    , Graphics
    , Consequences
    , Dialogs
@@ -93,12 +93,10 @@ begin
   try
     case LTrialConfig.Kind of
       T_HTM : FTrial := THTMLMessage.Create(Background);
-      T_DMTS : FTrial := TDMTS.Create(Background);
+      T_DRAG_DROP : FTrial := TDragDrop.Create(Background);
     end;
     LTrialConfig.Parameters.Values[_CrtMaxTrials] :=
       ConfigurationFile.CurrentBloc.CrtMaxTrials.ToString;
-
-    FTrial.SaveData := GetSaveDataProc(LGTimestamps);
     if Counters.SessionTrials = 0 then
     begin
       FTrial.SaveData(
@@ -307,7 +305,7 @@ end;
 
 procedure TBloc.InterTrialIntervalBegin;
 begin
-  if (FTrial is TDMTS) then begin
+  if (FTrial is TDragDrop) then begin
     //FWaitLabel.Show;
   end;
   //FInterTrial.Enabled := True;
