@@ -59,26 +59,22 @@ type
       FSamplesCount: integer;
       procedure SetCellsCount(AValue: integer);
       procedure SetCellsSize(AValue: real);
-      procedure SetComparisonsCount(AValue: integer);
       procedure SetGridOrientation(AValue: TGridOrientation);
       procedure SetGridStyle(AGridStyle: TGridStyle);
       procedure RandomizeGridList(AGridList: TGridList);
       function InvalidateGridList(IsSample: Boolean=true): TGridList;
       function DispersionStyle : Boolean;
-      procedure SetSamplesCount(AValue: integer);
       procedure CreatePositions;
     public
-      constructor Create(ASeed : integer;
-        ASamples : integer = 3; AComparisons : integer = 3);
+      constructor Create(ASeed : integer);
       destructor Destroy; override;
       property GridStyle : TGridStyle read FGridStyle write SetGridStyle;
       property CellsCount : integer read FCellsCount write SetCellsCount;
       property CellsSize : real read FCellsSize write SetCellsSize;
       property RandomPositions : TRandomPositions read FRandomPositions;
-      property SamplesCount : integer read FSamplesCount write SetSamplesCount;
-      property ComparisonsCount : integer read FComparisonsCount write SetComparisonsCount;
       property Seed : integer read FSeed write FSeed;
       property GridOrientation: TGridOrientation read FGridOrientation write SetGridOrientation;
+      procedure UpdatePositions(ASamples, AComparisons: integer);
       {Cria seleção randômica de modelos e comparações em posições diferentes no AGrid}
       procedure RandomizePositions;
       procedure RandomizeOrientations;
@@ -361,26 +357,19 @@ begin
   end;
 end;
 
-procedure TGrid.SetSamplesCount(AValue: integer);
-begin
-  if FSamplesCount=AValue then Exit;
-  FSamplesCount:=AValue;
-end;
-
 procedure TGrid.CreatePositions;
 var
   i : integer;
   LGridList : TGridList;
 begin
   with FRandomPositions do begin
-    SetLength(Samples, SamplesCount);
-    SetLength(Comparisons, ComparisonsCount);
+    SetLength(Samples, FSamplesCount);
+    SetLength(Comparisons, FComparisonsCount);
 
     for i := low(Samples) to high(Samples) do
         Samples[i].Index := -1;
     for i := low(Comparisons) to high(Comparisons) do
         Comparisons[i].Index := -1;
-
     case FGridOrientation of
         goNone: begin
           // do nothing for now
@@ -500,12 +489,6 @@ begin
   FCellsSize:=AValue;
 end;
 
-procedure TGrid.SetComparisonsCount(AValue: integer);
-begin
-  if FComparisonsCount=AValue then Exit;
-  FComparisonsCount:=AValue;
-end;
-
 procedure TGrid.SetGridOrientation(AValue: TGridOrientation);
 begin
   if FGridOrientation=AValue then Exit;
@@ -520,20 +503,14 @@ begin
   SetGridOrientation(TGridOrientation(i));
 end;
 
-constructor TGrid.Create(ASeed: integer; ASamples: integer;
-  AComparisons: integer);
+constructor TGrid.Create(ASeed: integer);
 begin
   FSeed := ASeed;
   FCellsCount:=ASeed*ASeed;
-  FCellsSize := 3.0;
+  FCellsSize := 4.5;
   FGridStyle := gtSquare;
-  FSamplesCount := ASamples;
-  FComparisonsCount := AComparisons;
   FGridOrientation:= goTopToBottom;
   FGrid := GetCentralGrid(FSeed, FCellsSize, DispersionStyle);
-
-  CreatePositions;
-  RandomizePositions;
 end;
 
 destructor TGrid.Destroy;
@@ -544,6 +521,20 @@ begin
     ComparisonsRows.Free;
   end;
 end;
+
+procedure TGrid.UpdatePositions(ASamples, AComparisons: integer);
+begin
+  FSamplesCount := ASamples;
+  FComparisonsCount := AComparisons;
+  CreatePositions;
+  RandomizePositions;
+end;
+
+initialization
+  Grid := TGrid.Create(3);
+
+finalization
+  Grid.Free;
 
 end.
 
