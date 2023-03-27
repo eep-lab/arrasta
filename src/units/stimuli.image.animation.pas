@@ -162,7 +162,7 @@ var
 begin
   ASibling.EdgeColor := clNone;
   FSibling := ASibling;
-  Kind := ikAnimate;
+  //Kind := ikAnimate;
   R := ASibling.ClientRect;
   InflateRect(R, 10, 10);
   Self.SetOriginalBounds(ASibling.Left, ASibling.Top, R.Width, R.Height);
