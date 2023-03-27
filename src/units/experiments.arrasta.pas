@@ -1,6 +1,6 @@
 {
   Stimulus Control
-  Copyright (C) 2014-2022 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
+  Copyright (C) 2014-2023 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
 
   The present file is distributed under the terms of the GNU General Public License (GPL v3.0).
 
@@ -13,22 +13,26 @@ unit Experiments.Arrasta;
 
 interface
 
-function MakeConfigurationFile(ADesign : string; AExperiment : byte) : string;
+function MakeConfigurationFile(
+  ADesign : string;
+  ASamples: integer;
+  AComparisons: integer;
+  AHelpType: integer) : string;
 
 implementation
 
 uses FileMethods
-   , Experiments.Arrasta.Circular
+   , Experiments.DragDrop
    , Session.Configuration.GlobalContainer
    , Session.ConfigurationFile
    ;
 
-function MakeConfigurationFile(ADesign: string; AExperiment: byte): string;
+function MakeConfigurationFile(ADesign: string; ASamples: integer;
+  AComparisons: integer; AHelpType: integer): string;
 begin
   Result := NewConfigurationFile;
-  case AExperiment of
-    0: Experiments.Arrasta.Circular.WriteToConfigurationFile(ADesign);
-  end;
+  Experiments.DragDrop.WriteToConfigurationFile(
+    ADesign, ASamples, AComparisons, AHelpType);
   ConfigurationFile.Invalidate;
   ConfigurationFile.UpdateFile;
 end;
