@@ -54,8 +54,6 @@ type
     procedure Paint; override;
     procedure TrialStart(Sender: TObject); virtual;
     procedure WriteData(Sender: TObject); override;
-    procedure TrialResult(Sender: TObject);
-    procedure EnableResponses(Sender : TObject);
   public
     constructor Create(AOwner: TCustomControl); override;
     function AsString : string; override;
@@ -151,21 +149,6 @@ begin
     Values['Comparisons'] := '3';
     Values['DragMoveFactor'] := '10';
   end;
-end;
-
-procedure TDragDrop.TrialResult(Sender: TObject);
-begin
-  //if FStimuli.ExpectedResponse = tbNone then Exit;
-
-end;
-
-procedure TDragDrop.EnableResponses(Sender: TObject);
-begin
-  //FResponseEnabled:=True;
-  //FStimuli.Cursor := 0;
-  //Cursor := 0;
-  //FReportData.ComparisonBegin := TimestampToStr(LogEvent(rsReportStmCmpBeg));
-  //Mouse.CursorPos := Point(Screen.Width div 2, Screen.Height div 2);
 end;
 
 procedure TDragDrop.TrialStart(Sender: TObject);
