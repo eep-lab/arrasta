@@ -38,7 +38,7 @@ object Background: TBackground
     object ButtonStartAll: TButton
       Left = 8
       Height = 29
-      Top = 456
+      Top = 464
       Width = 304
       Caption = 'Começar Delineamento'
       OnClick = ButtonStartAllClick
@@ -67,11 +67,11 @@ object Background: TBackground
     end
     object GroupBoxComplexity: TGroupBox
       Left = 8
-      Height = 176
+      Height = 160
       Top = 88
       Width = 304
       Caption = 'Complexidade'
-      ClientHeight = 156
+      ClientHeight = 140
       ClientWidth = 300
       TabOrder = 3
       object LabelSamples: TLabel
@@ -236,7 +236,7 @@ object Background: TBackground
   object IniPropStorage: TIniPropStorage
     StoredValues = <>
     IniFileName = 'configuracoes'
-    Left = 56
-    Top = 32
+    Left = 32
+    Top = 16
   end
 end
