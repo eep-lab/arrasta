@@ -107,7 +107,7 @@ var
   i: Integer;
 begin
   if not Assigned(FParent) then
-    raise 'You must assigned a parent before loading.';
+    raise Exception.Create('You must assigned a parent before loading.');
 
   ChannelDragMouseMoveFactor :=
     AParameters.Values['DragMoveFactor'].ToInteger;
