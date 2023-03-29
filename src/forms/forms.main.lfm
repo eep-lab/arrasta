@@ -7,7 +7,7 @@ object Background: TBackground
   Caption = 'Configurar sessão'
   ClientHeight = 561
   ClientWidth = 814
-  Color = clWhite
+  Color = clBlack
   OnCreate = FormCreate
   Position = poScreenCenter
   SessionProperties = 'CheckBoxCheatsMode.Checked;EditParticipant.Text;FloatSpinEditScreenWidth.Value;LabelDragMoveFactor.Visible;PageControl1.ActivePage;RadioGroupCondition.ItemIndex;RadioGroupDesign.ItemIndex;RadioGroupDesign.Items;RadioGroupDesign1.ItemIndex;RadioGroupDesign2.ItemIndex;RadioGroupHelpType.ItemIndex;RadioGroupRestriction.ItemIndex;SpinEditComparisons.Enabled;SpinEditComparisons.Value;SpinEditDragMoveFactor.Visible;SpinEditParticipant.Value;SpinEditSamples.Value;TabControlDesign.TabIndex;SpinEditDragMoveFactor.Value'
@@ -24,6 +24,7 @@ object Background: TBackground
     Width = 322
     ClientHeight = 500
     ClientWidth = 322
+    ParentBackground = False
     ParentColor = False
     TabOrder = 0
     object EditParticipant: TEdit
