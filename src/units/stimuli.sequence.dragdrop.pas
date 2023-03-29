@@ -106,6 +106,9 @@ var
   LItem : TDragDropableItem;
   i: Integer;
 begin
+  if not Assigned(FParent) then
+    raise 'You must assigned a parent before loading.';
+
   ChannelDragMouseMoveFactor :=
     AParameters.Values['DragMoveFactor'].ToInteger;
   DragMouseMoveMode :=
@@ -124,6 +127,7 @@ begin
     begin
       LItem := Comparisons[i].Item as TDragDropableItem;
       LItem.LoadFromFile(ComparLetter+(i+1).ToString);
+      LItem.Parent := Parent;
       LItem.Invalidate;
     end;
 
@@ -132,6 +136,7 @@ begin
       LItem := Samples[i].Item as TDragDropableItem;
       LItem.LoadFromFile(SampleLetter+(i+1).ToString);
       LItem.DragMouseMoveMode:=DragMouseMoveMode;
+      LItem.Parent := Parent;
       LItem.Invalidate;
     end;
   end;
@@ -424,6 +429,7 @@ begin
   FComparisons := TDragDropableItems.Create;
   FAnimation := TAnimation.Create(Self);
   FDoneAnimations := TAnimations.Create;
+  FParent := nil;
 end;
 
 destructor TDragDropStimuli.Destroy;

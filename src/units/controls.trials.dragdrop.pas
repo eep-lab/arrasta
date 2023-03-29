@@ -89,6 +89,11 @@ begin
   FTimer.Interval := 500;
   FTimer.OnTimer := @StopInterval;
   FStimuli := TDragDropStimuli.Create(Self);
+  FStimuli.Parent := Self.Parent;
+  FStimuli.OnRightDragDrop:=@Consequence;
+  FStimuli.OnWrongDragDrop:=@WrongDragDrop;
+  FStimuli.OnDragDropDone:=@DragDropDone;
+
   //FStimuli.LogEvent := @LogEvent;
   FResponseEnabled := False;
 end;
@@ -132,10 +137,6 @@ begin
   FCounterType := ctNone;
   LParameters := Configurations.Parameters;
   FStimuli.LoadFromParameters(LParameters);
-  FStimuli.Parent := Self.Parent;
-  FStimuli.OnRightDragDrop:=@Consequence;
-  FStimuli.OnWrongDragDrop:=@WrongDragDrop;
-  FStimuli.OnDragDropDone:=@DragDropDone;
 
   if Self.ClassType = TDragDrop then Config(Self);
 end;
