@@ -158,7 +158,6 @@ begin
   Result := Default(TMatrix);
   SetLength(Result, AN, AN);
   LSquareSide := CmToScreenPixels(ASquareSide);
-  SetBorders(LSquareSide div 2);
   if ADistribute then begin
     LInterSpaceW := (Screen.Width -  (LSquareSide * AN)) div AN;
     LInterSpaceH := (Screen.Height - (LSquareSide * AN)) div AN;
@@ -184,6 +183,7 @@ begin
       Inc(LIndex);
     end;
   end;
+  SetBorders(Result[0][0].Top);
 end;
 
 {Cria grade circular considerando j como modelo central e i como comparações em
