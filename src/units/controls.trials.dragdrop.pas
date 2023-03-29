@@ -108,7 +108,8 @@ end;
 
 function TDragDrop.IsTestTrial: Boolean;
 begin
-  Result := Configurations.Parameters.Values[_Consequence].ToBoolean;
+  Result := False;
+  //Result := Configurations.Parameters.Values[_Consequence].ToBoolean;
 end;
 
 procedure TDragDrop.Play(ACorrection: Boolean);
@@ -207,35 +208,39 @@ end;
 
 procedure TDragDrop.StopInterval(Sender: TObject);
 begin
-  if FTimer.Interval = 6000 then begin
-    FStimuli.Start;
-    FTimer.Enabled:=False;
-    FTimer.Interval := 500;
-  end else begin
-    FTimer.Enabled:=False;
-    FStimuli.Stop;
-    FStimuli.ResetGrid;
-    FTimer.Enabled:=True;
-    FTimer.Interval := 6000;
-    FTimer.Enabled:=True;
-  end;
+  FTimer.Enabled:=False;
+  FStimuli.Stop;
+  EndTrial(Self);
 end;
 
 procedure TDragDrop.DragDropDone(Sender: TObject);
 begin
   FTimer.Enabled:=True;
   if FReportData.WrongDragDrops = 0 then begin
-    LogEvent('HIT1' + HeaderTabs +
+    Result := 'HIT1';
+    LogEvent(Result + HeaderTabs +
       TimestampToStr(TickCount - FTrialStart));
   end else begin
-    LogEvent('HIT2' + HeaderTabs +
+    Result := 'HIT2';
+    LogEvent(Result + HeaderTabs +
       FReportData.WrongDragDrops.ToString);
   end;
-  //EndTrial(Sender);
 end;
 
 procedure TDragDrop.TrialBeforeEnd(Sender: TObject);
+var
+  RepeatTrial : integer;
 begin
+  RepeatTrial := StrToIntDef(Configurations.Parameters.Values['RepeatTrial'], 0) -1;
+  if RepeatTrial > 0 then begin
+    if Counters.RepeatedTrials < RepeatTrial then begin
+      NextTrial := '0';
+      Counters.RepeatedTrials := Counters.RepeatedTrials +1;
+    end else begin
+      NextTrial := '1';
+      Counters.RepeatedTrials := 0;
+    end;
+  end;
   WriteData(Self);
 end;
 

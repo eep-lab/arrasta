@@ -60,8 +60,9 @@ begin
     WriteToTrial(i, ABlc, _Name, AName);
     WriteToTrial(i, ABlc, _Cursor, '0');
     WriteToTrial(i, ABlc, _Kind, T_DRAG_DROP);
-    WriteToTrial(i, ABlc, _LimitedHold, (60000*15).ToString);
-    WriteToTrial(i, ABlc, _Delay, (6000).ToString);
+    WriteToTrial(i, ABlc, 'RepeatTrial', (3).ToString);
+    //WriteToTrial(i, ABlc, _LimitedHold, (60000*15).ToString);
+    WriteToTrial(i, ABlc, _ITI, (6000).ToString);
     WriteToTrial(i, ABlc, 'Style.Samples.DragMode', ADragMode);
     WriteToTrial(i, ABlc, 'Relation', ARelation);
     WriteToTrial(i, ABlc, 'Samples', ASamples);
@@ -74,7 +75,7 @@ procedure WriteToConfigurationFile(ARelation: string; ASamples: integer;
   AComparisons: integer; AHelpType: integer; AFactor: integer);
 var
   LDragMode : string;
-  LBloc     : integer;
+  LBloc     , i: integer;
   LName     : string;
 begin
   case AHelpType of
@@ -87,8 +88,10 @@ begin
   LName := ARelation + #32 + LDragMode + #32 +
     'S'+ ASamples.ToString + 'C'+AComparisons.ToString;
 
+
   WriteTrial(LBloc, LName, LDragMode,
     ARelation, ASamples.ToString, AComparisons.ToString, AFactor.ToString);
+
 end;
 
 end.

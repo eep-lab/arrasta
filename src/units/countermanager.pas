@@ -30,6 +30,7 @@ type
     FBlcCscHitsType2: integer;
     FBlcPoints: integer;
     FOnRepeatBlc: TNotifyEvent;
+    FRepeatedTrials: integer;
   {Current Session}
     FSessionBackGroundResponses : integer;
     FSessionConsequences : integer;
@@ -124,6 +125,7 @@ type
     procedure SetVirtualTrialValue(Value : integer);
     property CurrentBlc : integer read FCurrentBlc write FCurrentBlc;
     property CurrentTrial : integer read FCurrentTrial write SetCurrentTrial;
+    property RepeatedTrials : integer read FRepeatedTrials write FRepeatedTrials;
   {Current Trial}
     property TrialStmResponses  : integer read FTrialStmResponses;
     property TrialBkGndResponses : integer read FTrialBkGndResponses;
@@ -247,6 +249,7 @@ begin
   FBlcPoints := 0;
 { SessionTrials }
   FTrialStmResponses := 0;
+  FRepeatedTrials:=0;
 
   { events }
 
