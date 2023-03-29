@@ -228,19 +228,7 @@ begin
 end;
 
 procedure TDragDrop.TrialBeforeEnd(Sender: TObject);
-var
-  RepeatTrial : integer;
 begin
-  RepeatTrial := StrToIntDef(Configurations.Parameters.Values['RepeatTrial'], 0) -1;
-  if RepeatTrial > 0 then begin
-    if Counters.RepeatedTrials < RepeatTrial then begin
-      NextTrial := '0';
-      Counters.RepeatedTrials := Counters.RepeatedTrials +1;
-    end else begin
-      NextTrial := '1';
-      Counters.RepeatedTrials := 0;
-    end;
-  end;
   WriteData(Self);
 end;
 

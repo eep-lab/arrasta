@@ -26,6 +26,7 @@ type
     procedure Invalidate;
     function OfSession : Boolean;
     function OfBloc : Boolean;
+    function OfTrial : Boolean;
   end;
 
 var
@@ -60,6 +61,24 @@ function TEndCriteria.OfBloc: Boolean;
 begin
   EndBlocOnEndTrial;
   Result := Counters.CurrentTrial >= FBloc.TotalTrials;
+end;
+
+function TEndCriteria.OfTrial: Boolean;
+var
+  RepeatTrial : integer;
+  S1 : string;
+begin
+  Result := False;
+  S1 := ConfigurationFile.CurrentTrial.Parameters.Values['RepeatTrial'];
+  RepeatTrial := StrToIntDef(S1, 0) -1;
+  if RepeatTrial > 0 then begin
+    if Counters.RepeatedTrials < RepeatTrial then begin
+      Counters.RepeatedTrials := Counters.RepeatedTrials +1;
+    end else begin
+      Result := True;
+      Counters.RepeatedTrials := 0;
+    end;
+  end;
 end;
 
 procedure TEndCriteria.EndBlocOnEndTrial;

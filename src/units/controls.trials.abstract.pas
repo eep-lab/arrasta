@@ -175,6 +175,7 @@ implementation
 
 uses Graphics, Constants, Timestamps, Canvas.Helpers
    , Session.Configuration.GlobalContainer
+   , Session.EndCriteria
    , Cheats
     {$ifdef DEBUG}
     , Loggers.Debug
@@ -286,8 +287,16 @@ begin
 end;
 
 procedure TTrial.EndTrialThread(Sender: TObject);
+var
+  RepeatTrial : integer;
 begin
-  if Assigned(OnLimitedHold) then OnLimitedHold(Sender);
+  {$ifdef DEBUG}
+    DebugLn(mt_Debug + 'TTrial.EndTrial2');
+  {$endif}
+
+  if Assigned(OnLimitedHold) then
+    OnLimitedHold(Sender);
+
   if CheatsModeOn then begin
     if Assigned(ParticipantBot) then
       ParticipantBot.Stop;
@@ -295,20 +304,27 @@ begin
 
   if Assigned(FClock) then
     FClock.Enabled := False;
-  {$ifdef DEBUG}
-    DebugLn(mt_Debug + 'TTrial.EndTrial2');
-  {$endif}
 
   LogEvent('TE');
   FResponseEnabled:= False;
   Hide;
-  if Assigned(OnTrialBeforeEnd) then OnTrialBeforeEnd(Sender);
+
+  if EndCriteria.OfTrial then begin
+    NextTrial := '1';
+  end else begin
+    NextTrial := '0'
+  end;
+
+  if Assigned(OnTrialBeforeEnd) then
+    OnTrialBeforeEnd(Sender);
+
   if Parent is TCustomControl then
     with TCustomControl(Parent) do
       begin
         OnKeyDown := FOldKeyDown;
         OnKeyUp := FOldKeyUp;
       end;
+
   case Result of
     T_HIT : if Assigned(OnHit) then OnHit(Sender);
     T_MISS: if Assigned(OnMiss) then OnMiss(Sender);
@@ -316,9 +332,11 @@ begin
   end;
 
   if FIsCorrection then
-    if Assigned(OnEndCorrection) then OnEndCorrection(Sender);
+    if Assigned(OnEndCorrection) then
+      OnEndCorrection(Sender);
 
-  if Assigned(OnTrialEnd) then OnTrialEnd(Self);
+  if Assigned(OnTrialEnd) then
+    OnTrialEnd(Self);
 end;
 
 procedure TTrial.SetConfigurations(AValue: TCfgTrial);
