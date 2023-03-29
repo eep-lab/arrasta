@@ -506,6 +506,8 @@ end;
 constructor TGrid.Create(ASeed: integer);
 begin
   FSeed := ASeed;
+  FSamplesCount := -1;
+  FComparisonsCount := -1;
   FCellsCount:=ASeed*ASeed;
   FCellsSize := 4.5;
   FGridStyle := gtSquare;
@@ -524,9 +526,11 @@ end;
 
 procedure TGrid.UpdatePositions(ASamples, AComparisons: integer);
 begin
-  FSamplesCount := ASamples;
-  FComparisonsCount := AComparisons;
-  CreatePositions;
+  if (FSamplesCount <> ASamples) or (FComparisonsCount <> AComparisons) then begin
+    FSamplesCount := ASamples;
+    FComparisonsCount := AComparisons;
+    CreatePositions;
+  end;
   RandomizePositions;
 end;
 
