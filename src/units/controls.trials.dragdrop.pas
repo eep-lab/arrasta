@@ -24,11 +24,8 @@ uses LCLIntf, LCLType, Controls, Classes, SysUtils, ExtCtrls
 type
 
   TReportData = record
-    SampleBegin   : string;
-    DelayBegin    : string;
-    ComparisonBegin   : string;
-    ComparisonLatency : string;
-    ComparisonChosen  : string;
+    WrongDragDrops   : integer;
+    Latency          : Extended;
   end;
 
   { TDragDrop }
@@ -38,18 +35,17 @@ type
   }
   TDragDrop = class(TTrial)
   private
-    FHasConsequenceInterval : Boolean;
     FTimer : TTimer;
     FReportData : TReportData;
     FStimuli : TDragDropStimuli;
-    //FParticipantResponse : TTBExpectedResponse;
-    procedure Consequence(Sender, Source: TObject; X, Y: Integer);
+    procedure Response(Sender: TObject);
+    procedure OtherDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure RightDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure WrongDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure StopInterval(Sender : TObject);
     procedure DragDropDone(Sender : TObject);
     procedure TrialBeforeEnd(Sender: TObject);
     function GetHeader: string;
-    //procedure WhiteScreen(Sender: TObject);
   protected
     procedure Paint; override;
     procedure TrialStart(Sender: TObject); virtual;
@@ -57,11 +53,9 @@ type
   public
     constructor Create(AOwner: TCustomControl); override;
     function AsString : string; override;
-    function HasVisualConsequence: Boolean; override;
     function IsTestTrial : Boolean;
-    function ConsequenceInterval: integer; override;
 
-    // must load parameters os mock parameters before play
+    // must load parameters or mock parameters before play
     procedure Play(ACorrection : Boolean); override;
     procedure LoadMockParameters; override;
   end;
@@ -90,12 +84,14 @@ begin
   FTimer.OnTimer := @StopInterval;
   FStimuli := TDragDropStimuli.Create(Self);
   FStimuli.Parent := Self.Parent;
-  FStimuli.OnRightDragDrop:=@Consequence;
+  FStimuli.OnOtherDragDrop:=@OtherDragDrop;
+  FStimuli.OnRightDragDrop:=@RightDragDrop;
   FStimuli.OnWrongDragDrop:=@WrongDragDrop;
   FStimuli.OnDragDropDone:=@DragDropDone;
 
   //FStimuli.LogEvent := @LogEvent;
-  FResponseEnabled := False;
+  FReportData.WrongDragDrops := 0;
+  FReportData.Latency := -1;
 end;
 
 function TDragDrop.AsString: string;
@@ -110,22 +106,9 @@ begin
   LTrial.Free;
 end;
 
-function TDragDrop.HasVisualConsequence: Boolean;
-begin
-  Result := (Self.Result <> T_NONE);
-end;
-
 function TDragDrop.IsTestTrial: Boolean;
 begin
   Result := Configurations.Parameters.Values[_Consequence].ToBoolean;
-end;
-
-function TDragDrop.ConsequenceInterval: integer;
-begin
-  if FHasConsequenceInterval then
-    Result := ConsequenceDuration
-  else
-    Result := 0;
 end;
 
 procedure TDragDrop.Play(ACorrection: Boolean);
@@ -133,7 +116,6 @@ var
   LParameters : TStringList;
 begin
   inherited Play(ACorrection);
-  FHasConsequenceInterval := True;
   FCounterType := ctNone;
   LParameters := Configurations.Parameters;
   FStimuli.LoadFromParameters(LParameters);
@@ -154,42 +136,25 @@ end;
 
 procedure TDragDrop.TrialStart(Sender: TObject);
 begin
-  FResponseEnabled:=False;
   FStimuli.Start;
-  FReportData.SampleBegin := TimestampToStr(LogEvent(rsReportStmModBeg));
-
+  FReportData.Latency := LogEvent(rsReportStmModBeg);
   if CheatsModeOn then begin
     //ParticipantBot.Start(FStimuli.AsInterface);
   end;
 end;
 
 procedure TDragDrop.WriteData(Sender: TObject);
-var
-  LSampleDuration: String;
 begin
   inherited WriteData(Sender);
-  //LSampleDuration := FStimuli.SampleDuration.ToString;
   Data := Data +
-    LSampleDuration + HeaderTabs +
-    FReportData.SampleBegin + HeaderTabs +
-    FReportData.DelayBegin + HeaderTabs +
-    FReportData.ComparisonBegin + HeaderTabs +
-    FReportData.ComparisonLatency + HeaderTabs +
-    FReportData.ComparisonChosen  + HeaderTabs;
+    TimestampToStr(FTrialStart - FReportData.Latency);
 end;
 
 function TDragDrop.GetHeader: string;
 begin
   Result :=
-    'S.Modelo.DuracaoProgramada' + HeaderTabs +
-    rsReportStmModBeg + HeaderTabs +
-    'S.Atraso.Inicio' + HeaderTabs +
-    rsReportStmCmpBeg + HeaderTabs +
-    rsReportRspCmpLat + HeaderTabs +
-    rsReportRspCmp    + HeaderTabs +
-    'S.C1.Media' + HeaderTabs + 'S.C1.Posicao'    + HeaderTabs +
-    'S.C2.Media' + HeaderTabs + 'S.C2.Posicao'    + HeaderTabs +
-    'S.C3.Media' + HeaderTabs + 'S.C3.Posicao';
+    rsReportRspLat // + HeaderTabs +
+    ;
 end;
 
 procedure TDragDrop.Paint;
@@ -200,16 +165,44 @@ begin
   end;
 end;
 
-procedure TDragDrop.Consequence(Sender, Source: TObject; X, Y: Integer);
+procedure TDragDrop.Response(Sender: TObject);
+begin
+  if FReportData.Latency < 0 then
+    FReportData.Latency := LogEvent(rsReportRspLat);
+end;
+
+procedure TDragDrop.OtherDragDrop(Sender, Source: TObject; X, Y: Integer);
+var
+  Sample : TDragDropableItem;
 begin
   RS232.Dispenser('3');
+  Sample := Source as TDragDropableItem;
+  LogEvent('OtherDragDrop' + HeaderTabs +
+    Sample.ShortName + '-' + X.ToString + #32 + Y.ToString);
+end;
 
-  //EndTrial(Sender);
+procedure TDragDrop.RightDragDrop(Sender, Source: TObject; X, Y: Integer);
+var
+  Comparison : TDragDropableItem;
+  Sample : TDragDropableItem;
+begin
+  RS232.Dispenser('3');
+  Comparison := Sender as TDragDropableItem;
+  Sample := Source as TDragDropableItem;
+  LogEvent('RightDragDrop' + HeaderTabs +
+    Sample.ShortName + '-' + Comparison.ShortName);
 end;
 
 procedure TDragDrop.WrongDragDrop(Sender, Source: TObject; X, Y: Integer);
+var
+  Comparison : TDragDropableItem;
+  Sample : TDragDropableItem;
 begin
-
+  Inc(FReportData.WrongDragDrops);
+  Comparison := Sender as TDragDropableItem;
+  Sample := Source as TDragDropableItem;
+  LogEvent('WrongDragDrop' + HeaderTabs +
+    Sample.ShortName + '-' + Comparison.ShortName);
 end;
 
 procedure TDragDrop.StopInterval(Sender: TObject);
@@ -231,6 +224,14 @@ end;
 procedure TDragDrop.DragDropDone(Sender: TObject);
 begin
   FTimer.Enabled:=True;
+  if FReportData.WrongDragDrops = 0 then begin
+    LogEvent('HIT1' + HeaderTabs +
+      TimestampToStr(TickCount - FTrialStart));
+  end else begin
+    LogEvent('HIT2' + HeaderTabs +
+      FReportData.WrongDragDrops.ToString);
+  end;
+  //EndTrial(Sender);
 end;
 
 procedure TDragDrop.TrialBeforeEnd(Sender: TObject);

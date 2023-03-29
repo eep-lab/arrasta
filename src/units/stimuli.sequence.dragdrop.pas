@@ -341,6 +341,8 @@ var
   LSample : TDragDropableItem;
 begin
   LSample := Sender as TDragDropableItem;
+  if Assigned(OnResponse) then
+    OnResponse(LSample);
   if LSample.Draggable then begin
     if FAnimation.Sibling <> (LSample as TLightImage) then
     begin

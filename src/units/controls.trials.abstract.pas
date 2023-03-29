@@ -113,6 +113,7 @@ type
     property OnTrialMouseDown: TMouseEvent read FOnTrialMouseDown write SetOnTrialMouseDown;
   protected
     FTable : TComponent;
+    FTrialStart : Extended;
     FShowCounter : Boolean;
     FCounterType : TCounterType;
     FCounterRectTopRight : TRect;
@@ -634,7 +635,7 @@ procedure TTrial.StartTrial(Sender: TObject);
 begin
   if FClock.Interval > 0 then
     FClock.Enabled := True;
-  LogEvent('TS');
+  FTrialStart := LogEvent('TS');
   FResponseEnabled := True;
   Show;
   SetFocus;
