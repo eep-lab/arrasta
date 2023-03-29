@@ -131,7 +131,7 @@ begin
   Background.Cursor := -1;
   FDelay.Interval := FTrial.ConsequenceDelay;
   FConsequenceDuration.Interval := FTrial.ConsequenceInterval;
-  if (ounters.CurrentTrial > 0 then begin
+  if Counters.CurrentTrial > 0 then begin
     FInterTrial.Interval :=
       StrToInt(FTrial.Configurations.Parameters.Values[_ITI]);
   end else begin
