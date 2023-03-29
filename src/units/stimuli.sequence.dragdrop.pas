@@ -202,6 +202,7 @@ end;
 procedure TDragDropStimuli.Stop;
 var
   LItem : TDragDropableItem;
+  LAnimation: TAnimation;
 begin
   for LItem in FComparisons do
     LItem.Hide;
@@ -210,6 +211,8 @@ begin
 
   FAnimation.Stop;
   FAnimation.Hide;
+  for LAnimation in FDoneAnimations do
+    LAnimation.Hide;
 end;
 
 procedure TDragDropStimuli.NewGridItems(ASamples, AComparisons: integer);
@@ -305,7 +308,7 @@ begin
   Sample.Left := Comparison.Left;
   Sample.Top := Comparison.Top - Sample.Height - 10;
 
-  LAnimation := TAnimation.Create(Parent);
+  LAnimation := TAnimation.Create(Self);
   LAnimation.Parent := Parent;
   LAnimation.Join(Sample, Comparison);
   LAnimation.SendToBack;
