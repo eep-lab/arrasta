@@ -46,7 +46,7 @@ type
     destructor Destroy; override;
     function BoundsAsString : string;
     function ShortName : string;
-    procedure DoResponse; virtual;
+    procedure DoExpectedResponse; virtual;
     procedure LoadFromFile(AFilename : string);
     procedure SetOriginalBounds(aLeft, aTop, aWidth, aHeight: integer);
     procedure SetOriginalSize;
@@ -329,7 +329,7 @@ begin
   SetBounds(aLeft, aTop, aWidth, aHeight);
 end;
 
-procedure TLightImage.DoResponse;
+procedure TLightImage.DoExpectedResponse;
 begin
   Mouse.CursorPos := GetRandomPoint;
   MouseDown(mbLeft, [], Mouse.CursorPos.X, Mouse.CursorPos.Y);

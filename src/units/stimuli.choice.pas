@@ -151,8 +151,8 @@ var
 begin
   R := Random(2);
   case R of
-    0 : FImageLeft.DoResponse;
-    1 : FImageRight.DoResponse;
+    0 : FImageLeft.DoExpectedResponse;
+    1 : FImageRight.DoExpectedResponse;
   end;
 end;
 

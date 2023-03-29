@@ -202,7 +202,7 @@ begin
       end;
     end;
   end;
-  LComparison.DoResponse;
+  LComparison.DoExpectedResponse;
 end;
 
 procedure TTBSequence.LoadFromParameters(AParameters: TStringList);

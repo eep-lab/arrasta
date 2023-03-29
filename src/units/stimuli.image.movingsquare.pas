@@ -46,7 +46,6 @@ type
   public
     constructor Create(AOwner : TComponent); override;
     function AsInterface : IStimuli;
-    procedure DoExpectedResponse;
     procedure Freeze;
     procedure LoadFromParameters(AParameters : TStringList);
     procedure Start;
@@ -253,11 +252,6 @@ begin
   if Assigned(AParameters) then begin
     { TODO: load parameters as needed}
   end;
-end;
-
-procedure TMovingSquare.DoExpectedResponse;
-begin
-  DoResponse;
 end;
 
 procedure TMovingSquare.Freeze;
