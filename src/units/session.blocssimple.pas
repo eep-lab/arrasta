@@ -31,13 +31,13 @@ type
     FInterTrial : TTimerItem;
     FDelay : TTimerItem;
     FConsequenceDuration : TTimerItem;
-    FWaitLabel : TLabel;
-    FConsequence : TStimulusFigure;
+    //FWaitLabel : TLabel;
+    //FConsequence : TStimulusFigure;
     FITIBegin, FITIEnd : Extended;
     FLastTrialHeader : string;
     FTrial : TTrial;
     procedure DelayBegin;
-    procedure ConsequenceBegin;
+    procedure InterTrialConsequenceBegin;
     procedure InterTrialIntervalBegin;
     function HasDelay : Boolean;
     function HasConsequenceDuration : Boolean;
@@ -48,7 +48,7 @@ type
   private
     FOnEndBloc: TNotifyEvent;
     FOnInterTrialStop: TNotifyEvent;
-    procedure ConsequenceEnd(Sender: TObject);
+    procedure InterTrialConsequenceEnd(Sender: TObject);
     procedure DelayEnd(Sender: TObject);
     procedure InterTrialEnd(Sender: TObject);
     procedure SetOnEndBloc(AValue: TNotifyEvent);
@@ -83,7 +83,7 @@ uses Constants
 procedure TBloc.PlayTrial(ABloc, ATrial: integer);
 var
   LTrialConfig : TCfgTrial;
-  S : string;
+  //S : string;
 begin
   LTrialConfig := ConfigurationFile.Trial[ABloc+1, ATrial+1];
 
@@ -95,8 +95,8 @@ begin
       T_HTM : FTrial := THTMLMessage.Create(Background);
       T_DRAG_DROP : FTrial := TDragDrop.Create(Background);
     end;
-    LTrialConfig.Parameters.Values[_CrtMaxTrials] :=
-      ConfigurationFile.CurrentBloc.CrtMaxTrials.ToString;
+    //LTrialConfig.Parameters.Values[_CrtMaxTrials] :=
+    //  ConfigurationFile.CurrentBloc.CrtMaxTrials.ToString;
     if Counters.SessionTrials = 0 then
     begin
       FTrial.SaveData(
@@ -131,7 +131,7 @@ begin
   Background.Cursor := -1;
   FDelay.Interval := FTrial.ConsequenceDelay;
   FConsequenceDuration.Interval := FTrial.ConsequenceInterval;
-  if Counters.CurrentTrial > 0 then begin
+  if (ounters.CurrentTrial > 0 then begin
     FInterTrial.Interval :=
       StrToInt(FTrial.Configurations.Parameters.Values[_ITI]);
   end else begin
@@ -157,7 +157,7 @@ begin
   end;
 
   if HasConsequenceDuration then begin
-    ConsequenceBegin;
+    InterTrialConsequenceBegin;
     FSerialTimer.Start;
     Exit;
   end;
@@ -261,7 +261,7 @@ end;
 procedure TBloc.DelayEnd(Sender: TObject);
 begin
   if HasConsequenceDuration then begin
-    ConsequenceBegin;
+    InterTrialConsequenceBegin;
     Exit;
   end;
 
@@ -270,33 +270,33 @@ begin
   end;
 end;
 
-procedure TBloc.ConsequenceBegin;
+procedure TBloc.InterTrialConsequenceBegin;
 begin
   if FTrial.HasVisualConsequence then
     case FTrial.Result of
       'HIT+BLACKOUT':
         begin
-          Background.Color := clBlack;
+          //Background.Color := clBlack;
         end;
       'HIT' :
         begin
-          Background.Color := clWhite;
-          FConsequence.Start;
+          //Background.Color := clWhite;
+          //FConsequence.Start;
         end;
 
       'MISS':
         begin
-          Background.Color := clBlack;
+          //Background.Color := clBlack;
         end;
     end;
 end;
 
-procedure TBloc.ConsequenceEnd(Sender: TObject);
+procedure TBloc.InterTrialConsequenceEnd(Sender: TObject);
 begin
-  Background.Color := clWhite;
+  //Background.Color := clWhite;
 
-  if FConsequence.Visible then
-    FConsequence.Stop;
+  //if FConsequence.Visible then
+  //  FConsequence.Stop;
 
   if HasInterTrialTime then begin
     InterTrialIntervalBegin;
@@ -325,11 +325,11 @@ begin
   FConsequenceDuration.Interval := 0;
   FInterTrial.Interval := 0;
 
-  if FConsequence.Visible then
-    FConsequence.Stop;
-
-  if FWaitLabel.Visible then
-    FWaitLabel.Hide;
+  //if FConsequence.Visible then
+  //  FConsequence.Stop;
+  //
+  //if FWaitLabel.Visible then
+  //  FWaitLabel.Hide;
 
   if Assigned(OnInterTrialEnd) then OnInterTrialEnd(Self);
   FITIEnd := TickCount - GlobalContainer.TimeStart;
@@ -343,44 +343,44 @@ begin
 end;
 
 constructor TBloc.Create(AOwner: TComponent);
-var
-  LParameters : TStringList;
+//var
+//  LParameters : TStringList;
 begin
   inherited Create(AOwner);
   //FTable := nil;
   FSerialTimer := TSerialTimer.Create(Self);
 
   FDelay.OnTimerEvent := @DelayEnd;
-  FConsequenceDuration.OnTimerEvent := @ConsequenceEnd;
+  FConsequenceDuration.OnTimerEvent := @InterTrialConsequenceEnd;
   FSerialTimer.OnEndTimeSerie := @InterTrialEnd;
 
   FLastTrialHeader := '';
   FITIBegin := 0;
   FITIEnd := 0;
 
-  FWaitLabel := TLabel.Create(Self);
-  with FWaitLabel do begin
-    Visible := False;
-    Cursor := -1;
-    Align := alClient;
-    Alignment := taCenter;
-    Anchors := [akLeft,akRight];
-    WordWrap := True;
-    Font.Name := 'Arial';
-    Font.Color := 0;
-    Font.Size := 30;
-    Layout:=tlCenter;
-    Caption:='Aguarde';
-    //OnMouseUp := @MessageMouseUp;
-  end;
+  //FWaitLabel := TLabel.Create(Self);
+  //with FWaitLabel do begin
+  //  Visible := False;
+  //  Cursor := -1;
+  //  Align := alClient;
+  //  Alignment := taCenter;
+  //  Anchors := [akLeft,akRight];
+  //  WordWrap := True;
+  //  Font.Name := 'Arial';
+  //  Font.Color := 0;
+  //  Font.Size := 30;
+  //  Layout:=tlCenter;
+  //  Caption:='Aguarde';
+  //  //OnMouseUp := @MessageMouseUp;
+  //end;
 
-  LParameters := TStringList.Create;
-  LParameters.Values['Consequence'] := 'acerto.png';
-  FConsequence := TStimulusFigure.Create(Self);
-  FConsequence.Key := 'Consequence';
-  FConsequence.HideCursor;
-  FConsequence.LoadFromParameters(LParameters);
-  LParameters.Free;
+  //LParameters := TStringList.Create;
+  //LParameters.Values['Consequence'] := 'acerto.png';
+  //FConsequence := TStimulusFigure.Create(Self);
+  //FConsequence.Key := 'Consequence';
+  //FConsequence.HideCursor;
+  //FConsequence.LoadFromParameters(LParameters);
+  //LParameters.Free;
 end;
 
 procedure TBloc.BeforePlay;
@@ -388,8 +388,8 @@ procedure TBloc.BeforePlay;
 //  LBeginTable : string;
 //  LEndTable: string;
 begin
-  FWaitLabel.Parent := Background;
-  FConsequence.Parent := Background;
+  //FWaitLabel.Parent := Background;
+  //FConsequence.Parent := Background;
   Background.Cursor := -1;
 
   //if Assigned(FTable) then begin
