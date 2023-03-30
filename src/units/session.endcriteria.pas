@@ -68,14 +68,14 @@ var
   RepeatTrial : integer;
   S1 : string;
 begin
-  Result := False;
+  Result := True;
   S1 := ConfigurationFile.CurrentTrial.Parameters.Values['RepeatTrial'];
   RepeatTrial := StrToIntDef(S1, 0) -1;
   if RepeatTrial > 0 then begin
     if Counters.RepeatedTrials < RepeatTrial then begin
+      Result := False;
       Counters.RepeatedTrials := Counters.RepeatedTrials +1;
     end else begin
-      Result := True;
       Counters.RepeatedTrials := 0;
     end;
   end;
