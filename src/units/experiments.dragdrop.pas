@@ -59,7 +59,7 @@ begin
   begin
     WriteToTrial(i, ABlc, _Name, AName);
     WriteToTrial(i, ABlc, _Cursor, '0');
-    WriteToTrial(i, ABlc, _Kind, T_DRAG_DROP);
+    WriteToTrial(i, ABlc, _Kind, T_DRAGDROP);
     WriteToTrial(i, ABlc, 'RepeatTrial', (3).ToString);
     //WriteToTrial(i, ABlc, _LimitedHold, (60000*15).ToString);
     WriteToTrial(i, ABlc, _ITI, (6000).ToString);

@@ -14,6 +14,7 @@ unit Controls.Trials.Abstract;
 interface
 
 uses Controls, ExtCtrls, Classes, SysUtils
+  , Session.Trials
   , Session.Configuration
   , Loggers.Reports
   {$IFDEF RS232}
@@ -348,6 +349,7 @@ begin
   FConfigurations.Name := AValue.Name;
   FConfigurations.NumComp := AValue.NumComp;
   FConfigurations.Parameters.Assign(AValue.Parameters);
+  AValue.Parameters.Free;
 end;
 
 procedure TTrial.SetLimitedHold(AValue: integer);
@@ -548,6 +550,12 @@ procedure TTrial.Play;
 var
   LParameters : TStringList;
 begin
+  if Counters.SessionTrials = 0 then begin
+    SaveData(
+      HFIRST_TIMESTAMP + #9 +
+      TimestampToStr(GlobalContainer.TimeStart) + LineEnding + LineEnding);
+    SaveData(HeaderTimestamps + LineEnding);
+  end;
   LParameters := Configurations.Parameters;
 
   // avoid responses while loading configurations

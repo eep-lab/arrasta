@@ -66,7 +66,7 @@ type
 
 implementation
 
-uses Forms, Graphics
+uses Forms, Graphics, Session.Backgrounds
   , Constants, Cheats
   , Stimuli.Image.DragDropable
   //, Experiments.Grids

@@ -282,7 +282,7 @@ const
   T_FPFN = 'FPFN';
   T_MRD = 'MRD';
   T_MSG = 'MSG';
-  T_HTM = 'HTMLM';
+  T_HTMLMESSAGE = 'HTMLMESSAGE';
   T_RTF = 'RTFM';
   T_EO1 = 'OP1';
   T_VTFI = 'VTFI';
@@ -292,7 +292,7 @@ const
   T_MTS = 'MTS';
   T_DMTS = 'DMTS';
   T_DMTSA = 'DMTSA';
-  T_DRAG_DROP = 'DRAG_DROP';
+  T_DRAGDROP = 'DRAGDROP';
   T_Simple = 'SIMPLE';
   T_LIK = 'LIKERT';
   T_PFR = 'PERFORMANCE';

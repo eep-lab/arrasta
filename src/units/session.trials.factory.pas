@@ -1,109 +1,95 @@
+{
+  Stimulus Control
+  Copyright (C) 2014-2023 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
+
+  The present file is distributed under the terms of the GNU General Public License (GPL v3.0).
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+}
 unit Session.Trials.Factory;
 
 {$mode ObjFPC}{$H+}
-{$modeswitch TypeHelpers}
 
 interface
 
 uses
-  Classes, SysUtils, Session.Trials;
+  Classes, SysUtils, fgl, Session.Trials, Controls.Trials.Abstract;
 
 type
 
-  TTrialKind = (TrialHtmlMessage, TrialDragDrop);
+  TTrialClass = class of TTrial;
+
+  TTrialRegistry = specialize TFPGMap<string, TTrialClass>;
 
   { TTrialFactory }
 
   TTrialFactory = class
+    private
+      class var FRegistry: TTrialRegistry;
+      class function GetRegistry: TTrialRegistry; static;
+      class destructor Destroy;
     public
-      class function NewTrial : ITrial;
-  end;
-
-type
-
-  { TTrialKindHelper }
-
-  TTrialKindHelper = type helper for TTrialKind
-    function ToString : string;
-  end;
-
-  { TTrialKindStringHelper }
-
-  TTrialKindStringHelper = type helper(TStringHelper) for string
-    function ToTrialKind : TTrialKind;
+      class procedure RegisterTrialClass(
+        ATrialKind: string; ATrialClass: TTrialClass); static;
+      class function GetNewTrial : ITrial; static;
   end;
 
 implementation
 
 uses Constants
-   , Timestamps
-   , Loggers.Reports
    , Session.InterTrialEvents
    , Session.Backgrounds
    , Session.Configuration
    , Session.Configuration.GlobalContainer
    , Session.ConfigurationFile
-   , Controls.Trials.Abstract
    , Controls.Trials.HTMLMessage
    , Controls.Trials.DragDrop
    ;
 
-{ TTrialKindHelper }
-
-function TTrialKindHelper.ToString: string;
-begin
-  WriteStr(Result, Self);
-end;
-
-{ TTrialKindStringHelper }
-
-function TTrialKindStringHelper.ToTrialKind: TTrialKind;
-begin
-  case UpperCase(Self) of
-    T_HTM       : Result := TrialHtmlMessage;
-    T_DRAG_DROP : Result := TrialDragDrop;
-    else
-      RunError(107);
-  end;
-end;
-
-var
-  Trial : TTrial;
-
 { TTrialFactory }
 
-class function TTrialFactory.NewTrial: ITrial;
+class function TTrialFactory.GetRegistry: TTrialRegistry;
+begin
+  if not Assigned(FRegistry) then
+    FRegistry := TTrialRegistry.Create;
+  Result := FRegistry;
+end;
+
+class destructor TTrialFactory.Destroy;
+begin
+  if not Assigned(FRegistry) then
+    FRegistry.Free;
+end;
+
+class procedure TTrialFactory.RegisterTrialClass(ATrialKind: string;
+  ATrialClass: TTrialClass);
+begin
+  GetRegistry[ATrialKind] := ATrialClass;
+end;
+
+class function TTrialFactory.GetNewTrial: ITrial;
 var
   Configurations : TCfgTrial;
+  TrialClass : TTrialClass;
+  Trial : TTrial;
 begin
-  if Assigned(Trial) then
-    FreeAndNil(Trial);
-
   Configurations :=
     ConfigurationFile.Trial[Counters.CurrentBlc+1, Counters.CurrentTrial+1];
 
-  try
-    case Configurations.Kind.ToTrialKind of
-      TrialHtmlMessage : Trial := THTMLMessage.Create(Background);
-      TrialDragDrop : Trial := TDragDrop.Create(Background);
-    end;
-    if Counters.SessionTrials = 0 then
-    begin
-      Trial.SaveData(
-        HFIRST_TIMESTAMP + #9 +
-        TimestampToStr(GlobalContainer.TimeStart) + LineEnding + LineEnding);
-      Trial.SaveData(Trial.HeaderTimestamps + LineEnding);
-    end;
-    Trial.Configurations := Configurations;
-    Trial.OnTrialEnd := InterTrialEvents.OnTrialEnd;
-  finally
-    Configurations.Parameters.Free;
-  end;
+  if not FRegistry.TryGetData(Configurations.Kind, TrialClass) then
+    raise EArgumentException.CreateFmt(
+      'Trial kind is not registered: %s %s', [Configurations.Kind, TrialClass]);
+
+  Trial := TrialClass.Create(Background);
+  Trial.Configurations := Configurations;
+  Trial.OnTrialEnd := InterTrialEvents.OnTrialEnd;
   Result := Trial as ITrial;
 end;
 
 initialization
-  Trial := nil;
+  TTrialFactory.RegisterTrialClass(T_HTMLMESSAGE, THTMLMessage);
+  TTrialFactory.RegisterTrialClass(T_DRAGDROP, TDragDrop);
 
 end.
 

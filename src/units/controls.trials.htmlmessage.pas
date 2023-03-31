@@ -14,7 +14,7 @@ unit Controls.Trials.HTMLMessage;
 interface
 
 uses LCLIntf, LCLType, Controls, Classes, SysUtils, Graphics, IpHtml
-
+  , Session.Trials
   , Stimuli.NextButton
   , Controls.Trials.Abstract
   , Controls.Trials.Helpers
@@ -24,7 +24,7 @@ type
 
   { THTMLMessage }
 
-  THTMLMessage = class(TTrial)
+  THTMLMessage = class(TTrial, ITrial)
     procedure EndButtonClick(Sender : TObject);
   private
     FStimulus : TNextButton;

@@ -93,7 +93,8 @@ begin
   if EndCriteria.OfBloc then begin
     if Assigned(OnEndBloc) then OnEndBloc(Self);
   end else begin
-    FTrial := TTrialFactory.NewTrial;
+    FTrial := nil;
+    FTrial := TTrialFactory.GetNewTrial;
     FTrial.Play;
   end;
 end;
