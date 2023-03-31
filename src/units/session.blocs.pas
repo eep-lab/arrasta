@@ -29,17 +29,20 @@ type
   private
     FTrial : ITrial;
     FOnEndBloc: TNotifyEvent;
-    FOnInterTrialEnd: TNextTrialEvent;
+    FOnInterTrialEnd: TNotifyEvent;
     procedure SetOnEndBloc(AValue: TNotifyEvent);
-    procedure InterTrialEventsEnd(NextTrialCode: string);
-    procedure SetOnInterTrialEnd(AValue: TNextTrialEvent);
+    procedure InterTrialEventsEnd(Sender: TObject);
+    procedure SetOnInterTrialEnd(AValue: TNotifyEvent);
   public
     constructor Create(AOwner : TComponent); override;
     procedure BeforePlay;
     procedure Play;
     property OnEndBloc : TNotifyEvent read FOnEndBloc write SetOnEndBloc;
-    property OnInterTrialEnd : TNextTrialEvent read FOnInterTrialEnd write SetOnInterTrialEnd;
+    property OnInterTrialEnd : TNotifyEvent read FOnInterTrialEnd write SetOnInterTrialEnd;
   end;
+
+var
+  NextTrial : string;
 
 implementation
 
@@ -58,18 +61,18 @@ begin
   FOnEndBloc:=AValue;
 end;
 
-procedure TBloc.InterTrialEventsEnd(NextTrialCode: string);
+procedure TBloc.InterTrialEventsEnd(Sender: TObject);
 var
   LNextTrial: Integer;
 begin
-  LNextTrial := StrToIntDef(NextTrialCode, 1);
+  LNextTrial := StrToIntDef(NextTrial, 1);
   Counters.CurrentTrial := Counters.CurrentTrial+LNextTrial;
   if Counters.CurrentTrial < 0 then
     Exception.Create('Exception. CurrentTrial cannot be less than zero.');
   Play;
 end;
 
-procedure TBloc.SetOnInterTrialEnd(AValue: TNextTrialEvent);
+procedure TBloc.SetOnInterTrialEnd(AValue: TNotifyEvent);
 begin
   if FOnInterTrialEnd=AValue then Exit;
   FOnInterTrialEnd:=AValue;

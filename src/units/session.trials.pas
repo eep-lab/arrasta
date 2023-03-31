@@ -11,8 +11,6 @@ uses
 
 type
 
-  TNextTrialEvent = procedure(NextTrialCode: string) of object;
-
    { IInterTrial }
 
   ITrial = interface

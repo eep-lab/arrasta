@@ -148,7 +148,7 @@ type
     property Header: string read FHeader write FHeader;
     property HeaderTimestamps: string read FHeaderTimestamps write FHeaderTimestamps;
     property IETConsequence : string read FIETConsequence write FIETConsequence;
-    property NextTrial: string read FNextTrial write FNextTrial;
+    property NextTrialCode: string read FNextTrial write FNextTrial;
     property Result: string read FResult write FResult;
     property LimitedHold : Integer read FLimitedHold write SetLimitedHold;
     property RootMedia : string read GetRootMedia write SetRootMedia;
@@ -176,9 +176,11 @@ resourcestring
 implementation
 
 uses Graphics, Constants, Timestamps, Canvas.Helpers
+   , Session.Blocs
    , Session.Configuration.GlobalContainer
    , Session.EndCriteria
    , Cheats
+   , Loggers
     {$ifdef DEBUG}
     , Loggers.Debug
     {$endif}
@@ -227,7 +229,7 @@ begin
   //    Data := Data + LineEnding + SESSION_CANCELED + LineEnding;
   //    Result := T_NONE;
   //    IETConsequence := T_NONE;
-  //    NextTrial := T_END;
+  //    NextTrialCode := T_END;
   //    FClock.Enabled := False;
   //    Exit;
   //  end;
@@ -237,7 +239,7 @@ begin
   //    FResponseEnabled := False;
   //    Result := T_MISS;
   //    //IETConsequence := T_NONE;
-  //    NextTrial := '0';
+  //    NextTrialCode := '0';
   //    FClock.Enabled := False;  // EndTrial(Self);
   //    Exit;
   //  end;
@@ -312,9 +314,9 @@ begin
   Hide;
 
   if EndCriteria.OfTrial then begin
-    NextTrial := '1';
+    NextTrialCode := '1';
   end else begin
-    NextTrial := '0'
+    NextTrialCode := '0'
   end;
 
   if Assigned(OnTrialBeforeEnd) then
@@ -327,15 +329,26 @@ begin
         OnKeyUp := FOldKeyUp;
       end;
 
+  //case Result of
+  //  T_HIT : if Assigned(OnHit) then OnHit(Sender);
+  //  T_MISS: if Assigned(OnMiss) then OnMiss(Sender);
+  //  T_NONE: if Assigned(OnNone) then OnNone(Sender);
+  //end;
+
   case Result of
-    T_HIT : if Assigned(OnHit) then OnHit(Sender);
-    T_MISS: if Assigned(OnMiss) then OnMiss(Sender);
-    T_NONE: if Assigned(OnNone) then OnNone(Sender);
+    T_HIT : Counters.OnHit(Sender);
+    T_MISS: Counters.OnMiss(Sender);
   end;
 
   if FIsCorrection then
     if Assigned(OnEndCorrection) then
       OnEndCorrection(Sender);
+
+  TrialResult := Result;
+  TrialHeader := Header;
+  TrialName := Configurations.Name;
+  TrialData := Data;
+  NextTrial := NextTrialCode;
 
   if Assigned(OnTrialEnd) then
     OnTrialEnd(Self);
@@ -469,7 +482,7 @@ begin
   FConfigurations.Parameters := TStringList.Create;
   FResponseEnabled := False;
   FShowStarter := False;
-  NextTrial := '0';
+  NextTrialCode := '0';
   Result := T_NONE;
   IETConsequence := T_NONE;
   Color := 0;
@@ -562,7 +575,7 @@ begin
   FResponseEnabled := False;
 
   // what will be the next trial?
-  NextTrial := LParameters.Values[_NextTrial];
+  NextTrialCode := LParameters.Values[_NextTrial];
 
   // will the trial count as MISS, HIT or NONE?
   Result := LParameters.Values[_cRes];

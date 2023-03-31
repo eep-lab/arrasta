@@ -40,16 +40,16 @@ type
     function HasInterTrialTime : Boolean;
     procedure TrialEnd(Sender: TObject);
   private
-    FOnInterTrialEnd: TNextTrialEvent;
+    FOnInterTrialEnd: TNotifyEvent;
     FOnTrialEnd: TNotifyEvent;
     procedure InterTrialConsequenceEnd(Sender: TObject);
     procedure DelayEnd(Sender: TObject);
     procedure InterTrialEnd(Sender: TObject);
-    procedure SetOnInterTrialEnd(AValue: TNextTrialEvent);
+    procedure SetOnInterTrialEnd(AValue: TNotifyEvent);
     procedure SetOnTrialEnd(AValue: TNotifyEvent);
   public
     constructor Create(AOwner : TComponent); override;
-    property OnInterTrialEnd : TNextTrialEvent read FOnInterTrialEnd write SetOnInterTrialEnd;
+    property OnInterTrialEnd : TNotifyEvent read FOnInterTrialEnd write SetOnInterTrialEnd;
     property OnTrialEnd : TNotifyEvent read FOnTrialEnd write SetOnTrialEnd;
   end;
 
@@ -80,16 +80,6 @@ var
 begin
   LTrial := TTrial(Sender);
   LTrial.Hide;
-  case LTrial.Result of
-    'HIT' : Counters.OnHit(Sender);
-    'MISS': Counters.OnMiss(Sender);
-  end;
-
-  TrialResult := LTrial.Result;
-  TrialHeader := LTrial.Header;
-  TrialName := LTrial.Configurations.Name;
-  TrialData := LTrial.Data;
-  FNextTrial := LTrial.NextTrial;
 
   Background.Cursor := -1;
   FDelay.Interval := LTrial.ConsequenceDelay;
@@ -160,17 +150,16 @@ begin
   case TrialResult of
     'HIT+BLACKOUT':
       begin
-        //Background.Color := clBlack;
+
       end;
     'HIT' :
       begin
-        //Background.Color := clWhite;
-        //FConsequence.Start;
+
       end;
 
     'MISS':
       begin
-        //Background.Color := clBlack;
+
       end;
   end;
   TrialResult := '';
@@ -178,11 +167,6 @@ end;
 
 procedure TInterTrialEvents.InterTrialConsequenceEnd(Sender: TObject);
 begin
-  //Background.Color := clWhite;
-
-  //if FConsequence.Visible then
-  //  FConsequence.Stop;
-
   if HasInterTrialTime then begin
     InterTrialIntervalBegin;
   end;
@@ -204,31 +188,22 @@ begin
   FConsequenceDuration.Interval := 0;
   FInterTrial.Interval := 0;
 
-  //if FConsequence.Visible then
-  //  FConsequence.Stop;
-  //
-  //if FWaitLabel.Visible then
-  //  FWaitLabel.Hide;
-
   ITIEnd := TickCount - GlobalContainer.TimeStart;
   WriteDataRow;
 
   if Assigned(OnInterTrialEnd) then
-    OnInterTrialEnd(FNextTrial);
+    OnInterTrialEnd(Self);
 end;
 
-procedure TInterTrialEvents.SetOnInterTrialEnd(AValue: TNextTrialEvent);
+procedure TInterTrialEvents.SetOnInterTrialEnd(AValue: TNotifyEvent);
 begin
   if FOnInterTrialEnd=AValue then Exit;
   FOnInterTrialEnd:=AValue;
 end;
 
 constructor TInterTrialEvents.Create(AOwner: TComponent);
-//var
-//  LParameters : TStringList;
 begin
   inherited Create(AOwner);
-  //FTable := nil;
   FOnTrialEnd := @TrialEnd;
   FSerialTimer := TSerialTimer.Create(Self);
 
@@ -239,32 +214,6 @@ begin
   FLastTrialHeader := '';
   ITIBegin := 0;
   ITIEnd := 0;
-
-  //FWaitLabel := TLabel.Create(Self);
-  //FWaitLabel.Parent := Background;
-  //with FWaitLabel do begin
-  //  Visible := False;
-  //  Cursor := -1;
-  //  Align := alClient;
-  //  Alignment := taCenter;
-  //  Anchors := [akLeft,akRight];
-  //  WordWrap := True;
-  //  Font.Name := 'Arial';
-  //  Font.Color := 0;
-  //  Font.Size := 30;
-  //  Layout:=tlCenter;
-  //  Caption:='Aguarde';
-  //  //OnMouseUp := @MessageMouseUp;
-  //end;
-
-  //LParameters := TStringList.Create;
-  //LParameters.Values['Consequence'] := 'acerto.png';
-  //FConsequence := TStimulusFigure.Create(Self);
-  //FConsequence.Parent := Background;
-  //FConsequence.Key := 'Consequence';
-  //FConsequence.HideCursor;
-  //FConsequence.LoadFromParameters(LParameters);
-  //LParameters.Free;
 end;
 
 end.
