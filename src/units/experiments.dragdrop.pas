@@ -60,7 +60,7 @@ begin
     WriteToTrial(i, ABlc, _Name, AName);
     WriteToTrial(i, ABlc, _Cursor, '0');
     WriteToTrial(i, ABlc, _Kind, T_DRAGDROP);
-    WriteToTrial(i, ABlc, 'RepeatTrial', (3).ToString);
+    WriteToTrial(i, ABlc, 'RepeatTrial', (1).ToString);
     //WriteToTrial(i, ABlc, _LimitedHold, (60000*15).ToString);
     WriteToTrial(i, ABlc, _ITI, (6000).ToString);
     WriteToTrial(i, ABlc, 'Style.Samples.DragMode', ADragMode);
@@ -74,21 +74,30 @@ end;
 procedure WriteToConfigurationFile(ARelation: string; ASamples: integer;
   AComparisons: integer; AHelpType: integer; AFactor: integer);
 var
-  LDragMode : string;
-  LBloc     , i: integer;
-  LName     : string;
+  LBloc: integer;
+  LDragMode , LName: string;
 begin
   case AHelpType of
     0 : LDragMode := dragFree.ToString;
     1 : LDragMode := dragChannel.ToString;
   end;
 
-  LBloc := 1;
 
   LName := ARelation + #32 + LDragMode + #32 +
     'S'+ ASamples.ToString + 'C'+AComparisons.ToString;
 
+  LBloc := 1;
+  ConfigurationFile.WriteToBloc(LBloc, _Name, 'Teste 1');
+  WriteTrial(LBloc, LName, LDragMode,
+    ARelation, ASamples.ToString, AComparisons.ToString, AFactor.ToString);
 
+  LBloc := 2;
+  ConfigurationFile.WriteToBloc(LBloc, _Name, 'Teste 2');
+  WriteTrial(LBloc, LName, LDragMode,
+    ARelation, ASamples.ToString, AComparisons.ToString, AFactor.ToString);
+
+  LBloc := 3;
+  ConfigurationFile.WriteToBloc(LBloc, _Name, 'Teste 3');
   WriteTrial(LBloc, LName, LDragMode,
     ARelation, ASamples.ToString, AComparisons.ToString, AFactor.ToString);
 

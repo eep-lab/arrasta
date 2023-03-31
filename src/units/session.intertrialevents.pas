@@ -16,7 +16,6 @@ interface
 uses
   Classes, SysUtils, ExtCtrls, StdCtrls, Controls
   , SerialTimer
-  , Session.Trials
   ;
 
 type
@@ -29,7 +28,6 @@ type
     FInterTrial : TTimerItem;
     FDelay : TTimerItem;
     FConsequenceDuration : TTimerItem;
-    FNextTrial : string;
     //FWaitLabel : TLabel;
     //FConsequence : TStimulusFigure;
     FLastTrialHeader : string;
@@ -79,7 +77,7 @@ var
   LTrial : TTrial;
 begin
   LTrial := TTrial(Sender);
-  LTrial.Hide;
+  //LTrial.Hide;
 
   Background.Cursor := -1;
   FDelay.Interval := LTrial.ConsequenceDelay;

@@ -49,7 +49,6 @@ uses
 , Loggers.Reports
 , Session.ConfigurationFile
 , Session.Configuration.GlobalContainer
-, Session.EndCriteria
 ;
 
 { TSession }
@@ -64,7 +63,6 @@ begin
   if EndCriteria.OfSession then begin
     EndSession;
   end else begin
-    Counters.OnEndBlc(Self);
     FBloc.BeforePlay;
     Counters.SetVirtualTrialValue(
       ConfigurationFile.Bloc[Counters.CurrentBlc+1].VirtualTrialValue);
@@ -82,6 +80,7 @@ end;
 
 procedure TSession.EndBloc(Sender: TObject);
 begin
+  Counters.OnEndBlc(Self);
   PlayBloc;
 end;
 
@@ -110,8 +109,6 @@ end;
 constructor TSession.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  //MakeConfigurationFile(0, SessionBlocs);
-  EndCriteria := TEndCriteria.Create(Self);
   FBloc := TBloc.Create(Self);
   FBloc.OnEndBloc := @EndBloc;
   //FBloc.OnInterTrialEnd := @InterTrialStop;

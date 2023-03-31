@@ -14,7 +14,7 @@ unit Session.Configuration.GlobalContainer;
 interface
 
 uses
-  CounterManager;
+  Session.EndCriteria, CounterManager;
 
 type
 
@@ -36,6 +36,7 @@ type
 var
   GlobalContainer : TGlobalContainer;
   Counters : TCounterManager;
+  EndCriteria : TEndCriteria;
 
 implementation
 
@@ -44,6 +45,8 @@ uses SysUtils, Forms, Timestamps;
 initialization
   Counters := TCounterManager.Create(nil);
   GlobalContainer := TGlobalContainer.Create;
+  EndCriteria := TEndCriteria.Create;
+
   with GlobalContainer do
   begin
     BaseFileName := '';
@@ -61,6 +64,7 @@ initialization
 finalization
   GlobalContainer.Free;
   Counters.Free;
+  EndCriteria.Free;
 
 end.
 

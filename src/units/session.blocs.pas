@@ -47,7 +47,6 @@ var
 implementation
 
 uses Session.Backgrounds
-   , Session.EndCriteria
    , Session.Trials.Factory
    , Session.InterTrialEvents
    , Session.Configuration.GlobalContainer
