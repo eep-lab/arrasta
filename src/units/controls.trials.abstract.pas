@@ -291,8 +291,6 @@ begin
 end;
 
 procedure TTrial.EndTrialThread(Sender: TObject);
-var
-  RepeatTrial : integer;
 begin
   {$ifdef DEBUG}
     DebugLn(mt_Debug + 'TTrial.EndTrial2');
@@ -311,7 +309,7 @@ begin
 
   LogEvent('TE');
   FResponseEnabled:= False;
-  Hide;
+  //Hide;
 
   if EndCriteria.OfTrial then begin
     NextTrialCode := '1';
@@ -350,8 +348,11 @@ begin
   TrialData := Data;
   NextTrial := NextTrialCode;
 
-  if Assigned(OnTrialEnd) then
+  if Assigned(OnTrialEnd) then begin
     OnTrialEnd(Self);
+  end else begin
+    raise EArgumentNilException.Create('OnTrialEnd not assigned.');
+  end;
 end;
 
 procedure TTrial.SetConfigurations(AValue: TCfgTrial);
