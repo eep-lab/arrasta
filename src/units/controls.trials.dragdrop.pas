@@ -15,6 +15,7 @@ interface
 
 uses LCLIntf, LCLType, Controls, Classes, SysUtils, ExtCtrls
 
+  , Session.Trials
   , Controls.Trials.Abstract
   , Stimuli.Sequence.DragDrop
   , Consequences
@@ -26,6 +27,7 @@ type
   TReportData = record
     WrongDragDrops   : integer;
     Latency          : Extended;
+    StimuliStart     : Extended;
   end;
 
   { TDragDrop }
@@ -33,7 +35,7 @@ type
   {
     Implements Drag Drop trials
   }
-  TDragDrop = class(TTrial)
+  TDragDrop = class(TTrial, ITrial)
   private
     FTimer : TTimer;
     FReportData : TReportData;
@@ -53,10 +55,12 @@ type
   public
     constructor Create(AOwner: TCustomControl); override;
     function AsString : string; override;
-    function IsTestTrial : Boolean;
+    function ConsequenceInterval: Cardinal; override;
+    function ConsequenceDelay: Cardinal; override;
+    function InterTrialInterval: Cardinal; override;
 
     // must load parameters or mock parameters before play
-    procedure Play(ACorrection : Boolean); override;
+    procedure Play; override;
     procedure LoadMockParameters; override;
   end;
 
@@ -84,6 +88,7 @@ begin
   FTimer.OnTimer := @StopInterval;
   FStimuli := TDragDropStimuli.Create(Self);
   FStimuli.Parent := Self.Parent;
+  FStimuli.OnResponse:=@Response;
   FStimuli.OnOtherDragDrop:=@OtherDragDrop;
   FStimuli.OnRightDragDrop:=@RightDragDrop;
   FStimuli.OnWrongDragDrop:=@WrongDragDrop;
@@ -106,17 +111,26 @@ begin
   LTrial.Free;
 end;
 
-function TDragDrop.IsTestTrial: Boolean;
+function TDragDrop.ConsequenceInterval: Cardinal;
 begin
-  Result := False;
-  //Result := Configurations.Parameters.Values[_Consequence].ToBoolean;
+  Result:=0;
 end;
 
-procedure TDragDrop.Play(ACorrection: Boolean);
+function TDragDrop.ConsequenceDelay: Cardinal;
+begin
+  Result:=0;
+end;
+
+function TDragDrop.InterTrialInterval: Cardinal;
+begin
+  Result:=Configurations.Parameters.Values['ITI'].ToInteger;
+end;
+
+procedure TDragDrop.Play;
 var
   LParameters : TStringList;
 begin
-  inherited Play(ACorrection);
+  inherited Play;
   FCounterType := ctNone;
   LParameters := Configurations.Parameters;
   FStimuli.LoadFromParameters(LParameters);
@@ -138,7 +152,7 @@ end;
 procedure TDragDrop.TrialStart(Sender: TObject);
 begin
   FStimuli.Start;
-  FReportData.Latency := LogEvent(rsReportStmModBeg);
+  FReportData.StimuliStart := LogEvent('Stimuli.Start');
   if CheatsModeOn then begin
     //ParticipantBot.Start(FStimuli.AsInterface);
   end;
@@ -178,8 +192,8 @@ var
 begin
   RS232.Dispenser('3');
   Sample := Source as TDragDropableItem;
-  LogEvent('OtherDragDrop' + HeaderTabs +
-    Sample.ShortName + '-' + X.ToString + #32 + Y.ToString);
+  LogEvent('Outro' + HeaderTabs +
+    Sample.ShortName + HeaderTabs + X.ToString + #32 + Y.ToString);
 end;
 
 procedure TDragDrop.RightDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -190,7 +204,7 @@ begin
   RS232.Dispenser('3');
   Comparison := Sender as TDragDropableItem;
   Sample := Source as TDragDropableItem;
-  LogEvent('RightDragDrop' + HeaderTabs +
+  LogEvent('Correto' + HeaderTabs +
     Sample.ShortName + '-' + Comparison.ShortName);
 end;
 
@@ -202,7 +216,7 @@ begin
   Inc(FReportData.WrongDragDrops);
   Comparison := Sender as TDragDropableItem;
   Sample := Source as TDragDropableItem;
-  LogEvent('WrongDragDrop' + HeaderTabs +
+  LogEvent('Errado' + HeaderTabs +
     Sample.ShortName + '-' + Comparison.ShortName);
 end;
 
@@ -217,11 +231,10 @@ procedure TDragDrop.DragDropDone(Sender: TObject);
 begin
   FTimer.Enabled:=True;
   if FReportData.WrongDragDrops = 0 then begin
-    Result := 'HIT1';
-    LogEvent(Result + HeaderTabs +
-      TimestampToStr(TickCount - FTrialStart));
+    Result := 'Acerto1';
+    LogEvent(Result);
   end else begin
-    Result := 'HIT2';
+    Result := 'Acerto2';
     LogEvent(Result + HeaderTabs +
       FReportData.WrongDragDrops.ToString);
   end;

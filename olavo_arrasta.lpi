@@ -181,7 +181,7 @@
         <PackageName Value="LCL"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="84">
+    <Units Count="88">
       <Unit0>
         <Filename Value="olavo_arrasta.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -195,9 +195,9 @@
         <UnitName Value="Forms.Main"/>
       </Unit1>
       <Unit2>
-        <Filename Value="src/units/session.blocssimple.pas"/>
+        <Filename Value="src/units/session.blocs.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Session.BlocsSimple"/>
+        <UnitName Value="Session.Blocs"/>
       </Unit2>
       <Unit3>
         <Filename Value="src/units/session.backgrounds.pas"/>
@@ -205,9 +205,8 @@
         <UnitName Value="Session.Backgrounds"/>
       </Unit3>
       <Unit4>
-        <Filename Value="src/units/sessionsimple.pas"/>
+        <Filename Value="src/units/session.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="SessionSimple"/>
       </Unit4>
       <Unit5>
         <Filename Value="src/forms/forms.main.lfm"/>
@@ -604,6 +603,26 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Experiments.DragDrop"/>
       </Unit83>
+      <Unit84>
+        <Filename Value="src/units/session.trials.factory.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Session.Trials.Factory"/>
+      </Unit84>
+      <Unit85>
+        <Filename Value="src/units/session.trials.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Session.Trials"/>
+      </Unit85>
+      <Unit86>
+        <Filename Value="src/units/session.intertrialevents.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Session.InterTrialEvents"/>
+      </Unit86>
+      <Unit87>
+        <Filename Value="src/units/loggers.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Loggers"/>
+      </Unit87>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

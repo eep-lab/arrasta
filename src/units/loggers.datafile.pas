@@ -30,6 +30,7 @@ type
   public
     constructor Create(AOwner: TComponent; AFileName: String); reintroduce;
     destructor Destroy; override;
+    class function Row(Cols: array of string): string;
     function IsOpened : Boolean;
     procedure SaveData(AData: string);
     procedure SaveLine(ALine: string);
@@ -102,6 +103,22 @@ destructor TRegData.Destroy;
 begin
   CloseFile;
   inherited Destroy;
+end;
+
+class function TRegData.Row(Cols: array of string): string;
+const
+  TAB = #9;
+var
+  i : Integer;
+  LastColumn : Integer;
+begin
+  Result := '';
+  LastColumn := High(Cols);
+  for i := 0 to LastColumn do
+    if i < LastColumn then
+      Result := Result + Cols[i]+TAB
+    else
+      Result := Result + Cols[i]+LineEnding;
 end;
 
 function TRegData.IsOpened: Boolean;

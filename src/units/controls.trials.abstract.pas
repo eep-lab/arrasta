@@ -131,10 +131,11 @@ type
     function AsString : string; virtual; abstract;
     function HasVisualConsequence : Boolean; virtual;
     function ConsequenceDelay : Cardinal; virtual;
-    function ConsequenceInterval : integer; virtual;
+    function ConsequenceInterval : Cardinal; virtual;
+    function InterTrialInterval : Cardinal; virtual; abstract;
     function ResultAsInteger : integer;
     procedure AssignTable(ATable : TComponent);
-    procedure Play(ACorrection: Boolean=False); virtual;
+    procedure Play; virtual;
     procedure Hide; virtual;
     procedure Show; virtual;
     procedure SetFocus; virtual;
@@ -522,7 +523,7 @@ begin
   Result := 0;
 end;
 
-function TTrial.ConsequenceInterval: integer;
+function TTrial.ConsequenceInterval: Cardinal;
 begin
   // uses ITI by default, overrided as needed
   Result := StrToIntDef(Configurations.Parameters.Values[_ITI], 0);
@@ -543,7 +544,7 @@ begin
   FTable := ATable;
 end;
 
-procedure TTrial.Play(ACorrection: Boolean);
+procedure TTrial.Play;
 var
   LParameters : TStringList;
 begin
@@ -564,12 +565,6 @@ begin
   if LParameters.Values[_Consequence] = '' then
     IETConsequence := T_NONE
   else IETConsequence := LParameters.Values[_Consequence];
-
-  // is it a correction trial?
-  if ACorrection then
-    FIsCorrection := True
-  else
-    FIsCorrection := False;
 
   // Trial background color
   Color:= StrToIntDef(LParameters.Values[_BkGnd], Parent.Color);

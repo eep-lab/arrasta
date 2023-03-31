@@ -48,11 +48,10 @@ resourcestring
 
 implementation
 
-uses
-  Forms
-  , SysUtils
-  , Session.Configuration.GlobalContainer
-  , Timestamps;
+uses Forms
+   , SysUtils
+   , Session.Configuration.GlobalContainer
+   ;
 
 var
   TimestampsLog : TRegData = nil;

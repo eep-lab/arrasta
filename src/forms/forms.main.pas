@@ -66,7 +66,7 @@ uses
    , Constants
    , Session.Backgrounds
    , Session.Configuration.GlobalContainer
-   , SessionSimple
+   , Session
    , Experiments.Grids
    , Experiments.Arrasta
    , Controls.Trials.DragDrop
@@ -141,7 +141,7 @@ begin
     Values['Comparisons'] := SpinEditComparisons.Value.ToString;
     Values['DragMoveFactor'] := SpinEditDragMoveFactor.Value.ToString;
   end;
-  LTrial.Play(False);
+  LTrial.Play;
   PanelConfigurations.Hide;
 end;
 

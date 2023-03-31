@@ -37,9 +37,9 @@ type
   public
     constructor Create(AOwner: TCustomControl); override;
     destructor Destroy;override;
-    function ConsequenceInterval: integer; override;
+    function ConsequenceInterval: Cardinal; override;
     function AsString : string; override;
-    procedure Play(ACorrection : Boolean); override;
+    procedure Play; override;
   end;
 
 implementation
@@ -92,7 +92,7 @@ begin
   inherited Destroy;
 end;
 
-function THTMLMessage.ConsequenceInterval: integer;
+function THTMLMessage.ConsequenceInterval: Cardinal;
 begin
   Result:=0;
 end;
@@ -114,12 +114,12 @@ begin
 end;
 
 
-procedure THTMLMessage.Play(ACorrection : Boolean);
+procedure THTMLMessage.Play;
 var
   LParameters : TStringList;
   LMessage : string;
 begin
-  inherited Play(ACorrection);
+  inherited Play;
   LParameters := Configurations.Parameters;
   with FMessage do
     begin
