@@ -6,12 +6,14 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 747
   ClientWidth = 779
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   LCLVersion = '2.3.0.0'
   WindowState = wsFullScreen
   object Button1: TButton
-    Left = 888
+    Left = 904
     Height = 25
-    Top = 920
+    Top = 912
     Width = 75
     Caption = 'Button1'
     OnClick = Button1Click
