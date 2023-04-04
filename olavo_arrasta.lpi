@@ -181,7 +181,7 @@
         <PackageName Value="LCL"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="88">
+    <Units Count="89">
       <Unit0>
         <Filename Value="olavo_arrasta.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -207,6 +207,7 @@
       <Unit4>
         <Filename Value="src/units/session.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="Session"/>
       </Unit4>
       <Unit5>
         <Filename Value="src/forms/forms.main.lfm"/>
@@ -623,6 +624,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Loggers"/>
       </Unit87>
+      <Unit88>
+        <Filename Value="src/units/session.configurationfile.writer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Session.Configurationfile.Writer"/>
+      </Unit88>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

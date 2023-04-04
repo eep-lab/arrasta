@@ -28,9 +28,11 @@ uses Classes, SysUtils
    , LazFileUtils
    , Session.Configuration.GlobalContainer
    , Session.ConfigurationFile
+   , Session.ConfigurationFile.Writer
    , Stimuli.Image.DragDropable
    ;
 
+var Writer : TConfigurationWriter;
 {
   Planned
   'Style.Samples.Animation'=Constrast
@@ -48,59 +50,58 @@ uses Classes, SysUtils
   'Comparisons'= 1 .. 3 // Note: Minimum equals Samples
   'DragMoveFactor'= 5 .. 100;
 }
-procedure WriteTrial(ABlc : integer;
-  AName: string; ADragMode: string; ARelation: string;
+procedure WriteTrials(AName: string; ADragMode: string; ARelation: string;
   ASamples: string; AComparisons: string; AFactor: string);
-var
-  i : integer;
 begin
-  i := ConfigurationFile.TrialCount[ABlc]+1;
-  with ConfigurationFile do
-  begin
-    WriteToTrial(i, ABlc, _Name, AName);
-    WriteToTrial(i, ABlc, _Cursor, '0');
-    WriteToTrial(i, ABlc, _Kind, T_DRAGDROP);
-    WriteToTrial(i, ABlc, 'RepeatTrial', (1).ToString);
-    //WriteToTrial(i, ABlc, _LimitedHold, (60000*15).ToString);
-    WriteToTrial(i, ABlc, _ITI, (6000).ToString);
-    WriteToTrial(i, ABlc, 'Style.Samples.DragMode', ADragMode);
-    WriteToTrial(i, ABlc, 'Relation', ARelation);
-    WriteToTrial(i, ABlc, 'Samples', ASamples);
-    WriteToTrial(i, ABlc, 'Comparisons', AComparisons);
-    WriteToTrial(i, ABlc, 'DragMoveFactor', AFactor);
+  case Writer.CurrentBloc of
+    0, 1, 2, 3, 4, 5 : begin
+      with Writer.TrialConfig do begin
+        Values[_Name] := AName;
+        Values[_Cursor] := '0';
+        Values[_Kind] := T_DRAGDROP;
+        Values['RepeatTrial'] := (1).ToString;
+        //Values[_LimitedHold] := (60000*15).ToString;
+        Values[_ITI] := (1000).ToString;
+        Values['Style.Samples.DragMode'] := ADragMode;
+        Values['Relation'] := ARelation;
+        Values['Samples'] := ASamples;
+        Values['Comparisons'] := AComparisons;
+        Values['DragMoveFactor'] := AFactor;
+      end;
+      Writer.WriteTrial;
+    end;
   end;
 end;
 
 procedure WriteToConfigurationFile(ARelation: string; ASamples: integer;
   AComparisons: integer; AHelpType: integer; AFactor: integer);
 var
-  LBloc: integer;
+  LBloc, Bloc: integer;
   LDragMode , LName: string;
 begin
-  case AHelpType of
-    0 : LDragMode := dragFree.ToString;
-    1 : LDragMode := dragChannel.ToString;
+  Writer := TConfigurationWriter.Create(ConfigurationFile);
+  try
+    case AHelpType of
+      0 : LDragMode := dragFree.ToString;
+      1 : LDragMode := dragChannel.ToString;
+    end;
+
+    LName := ARelation + #32 + LDragMode + #32 +
+      'S'+ ASamples.ToString + 'C'+AComparisons.ToString;
+
+    for Bloc := 0 to 5 do begin
+      Writer.CurrentBloc := Bloc;
+      with Writer.BlocConfig do begin
+        Values[_Name] := 'Bloco ' + Bloc.ToString;
+      end;
+      Writer.WriteBloc;
+      WriteTrials(LName, LDragMode, ARelation,
+        ASamples.ToString, AComparisons.ToString, AFactor.ToString);
+    end;
+
+  finally
+    Writer.Free;
   end;
-
-
-  LName := ARelation + #32 + LDragMode + #32 +
-    'S'+ ASamples.ToString + 'C'+AComparisons.ToString;
-
-  LBloc := 1;
-  ConfigurationFile.WriteToBloc(LBloc, _Name, 'Teste 1');
-  WriteTrial(LBloc, LName, LDragMode,
-    ARelation, ASamples.ToString, AComparisons.ToString, AFactor.ToString);
-
-  LBloc := 2;
-  ConfigurationFile.WriteToBloc(LBloc, _Name, 'Teste 2');
-  WriteTrial(LBloc, LName, LDragMode,
-    ARelation, ASamples.ToString, AComparisons.ToString, AFactor.ToString);
-
-  LBloc := 3;
-  ConfigurationFile.WriteToBloc(LBloc, _Name, 'Teste 3');
-  WriteTrial(LBloc, LName, LDragMode,
-    ARelation, ASamples.ToString, AComparisons.ToString, AFactor.ToString);
-
 end;
 
 end.
