@@ -24,22 +24,29 @@ type
   TBackground = class(TForm)
     ButtonStartAll: TButton;
     ButtonStartTrial: TButton;
-    EditParticipant: TEdit;
+    ComboBoxParticipants: TComboBox;
     FloatSpinEditScreenWidth: TFloatSpinEdit;
-    GroupBoxDesign: TGroupBox;
     GroupBoxComplexity: TGroupBox;
+    GroupBoxDesign: TGroupBox;
     IniPropStorage: TIniPropStorage;
-    LabelDragMoveFactor: TLabel;
+    LabelSessionTimeUnit: TLabel;
+    LabelConfigurations: TLabel;
+    LabelSessionTime: TLabel;
     LabelComparisons: TLabel;
+    LabelDragMoveFactor: TLabel;
     LabelSamples: TLabel;
     LabelScreenWidth: TLabel;
+    PageControlConfigurations: TPageControl;
     PanelConfigurations: TPanel;
     RadioGroupHelpType: TRadioGroup;
     RadioGroupRelation: TRadioGroup;
-    SpinEditDragMoveFactor: TSpinEdit;
+    SpinEditSessionTime: TSpinEdit;
     SpinEditComparisons: TSpinEdit;
+    SpinEditDragMoveFactor: TSpinEdit;
     SpinEditSamples: TSpinEdit;
     TabControlDesign: TTabControl;
+    TabSheetComplexity: TTabSheet;
+    TabSheet2: TTabSheet;
     procedure ButtonStartTrialClick(Sender: TObject);
     procedure RadioGroupHelpTypeClick(Sender: TObject);
     procedure ButtonStartAllClick(Sender: TObject);
@@ -88,7 +95,7 @@ var
   LExperiment : string;
 begin
   GlobalContainer.RootData := GlobalContainer.RootData +
-    EditParticipant.Text + DirectorySeparator;
+    ComboBoxParticipants.Text + DirectorySeparator;
   ForceDirectories(GlobalContainer.RootData);
   CheatsModeOn := False;
   PanelConfigurations.Hide;
@@ -107,7 +114,8 @@ begin
       SpinEditDragMoveFactor.Value);
 
   LName := LExperiment + #32 + LDesign + #32 + LHelpTp;
-  GSession.Play(LName, EditParticipant.Text);
+  GSession.Timer.Interval := SpinEditSessionTime.Value * 60000;
+  GSession.Play(LName, ComboBoxParticipants.Text);
 end;
 
 procedure TBackground.RadioGroupHelpTypeClick(Sender: TObject);

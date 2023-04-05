@@ -10,7 +10,7 @@ object Background: TBackground
   Color = clBlack
   OnCreate = FormCreate
   Position = poScreenCenter
-  SessionProperties = 'CheckBoxCheatsMode.Checked;EditParticipant.Text;FloatSpinEditScreenWidth.Value;LabelDragMoveFactor.Visible;PageControl1.ActivePage;RadioGroupCondition.ItemIndex;RadioGroupDesign.ItemIndex;RadioGroupDesign.Items;RadioGroupDesign1.ItemIndex;RadioGroupDesign2.ItemIndex;RadioGroupHelpType.ItemIndex;RadioGroupRestriction.ItemIndex;SpinEditComparisons.Enabled;SpinEditComparisons.Value;SpinEditDragMoveFactor.Visible;SpinEditParticipant.Value;SpinEditSamples.Value;TabControlDesign.TabIndex;SpinEditDragMoveFactor.Value'
+  SessionProperties = 'CheckBoxCheatsMode.Checked;ComboBoxParticipants.Items;ComboBoxParticipants.Text;EditParticipant.Text;FloatSpinEditScreenWidth.Value;LabelDragMoveFactor.Visible;PageControl1.ActivePage;RadioGroupCondition.ItemIndex;RadioGroupDesign.ItemIndex;RadioGroupDesign.Items;RadioGroupDesign1.ItemIndex;RadioGroupDesign2.ItemIndex;RadioGroupHelpType.ItemIndex;RadioGroupRestriction.ItemIndex;SpinEditComparisons.Enabled;SpinEditComparisons.Value;SpinEditDragMoveFactor.Value;SpinEditDragMoveFactor.Visible;SpinEditParticipant.Value;SpinEditSamples.Value;SpinEditSessionTime.Value;TabControlDesign.TabIndex;PageControlConfigurations.TabIndex'
   LCLVersion = '2.3.0.0'
   WindowState = wsFullScreen
   object PanelConfigurations: TPanel
@@ -27,15 +27,6 @@ object Background: TBackground
     ParentBackground = False
     ParentColor = False
     TabOrder = 0
-    object EditParticipant: TEdit
-      Left = 8
-      Height = 23
-      Top = 9
-      Width = 110
-      ParentFont = False
-      TabOrder = 0
-      Text = 'Participante'
-    end
     object ButtonStartAll: TButton
       Left = 8
       Height = 29
@@ -44,134 +35,7 @@ object Background: TBackground
       Caption = 'Começar Delineamento'
       OnClick = ButtonStartAllClick
       ParentFont = False
-      TabOrder = 1
-    end
-    object FloatSpinEditScreenWidth: TFloatSpinEdit
-      Left = 8
-      Height = 23
-      Top = 56
-      Width = 205
-      DecimalPlaces = 3
-      TabOrder = 2
-      Value = 39.624
-    end
-    object LabelScreenWidth: TLabel
-      AnchorSideLeft.Control = FloatSpinEditScreenWidth
-      AnchorSideBottom.Control = FloatSpinEditScreenWidth
-      Left = 8
-      Height = 15
-      Top = 36
-      Width = 205
-      Anchors = [akLeft, akBottom]
-      BorderSpacing.Bottom = 5
-      Caption = 'Comprimento da Tela do Monitor (cm)'
-    end
-    object GroupBoxComplexity: TGroupBox
-      Left = 8
-      Height = 160
-      Top = 88
-      Width = 304
-      Caption = 'Complexidade'
-      ClientHeight = 140
-      ClientWidth = 300
-      TabOrder = 3
-      object LabelSamples: TLabel
-        AnchorSideLeft.Control = SpinEditSamples
-        AnchorSideTop.Control = SpinEditSamples
-        AnchorSideBottom.Control = SpinEditSamples
-        Left = 8
-        Height = 15
-        Top = 84
-        Width = 46
-        Anchors = [akLeft, akBottom]
-        BorderSpacing.Bottom = 5
-        Caption = 'Modelos'
-      end
-      object LabelComparisons: TLabel
-        AnchorSideLeft.Control = SpinEditComparisons
-        AnchorSideTop.Control = SpinEditComparisons
-        AnchorSideBottom.Control = SpinEditComparisons
-        Left = 91
-        Height = 15
-        Top = 84
-        Width = 73
-        Anchors = [akLeft, akBottom]
-        BorderSpacing.Bottom = 5
-        Caption = 'Comparações'
-      end
-      object SpinEditSamples: TSpinEdit
-        Left = 8
-        Height = 23
-        Top = 104
-        Width = 74
-        MaxValue = 3
-        MinValue = 1
-        OnChange = SpinEditSamplesChange
-        TabOrder = 0
-        Value = 1
-      end
-      object SpinEditComparisons: TSpinEdit
-        Left = 91
-        Height = 23
-        Top = 104
-        Width = 74
-        MaxValue = 3
-        MinValue = 1
-        TabOrder = 1
-        Value = 1
-      end
-      object RadioGroupHelpType: TRadioGroup
-        Left = 8
-        Height = 64
-        Hint = 'Sem ajuda, o modelo vai na direção do arrastar.'#13#10'Com ajuda, o modelo vai na direção da comparação correta independente da direção do arrastar.'
-        Top = 8
-        Width = 286
-        AutoFill = True
-        Caption = 'Nível de ajuda'
-        ChildSizing.LeftRightSpacing = 6
-        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-        ChildSizing.EnlargeVertical = crsHomogenousChildResize
-        ChildSizing.ShrinkHorizontal = crsScaleChilds
-        ChildSizing.ShrinkVertical = crsScaleChilds
-        ChildSizing.Layout = cclLeftToRightThenTopToBottom
-        ChildSizing.ControlsPerLine = 1
-        ClientHeight = 44
-        ClientWidth = 282
-        ItemIndex = 0
-        Items.Strings = (
-          'sem ajuda (movimentação livre)'
-          'com ajuda (movimentação restrita por guia)'
-        )
-        OnClick = RadioGroupHelpTypeClick
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 2
-      end
-      object SpinEditDragMoveFactor: TSpinEdit
-        Left = 176
-        Height = 23
-        Hint = 'Quanto maior, mais fácil.'
-        Top = 104
-        Width = 109
-        Increment = 5
-        MaxValue = 100
-        MinValue = 5
-        TabOrder = 3
-        Value = 5
-        Visible = False
-      end
-      object LabelDragMoveFactor: TLabel
-        AnchorSideLeft.Control = SpinEditDragMoveFactor
-        AnchorSideBottom.Control = SpinEditDragMoveFactor
-        Left = 176
-        Height = 15
-        Top = 84
-        Width = 109
-        Anchors = [akLeft, akBottom]
-        BorderSpacing.Bottom = 5
-        Caption = 'Fator do movimento'
-        Visible = False
-      end
+      TabOrder = 0
     end
     object GroupBoxDesign: TGroupBox
       Left = 8
@@ -181,7 +45,7 @@ object Background: TBackground
       Caption = 'Delineamento'
       ClientHeight = 164
       ClientWidth = 300
-      TabOrder = 4
+      TabOrder = 1
       object TabControlDesign: TTabControl
         Left = 0
         Height = 164
@@ -232,6 +96,221 @@ object Background: TBackground
           TabOrder = 2
         end
       end
+    end
+    object PageControlConfigurations: TPageControl
+      Left = 1
+      Height = 270
+      Top = 21
+      Width = 320
+      ActivePage = TabSheet2
+      Align = alClient
+      BorderSpacing.Top = 5
+      Constraints.MaxHeight = 270
+      TabIndex = 0
+      TabOrder = 2
+      object TabSheet2: TTabSheet
+        Caption = 'Sessão'
+        ClientHeight = 242
+        ClientWidth = 312
+        object LabelScreenWidth: TLabel
+          AnchorSideLeft.Control = FloatSpinEditScreenWidth
+          AnchorSideBottom.Control = FloatSpinEditScreenWidth
+          Left = 8
+          Height = 15
+          Top = 36
+          Width = 205
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Bottom = 5
+          Caption = 'Comprimento da Tela do Monitor (cm)'
+        end
+        object FloatSpinEditScreenWidth: TFloatSpinEdit
+          Left = 8
+          Height = 23
+          Top = 56
+          Width = 72
+          DecimalPlaces = 3
+          TabOrder = 0
+          Value = 39.624
+        end
+        object SpinEditSessionTime: TSpinEdit
+          Left = 8
+          Height = 23
+          Top = 106
+          Width = 72
+          Increment = 5
+          MaxValue = 25
+          MinValue = 5
+          TabOrder = 1
+          Value = 15
+        end
+        object LabelSessionTime: TLabel
+          AnchorSideLeft.Control = SpinEditSessionTime
+          AnchorSideBottom.Control = SpinEditSessionTime
+          Left = 8
+          Height = 15
+          Top = 86
+          Width = 136
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Bottom = 5
+          Caption = 'Tempo máximo de sessão'
+        end
+        object LabelSessionTimeUnit: TLabel
+          AnchorSideLeft.Control = SpinEditSessionTime
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideRight.Control = SpinEditSessionTime
+          AnchorSideBottom.Control = SpinEditSessionTime
+          AnchorSideBottom.Side = asrBottom
+          Left = 85
+          Height = 15
+          Top = 109
+          Width = 44
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Left = 5
+          BorderSpacing.Bottom = 5
+          Caption = 'minutos'
+        end
+        object ComboBoxParticipants: TComboBox
+          Left = 8
+          Height = 23
+          Top = 8
+          Width = 100
+          ItemHeight = 15
+          Items.Strings = (
+            'Sujeito 1'
+            'Sujeito 2'
+            'Sujeito 3'
+            'Sujeito 4'
+          )
+          ReadOnly = True
+          TabOrder = 2
+          Text = 'Sujeito'
+        end
+      end
+      object TabSheetComplexity: TTabSheet
+        Caption = 'Tarefa'
+        ClientHeight = 242
+        ClientWidth = 312
+        object GroupBoxComplexity: TGroupBox
+          Left = 0
+          Height = 160
+          Top = 8
+          Width = 312
+          Caption = 'Complexidade'
+          ClientHeight = 140
+          ClientWidth = 308
+          ParentBackground = False
+          TabOrder = 0
+          object LabelSamples: TLabel
+            AnchorSideLeft.Control = SpinEditSamples
+            AnchorSideTop.Control = SpinEditSamples
+            AnchorSideBottom.Control = SpinEditSamples
+            Left = 8
+            Height = 15
+            Top = 84
+            Width = 46
+            Anchors = [akLeft, akBottom]
+            BorderSpacing.Bottom = 5
+            Caption = 'Modelos'
+          end
+          object LabelComparisons: TLabel
+            AnchorSideLeft.Control = SpinEditComparisons
+            AnchorSideTop.Control = SpinEditComparisons
+            AnchorSideBottom.Control = SpinEditComparisons
+            Left = 91
+            Height = 15
+            Top = 84
+            Width = 73
+            Anchors = [akLeft, akBottom]
+            BorderSpacing.Bottom = 5
+            Caption = 'Comparações'
+          end
+          object SpinEditSamples: TSpinEdit
+            Left = 8
+            Height = 23
+            Top = 104
+            Width = 74
+            MaxValue = 3
+            MinValue = 1
+            OnChange = SpinEditSamplesChange
+            TabOrder = 0
+            Value = 1
+          end
+          object SpinEditComparisons: TSpinEdit
+            Left = 91
+            Height = 23
+            Top = 104
+            Width = 74
+            MaxValue = 3
+            MinValue = 1
+            TabOrder = 1
+            Value = 1
+          end
+          object RadioGroupHelpType: TRadioGroup
+            Left = 8
+            Height = 64
+            Hint = 'Sem ajuda, o modelo vai na direção do arrastar.'#13#10'Com ajuda, o modelo vai na direção da comparação correta independente da direção do arrastar.'
+            Top = 8
+            Width = 286
+            AutoFill = True
+            Caption = 'Nível de ajuda'
+            ChildSizing.LeftRightSpacing = 6
+            ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+            ChildSizing.EnlargeVertical = crsHomogenousChildResize
+            ChildSizing.ShrinkHorizontal = crsScaleChilds
+            ChildSizing.ShrinkVertical = crsScaleChilds
+            ChildSizing.Layout = cclLeftToRightThenTopToBottom
+            ChildSizing.ControlsPerLine = 1
+            ClientHeight = 44
+            ClientWidth = 282
+            ItemIndex = 0
+            Items.Strings = (
+              'sem ajuda (movimentação livre)'
+              'com ajuda (movimentação restrita por guia)'
+            )
+            OnClick = RadioGroupHelpTypeClick
+            ParentBackground = False
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 2
+          end
+          object SpinEditDragMoveFactor: TSpinEdit
+            Left = 176
+            Height = 23
+            Hint = 'Quanto maior, mais fácil.'
+            Top = 104
+            Width = 109
+            Increment = 5
+            MaxValue = 100
+            MinValue = 5
+            TabOrder = 3
+            Value = 5
+            Visible = False
+          end
+          object LabelDragMoveFactor: TLabel
+            AnchorSideLeft.Control = SpinEditDragMoveFactor
+            AnchorSideBottom.Control = SpinEditDragMoveFactor
+            Left = 176
+            Height = 15
+            Top = 84
+            Width = 109
+            Anchors = [akLeft, akBottom]
+            BorderSpacing.Bottom = 5
+            Caption = 'Fator do movimento'
+            Visible = False
+          end
+        end
+      end
+    end
+    object LabelConfigurations: TLabel
+      Left = 1
+      Height = 15
+      Top = 1
+      Width = 320
+      Align = alTop
+      Alignment = taCenter
+      Caption = 'Configurações'
+      Font.Style = [fsBold]
+      ParentFont = False
     end
   end
   object IniPropStorage: TIniPropStorage
