@@ -81,6 +81,7 @@ uses
   , StrUtils
   , Experiments.Grids
   , Stimuli.Helpers.DragDropChannel
+  , Consequences.DragDrop
   ;
 
 { TDragDropStimuli }
@@ -301,6 +302,7 @@ var
   LAnimation : TAnimation;
   FDragDropDone : Boolean = False;
 begin
+  SoundRight.Play;
   Sample := Source as TDragDropableItem;
   Comparison := Sender as TDragDropableItem;
 
@@ -409,6 +411,7 @@ procedure TDragDropStimuli.WrongDragDrop(Sender, Source: TObject;
 var
   Sample : TDragDropableItem;
 begin
+  SoundWrong.Play;
   Sample := Source as TDragDropableItem;
   Sample.OriginalBounds;
   //FAnimation.Animate(Sample);

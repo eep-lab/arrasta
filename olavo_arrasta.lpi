@@ -181,7 +181,7 @@
         <PackageName Value="LCL"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="89">
+    <Units Count="90">
       <Unit0>
         <Filename Value="olavo_arrasta.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -629,6 +629,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Session.Configurationfile.Writer"/>
       </Unit88>
+      <Unit89>
+        <Filename Value="src/units/consequences.dragdrop.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Consequences.DragDrop"/>
+      </Unit89>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
