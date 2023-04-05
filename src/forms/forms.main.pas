@@ -141,6 +141,7 @@ begin
     Values['Comparisons'] := SpinEditComparisons.Value.ToString;
     Values['DragMoveFactor'] := SpinEditDragMoveFactor.Value.ToString;
   end;
+  LTrial.OnTrialEnd:=@EndSession;
   LTrial.Play;
   PanelConfigurations.Hide;
 end;
