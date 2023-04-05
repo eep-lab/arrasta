@@ -410,7 +410,7 @@ var
   Sample : TDragDropableItem;
 begin
   Sample := Source as TDragDropableItem;
-  Sample.Color := clRed;
+  Sample.OriginalBounds;
   //FAnimation.Animate(Sample);
   if Assigned(OnWrongDragDrop) then
     OnWrongDragDrop(Sender, Source, X, Y);
