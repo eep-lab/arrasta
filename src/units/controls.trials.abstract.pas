@@ -296,7 +296,7 @@ begin
     DebugLn(mt_Debug + 'TTrial.EndTrial2');
   {$endif}
 
-  if Assigned(OnLimitedHold) then
+  if Assigned(OnLimitedHold) and (FLimitedHold > 0) then
     OnLimitedHold(Sender);
 
   if CheatsModeOn then begin
