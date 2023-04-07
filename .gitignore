@@ -54,6 +54,7 @@ releases/*
 !releases/*.py
 languages/*win10*.po
 experiment_deb64
+/ComplexityGradient.ini
 
 configuracoes
 *configuracoes
