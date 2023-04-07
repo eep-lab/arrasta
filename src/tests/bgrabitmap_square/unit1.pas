@@ -5,7 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, BGRABitmap,
+  Classes, SysUtils, Forms, Controls, Graphics, StdCtrls, BGRABitmap,
   BGRABitmapTypes;
 
 type
@@ -13,16 +13,11 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-    Button1: TButton;
-    procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormPaint(Sender: TObject);
   private
     FBitmap : TBGRABitmap;
-    //CenterWidth : integer;
-    //CenterHeight : integer;
-  protected
-    procedure Paint; override;
   public
 
   end;
@@ -38,36 +33,26 @@ implementation
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  FBitmap := TBGRABitmap.Create(ClientWidth, ClientHeight);
-  //CenterWidth := ClientWidth div 2;
-  //CenterHeight := ClientHeight div 2;
+  FBitmap := TBGRABitmap.Create(200, 200);
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
-begin
-
-end;
-
-procedure TForm1.Paint;
+procedure TForm1.FormPaint(Sender: TObject);
 var
-  R : TRect;
-  CenterWidth : integer;
-  CenterHeight: integer;
-  SquareWidth: integer;
-  SquareHeight: integer;
-  SquareX : integer;
-  SquareY : integer;
+  ACenterWidth : integer;
+  ACenterHeight: integer;
+  ASquareX : integer;
+  ASquareY : integer;
+  ABorderColor : TBGRAPixel;
 begin
-  inherited Paint;
-  CenterWidth := ClientWidth div 2;
-  CenterHeight := ClientHeight div 2;
-  SquareWidth := 150;
-  SquareHeight := 150;
-  SquareX := CenterWidth - SquareWidth div 2;
-  SquareY := CenterHeight - SquareHeight div 2;
-  R := Rect(SquareX, SquareY, SquareX + SquareWidth, SquareY + SquareHeight);
-  FBitmap.Fill(VGARed);
-  FBitmap.Draw(Canvas, R);
+  ACenterWidth := ClientWidth div 2;
+  ACenterHeight := ClientHeight div 2;
+  ASquareX := ACenterWidth - FBitmap.Width div 2;
+  ASquareY := ACenterHeight - FBitmap.Height div 2;
+  ABorderColor := BGRA(255, 0, 0, 255);
+  FBitmap.PenStyle := psSolid;
+  FBitmap.RectangleAntialias(0, 0, FBitmap.Width, FBitmap.Height, ABorderColor,
+                             15);
+  FBitmap.Draw(Canvas, ASquareX, ASquareY, False);
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
