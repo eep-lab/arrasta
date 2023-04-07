@@ -17,8 +17,10 @@ function MakeConfigurationFile(
   ADesign : string;
   ASamples: integer;
   AComparisons: integer;
-  AHelpType: integer;
-  AFactor: integer) : string;
+  AMouseMoveMode: string;
+  AFactor: string;
+  AUseHelpProgression : Boolean;
+  AHasLimitedHold: Boolean) : string;
 
 implementation
 
@@ -29,11 +31,13 @@ uses FileMethods
    ;
 
 function MakeConfigurationFile(ADesign: string; ASamples: integer;
-  AComparisons: integer; AHelpType: integer; AFactor: integer): string;
+  AComparisons: integer; AMouseMoveMode: string; AFactor: string;
+  AUseHelpProgression : Boolean; AHasLimitedHold: Boolean): string;
 begin
   Result := NewConfigurationFile;
   Experiments.DragDrop.WriteToConfigurationFile(
-    ADesign, ASamples, AComparisons, AHelpType, AFactor);
+    ADesign, ASamples, AComparisons, AMouseMoveMode, AFactor,
+    AUseHelpProgression, AHasLimitedHold);
   ConfigurationFile.Invalidate;
   ConfigurationFile.UpdateFile;
 end;

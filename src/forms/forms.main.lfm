@@ -9,8 +9,9 @@ object Background: TBackground
   ClientWidth = 814
   Color = clBlack
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poScreenCenter
-  SessionProperties = 'CheckBoxCheatsMode.Checked;ComboBoxParticipants.Items;ComboBoxParticipants.Text;EditParticipant.Text;FloatSpinEditScreenWidth.Value;LabelDragMoveFactor.Visible;PageControl1.ActivePage;RadioGroupCondition.ItemIndex;RadioGroupDesign.ItemIndex;RadioGroupDesign.Items;RadioGroupDesign1.ItemIndex;RadioGroupDesign2.ItemIndex;RadioGroupHelpType.ItemIndex;RadioGroupRestriction.ItemIndex;SpinEditComparisons.Enabled;SpinEditComparisons.Value;SpinEditDragMoveFactor.Value;SpinEditDragMoveFactor.Visible;SpinEditParticipant.Value;SpinEditSamples.Value;SpinEditSessionTime.Value;TabControlDesign.TabIndex;PageControlConfigurations.TabIndex'
+  SessionProperties = 'CheckBoxCheatsMode.Checked;CheckBoxHelpProgression.Checked;CheckBoxHelpRegression.Checked;CheckBoxMouseModeMode.Checked;ComboBoxFactor.ItemIndex;ComboBoxParticipants.ItemIndex;ComboBoxParticipants.Items;EditParticipant.Text;FloatSpinEditScreenWidth.Value;LabelDragMoveFactor.Visible;PageControl1.ActivePage;PageControlConfigurations.TabIndex;RadioGroupCondition.ItemIndex;RadioGroupDesign.ItemIndex;RadioGroupDesign.Items;RadioGroupDesign1.ItemIndex;RadioGroupDesign2.ItemIndex;RadioGroupHelpType.ItemIndex;RadioGroupRestriction.ItemIndex;SpinEditComparisons.Enabled;SpinEditComparisons.Value;SpinEditDragMoveFactor.Value;SpinEditDragMoveFactor.Visible;SpinEditParticipant.Value;SpinEditSamples.Value;SpinEditSessionTime.Value;TabControlDesign.TabIndex'
   LCLVersion = '2.3.0.0'
   WindowState = wsFullScreen
   object PanelConfigurations: TPanel
@@ -65,7 +66,7 @@ object Background: TBackground
           Top = 24
           Width = 305
           AutoFill = True
-          Caption = 'Relação'
+          Caption = 'Relações'
           ChildSizing.LeftRightSpacing = 6
           ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
           ChildSizing.EnlargeVertical = crsHomogenousChildResize
@@ -192,11 +193,12 @@ object Background: TBackground
         ClientWidth = 312
         object GroupBoxComplexity: TGroupBox
           Left = 0
-          Height = 160
-          Top = 8
+          Height = 242
+          Top = 0
           Width = 312
+          Align = alClient
           Caption = 'Complexidade'
-          ClientHeight = 140
+          ClientHeight = 222
           ClientWidth = 308
           ParentBackground = False
           TabOrder = 0
@@ -206,7 +208,7 @@ object Background: TBackground
             AnchorSideBottom.Control = SpinEditSamples
             Left = 8
             Height = 15
-            Top = 84
+            Top = 76
             Width = 46
             Anchors = [akLeft, akBottom]
             BorderSpacing.Bottom = 5
@@ -216,9 +218,9 @@ object Background: TBackground
             AnchorSideLeft.Control = SpinEditComparisons
             AnchorSideTop.Control = SpinEditComparisons
             AnchorSideBottom.Control = SpinEditComparisons
-            Left = 91
+            Left = 80
             Height = 15
-            Top = 84
+            Top = 76
             Width = 73
             Anchors = [akLeft, akBottom]
             BorderSpacing.Bottom = 5
@@ -227,8 +229,8 @@ object Background: TBackground
           object SpinEditSamples: TSpinEdit
             Left = 8
             Height = 23
-            Top = 104
-            Width = 74
+            Top = 96
+            Width = 58
             MaxValue = 3
             MinValue = 1
             OnChange = SpinEditSamplesChange
@@ -236,67 +238,72 @@ object Background: TBackground
             Value = 1
           end
           object SpinEditComparisons: TSpinEdit
-            Left = 91
+            Left = 80
             Height = 23
-            Top = 104
-            Width = 74
+            Top = 96
+            Width = 54
             MaxValue = 3
             MinValue = 1
             TabOrder = 1
             Value = 1
           end
-          object RadioGroupHelpType: TRadioGroup
-            Left = 8
-            Height = 64
-            Hint = 'Sem ajuda, o modelo vai na direção do arrastar.'#13#10'Com ajuda, o modelo vai na direção da comparação correta independente da direção do arrastar.'
-            Top = 8
-            Width = 286
-            AutoFill = True
-            Caption = 'Nível de ajuda'
-            ChildSizing.LeftRightSpacing = 6
-            ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-            ChildSizing.EnlargeVertical = crsHomogenousChildResize
-            ChildSizing.ShrinkHorizontal = crsScaleChilds
-            ChildSizing.ShrinkVertical = crsScaleChilds
-            ChildSizing.Layout = cclLeftToRightThenTopToBottom
-            ChildSizing.ControlsPerLine = 1
-            ClientHeight = 44
-            ClientWidth = 282
-            ItemIndex = 0
-            Items.Strings = (
-              'sem ajuda (movimentação livre)'
-              'com ajuda (movimentação restrita por guia)'
-            )
-            OnClick = RadioGroupHelpTypeClick
-            ParentBackground = False
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 2
-          end
-          object SpinEditDragMoveFactor: TSpinEdit
-            Left = 176
-            Height = 23
-            Hint = 'Quanto maior, mais fácil.'
-            Top = 104
-            Width = 109
-            Increment = 5
-            MaxValue = 100
-            MinValue = 5
-            TabOrder = 3
-            Value = 5
-            Visible = False
-          end
           object LabelDragMoveFactor: TLabel
-            AnchorSideLeft.Control = SpinEditDragMoveFactor
-            AnchorSideBottom.Control = SpinEditDragMoveFactor
-            Left = 176
+            AnchorSideLeft.Control = ComboBoxFactor
+            AnchorSideBottom.Control = ComboBoxFactor
+            Left = 168
             Height = 15
-            Top = 84
+            Top = 76
             Width = 109
             Anchors = [akLeft, akBottom]
             BorderSpacing.Bottom = 5
             Caption = 'Fator do movimento'
             Visible = False
+          end
+          object ComboBoxFactor: TComboBox
+            Left = 168
+            Height = 23
+            Top = 96
+            Width = 116
+            ItemHeight = 15
+            ItemIndex = 0
+            Items.Strings = (
+              'Muito Fácil'
+              'Fácil'
+              'Normal'
+              'Difícil'
+              'Muito Difícil'
+            )
+            ReadOnly = True
+            TabOrder = 2
+            Text = 'Muito Fácil'
+          end
+          object CheckBoxMouseModeMode: TCheckBox
+            Left = 8
+            Height = 19
+            Hint = 'O modelo irá na direção da comparação correta independente da direção do arrastar.'
+            Top = 0
+            Width = 298
+            Caption = 'Restringir modelo na direção da comparação correta.'
+            OnChange = CheckBoxMouseModeModeChange
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 3
+          end
+          object CheckBoxHelpProgression: TCheckBox
+            Left = 8
+            Height = 19
+            Top = 24
+            Width = 216
+            Caption = 'Aumentar a complexidade ao acertar.'
+            TabOrder = 4
+          end
+          object CheckBoxHelpRegression: TCheckBox
+            Left = 8
+            Height = 19
+            Top = 48
+            Width = 266
+            Caption = 'Reduzir a complexidade após 1 min sem acerto'
+            TabOrder = 5
           end
         end
       end

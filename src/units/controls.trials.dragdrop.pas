@@ -16,6 +16,8 @@ interface
 uses LCLIntf, LCLType, Controls, Classes, SysUtils, ExtCtrls
 
   , Session.Trials
+  , Stimuli.Image.DragDropable
+  , Session.Trial.HelpSeries.DragDrop
   , Controls.Trials.Abstract
   , Stimuli.Sequence.DragDrop
   , Consequences
@@ -37,6 +39,7 @@ type
   }
   TDragDrop = class(TTrial, ITrial)
   private
+    FUseHelpProgression : Boolean;
     FTimer : TTimer;
     FReportData : TReportData;
     FStimuli : TDragDropStimuli;
@@ -52,6 +55,7 @@ type
     procedure Paint; override;
     procedure TrialStart(Sender: TObject); virtual;
     procedure WriteData(Sender: TObject); override;
+    procedure TrialLimitedHold(Sender: TObject);
   public
     constructor Create(AOwner: TCustomControl); override;
     function AsString : string; override;
@@ -66,9 +70,8 @@ type
 
 implementation
 
-uses Forms, Graphics, Session.Backgrounds
+uses Forms, Graphics
   , Constants, Cheats
-  , Stimuli.Image.DragDropable
   //, Experiments.Grids
   , Session.Configuration.GlobalContainer
   , Devices.RS232i;
@@ -78,6 +81,7 @@ begin
   inherited Create(AOwner);
   OnTrialBeforeEnd := @TrialBeforeEnd;
   OnTrialStart := @TrialStart;
+  OnLimitedHold:= @TrialLimitedHold;
 
   if Self.ClassType = TDragDrop then
     Header := Header + #9 + GetHeader;
@@ -97,6 +101,8 @@ begin
   //FStimuli.LogEvent := @LogEvent;
   FReportData.WrongDragDrops := 0;
   FReportData.Latency := -1;
+
+  FUseHelpProgression := False;
 end;
 
 function TDragDrop.AsString: string;
@@ -105,7 +111,7 @@ var
 begin
   LTrial := TStringList.Create;
   LTrial.BeginUpdate;
-  { implement me }
+  LTrial.Text := ToString + LineEnding + Configurations.Parameters.Text;
   LTrial.EndUpdate;
   Result := LTrial.Text;
   LTrial.Free;
@@ -123,24 +129,34 @@ end;
 
 function TDragDrop.InterTrialInterval: Cardinal;
 begin
-  Result:=Configurations.Parameters.Values['ITI'].ToInteger;
+  Result:=Configurations.Parameters.Values[_ITI].ToInteger;
 end;
 
 procedure TDragDrop.Play;
 var
   LParameters : TStringList;
+  HasLimitedHold : Boolean;
 begin
   inherited Play;
   FCounterType := ctNone;
   LParameters := Configurations.Parameters;
+  FUseHelpProgression := LParameters.Values['UseHelpProgression'].ToBoolean;
+  HasLimitedHold := StrToIntDef(LParameters.Values[_LimitedHold], -1) > 0;
+  if FUseHelpProgression or HasLimitedHold then begin
+    if Counters.BlcTrials = 0 then begin
+      IDragDropHelpSerie.AssignCurrent(LParameters);
+    end;
+    IDragDropHelpSerie.AssignParameters(LParameters);
+  end;
   FStimuli.LoadFromParameters(LParameters);
-
   if Self.ClassType = TDragDrop then Config(Self);
 end;
 
 procedure TDragDrop.LoadMockParameters;
 begin
   with Configurations.Parameters do begin
+    Values['UseHelpProgression'] := 'False';
+    Values['RepeatTrial'] := '1';
     Values['Style.Samples.DragMode'] := dragFree.ToString;
     Values['Relation'] := 'A-A';
     Values['Samples'] := '3';
@@ -163,6 +179,12 @@ begin
   inherited WriteData(Sender);
   Data := Data +
     TimestampToStr(FTrialStart - FReportData.Latency);
+end;
+
+procedure TDragDrop.TrialLimitedHold(Sender: TObject);
+begin
+  FStimuli.Stop;
+  IDragDropHelpSerie.Iterator.Previous;
 end;
 
 function TDragDrop.GetHeader: string;
@@ -229,6 +251,9 @@ end;
 
 procedure TDragDrop.DragDropDone(Sender: TObject);
 begin
+  LimitedHold := 0;
+  if FUseHelpProgression then
+    IDragDropHelpSerie.Iterator.Next;
   FTimer.Enabled:=True;
   if FReportData.WrongDragDrops = 0 then begin
     Result := 'Acerto1';

@@ -57,7 +57,7 @@ type
       Shift:TShiftState; X,Y:Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy;
+    destructor Destroy; override;
     procedure AddTarget(ATarget : TObject);
     procedure UpdateDragMouseMoveMode;
     property Targets : TDragDropTargets read FTargets;
@@ -84,6 +84,9 @@ type
     function ToDragMouseMoveMode : TDragMouseMoveMode;
   end;
 
+var
+  DefaultDragMouveMoveMode : TDragMouseMoveMode;
+
 implementation
 
 uses Graphics, Experiments.Grids, Stimuli.Helpers.DragDropChannel;
@@ -95,6 +98,7 @@ begin
   case UpperCase(Self) of
     'DRAGFREE', 'FREE' : Result := dragFree;
     'DRAGCHANNEL', 'CHANNEL' : Result := dragChannel;
+    'DEFAULT' : Result := DefaultDragMouveMoveMode;
     else
       RunError(107);
   end;
@@ -105,6 +109,7 @@ end;
 function TDragMouseMoveModeHelper.ToString: string;
 begin
   WriteStr(Result, Self);
+  Result := Result.Replace('drag', '');
 end;
 
 { TDragDropableItem }
@@ -177,8 +182,6 @@ begin
 end;
 
 procedure TDragDropableItem.BorderColision;
-var
-  Point : TPoint;
 begin
   if BoundsRect.IntersectsWith(BorderTop) then begin
     Top := BorderTop.Bottom + 1;
@@ -288,6 +291,7 @@ destructor TDragDropableItem.Destroy;
 begin
   FTargets.Clear;
   FTargets.Free;
+  inherited Destroy;
 end;
 
 procedure TDragDropableItem.AddTarget(ATarget: TObject);

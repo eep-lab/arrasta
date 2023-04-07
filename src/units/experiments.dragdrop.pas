@@ -17,8 +17,10 @@ procedure WriteToConfigurationFile(
   ARelation : string;
   ASamples: integer;
   AComparisons: integer;
-  AHelpType: integer;
-  AFactor: integer);
+  AMouseMoveMode: string;
+  AFactor: string;
+  AUseHelpProgression : Boolean;
+  AHasLimitedHold : Boolean);
 
 implementation
 
@@ -30,7 +32,9 @@ uses Classes, SysUtils
    , Session.ConfigurationFile
    , Session.ConfigurationFile.Writer
    , Stimuli.Image.DragDropable
+   , Session.Trial.HelpSeries.DragDrop
    ;
+
 
 var Writer : TConfigurationWriter;
 {
@@ -51,7 +55,8 @@ var Writer : TConfigurationWriter;
   'DragMoveFactor'= 5 .. 100;
 }
 procedure WriteTrials(AName: string; ADragMode: string; ARelation: string;
-  ASamples: string; AComparisons: string; AFactor: string);
+  ASamples: string; AComparisons: string; AFactor: string;
+  AUseHelpProgression : Boolean; AHasLimitedHold : Boolean);
 begin
   case Writer.CurrentBloc of
     0, 1, 2, 3, 4, 5 : begin
@@ -59,14 +64,16 @@ begin
         Values[_Name] := AName;
         Values[_Cursor] := '0';
         Values[_Kind] := T_DRAGDROP;
-        Values['RepeatTrial'] := (1).ToString;
-        //Values[_LimitedHold] := (60000*15).ToString;
+        if AHasLimitedHold then
+          Values[_LimitedHold] := (10000).ToString;
         Values[_ITI] := (1000).ToString;
+        Values['UseHelpProgression'] := AUseHelpProgression.ToString;
+        Values['RepeatTrial'] := (5).ToString;
         Values['Style.Samples.DragMode'] := ADragMode;
         Values['Relation'] := ARelation;
         Values['Samples'] := ASamples;
         Values['Comparisons'] := AComparisons;
-        Values['DragMoveFactor'] := AFactor;
+        Values['DragMoveFactor'] := AFactor.ToFactor.ToInteger.ToString;
       end;
       Writer.WriteTrial;
     end;
@@ -74,29 +81,26 @@ begin
 end;
 
 procedure WriteToConfigurationFile(ARelation: string; ASamples: integer;
-  AComparisons: integer; AHelpType: integer; AFactor: integer);
+  AComparisons: integer; AMouseMoveMode: string; AFactor: string;
+  AUseHelpProgression : Boolean; AHasLimitedHold : Boolean);
 var
-  LBloc, Bloc: integer;
-  LDragMode , LName: string;
+  LBloc : integer = 0;
+  LName : string;
 begin
   Writer := TConfigurationWriter.Create(ConfigurationFile);
   try
-    case AHelpType of
-      0 : LDragMode := dragFree.ToString;
-      1 : LDragMode := dragChannel.ToString;
-    end;
+    LName := ARelation + #32 + AMouseMoveMode + #32 +
+      'S' + ASamples.ToString + 'C' + AComparisons.ToString;
 
-    LName := ARelation + #32 + LDragMode + #32 +
-      'S'+ ASamples.ToString + 'C'+AComparisons.ToString;
-
-    for Bloc := 0 to 5 do begin
-      Writer.CurrentBloc := Bloc;
+    for LBloc := 0 to 5 do begin
+      Writer.CurrentBloc := LBloc;
       with Writer.BlocConfig do begin
-        Values[_Name] := 'Bloco ' + Bloc.ToString;
+        Values[_Name] := 'Bloco ' + LBloc.ToString;
       end;
       Writer.WriteBloc;
-      WriteTrials(LName, LDragMode, ARelation,
-        ASamples.ToString, AComparisons.ToString, AFactor.ToString);
+      WriteTrials(LName, AMouseMoveMode, ARelation,
+        ASamples.ToString, AComparisons.ToString, AFactor,
+        AUseHelpProgression, AHasLimitedHold);
     end;
 
   finally

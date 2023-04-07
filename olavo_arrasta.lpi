@@ -161,27 +161,30 @@
         <Mode0 Name="default"/>
       </Modes>
     </RunParams>
-    <RequiredPackages Count="6">
+    <RequiredPackages Count="7">
       <Item1>
-        <PackageName Value="castle_base"/>
+        <PackageName Value="BGRABitmapPack"/>
       </Item1>
       <Item2>
-        <PackageName Value="richmemopackage"/>
+        <PackageName Value="castle_base"/>
       </Item2>
       <Item3>
-        <PackageName Value="TurboPowerIPro"/>
+        <PackageName Value="richmemopackage"/>
       </Item3>
       <Item4>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="TurboPowerIPro"/>
       </Item4>
       <Item5>
-        <PackageName Value="JvCtrlsLazR"/>
+        <PackageName Value="SynEdit"/>
       </Item5>
       <Item6>
-        <PackageName Value="LCL"/>
+        <PackageName Value="JvCtrlsLazR"/>
       </Item6>
+      <Item7>
+        <PackageName Value="LCL"/>
+      </Item7>
     </RequiredPackages>
-    <Units Count="90">
+    <Units Count="95">
       <Unit0>
         <Filename Value="olavo_arrasta.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -634,6 +637,31 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Consequences.DragDrop"/>
       </Unit89>
+      <Unit90>
+        <Filename Value="src/units/generics.iterator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Generics.Iterator"/>
+      </Unit90>
+      <Unit91>
+        <Filename Value="src/units/generics.iterator.contract.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Generics.Iterator.Contract"/>
+      </Unit91>
+      <Unit92>
+        <Filename Value="src/units/session.trial.helpseries.dragdrop.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Session.Trial.HelpSeries.DragDrop"/>
+      </Unit92>
+      <Unit93>
+        <Filename Value="src/units/generics.aggregator.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Generics.Aggregator"/>
+      </Unit93>
+      <Unit94>
+        <Filename Value="src/units/generics.aggregator.contract.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Generics.Aggregator.Contract"/>
+      </Unit94>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
