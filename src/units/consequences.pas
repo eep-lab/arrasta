@@ -25,7 +25,7 @@ type
 
   TConsequence = record
     Visual : TStimulusFigure;
-    Auditive : TSoundBuffer;
+    Auditive : TCastleSound;
     //Interval : integer;
   end;
 
@@ -36,8 +36,7 @@ implementation
 
 uses
   FileMethods
-  , Session.Configuration.GlobalContainer
-  ;
+  , Session.Configuration.GlobalContainer;
 
 const
   ImageFilterHit  = 'acerto*.bmp;acerto*.BMP;acerto*.jpg;acerto*.JPG;acerto*.png;acerto*.PNG;';
@@ -52,9 +51,9 @@ var
   AudioFilesHit : TStringArray;
   AudioFilesMiss : TStringArray;
   VisualsHit : array of TStimulusFigure;
-  AudiblesHit : array of TSoundBuffer;
+  AudiblesHit : array of TCastleSound;
   VisualsMiss : array of TStimulusFigure;
-  AudiblesMiss : array of TSoundBuffer;
+  AudiblesMiss : array of TCastleSound;
 
 function NextConsequence(AHit : Boolean) : TConsequence;
 begin
@@ -79,7 +78,7 @@ end;
 procedure Play(AConsequence: TConsequence);
 begin
   AConsequence.Visual.Start;
-  SoundEngine.PlaySound(AConsequence.Auditive);
+  SoundEngine.Play(AConsequence.Auditive);
 end;
 
 procedure LoadBuffers(ImagesHit, ImagesMiss,
@@ -113,13 +112,15 @@ begin
   SetLength(AudiblesHit, Length(AudiosHit));
   for i := Low(AudiosHit) to High(AudiosHit) do
   begin
-    AudiblesHit[i] := SoundEngine.LoadBuffer(AudiosHit[i]);
+    AudiblesHit[i] := TCastleSound.Create(nil);
+    AudiblesHit[i].URL := AudiosHit[i];
   end;
 
   SetLength(AudiblesMiss, Length(AudiosMiss));
   for i := Low(AudiosMiss) to High(AudiosMiss) do
   begin
-    AudiblesMiss[i] := SoundEngine.LoadBuffer(AudiosMiss[i]);
+    AudiblesMiss[i] := TCastleSound.Create(nil);
+    AudiblesMiss[i].URL := AudiosMiss[i];
   end;
 
   LParameters.Free;
