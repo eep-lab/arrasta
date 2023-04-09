@@ -40,7 +40,7 @@ var
 
 implementation
 
-uses SysUtils, Forms, Timestamps;
+uses SysUtils, Forms;
 
 initialization
   Counters := TCounterManager.Create(nil);
@@ -56,7 +56,6 @@ initialization
     ForceDirectories(RootData);
     ForceDirectories(RootMedia);
     MonitorToShow := 0;
-    TimeStart := TickCount;
     PupilEnabled := False;
     TestMode := False;
   end

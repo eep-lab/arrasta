@@ -15,11 +15,9 @@ interface
 
 uses  SysUtils;
 
-type
-  TLogEvent = function (ACode: string): Extended of object;
-
-procedure StartTimestamp(ATimestamp:Extended);
-
+procedure StartEpikTimer;
+function GetLatency(AStart, ALatency : Extended) : string;
+function Elapsed : Extended;
 function GetTimeStampF : string; overload;
 function GetTimeStampF(ATimestamp:Extended): string; overload;
 function TickCount : Extended;
@@ -28,14 +26,30 @@ function TimestampToStrDelta(ATimestamp: Extended) : string;
 
 implementation
 
-uses Timestamps.Helpers;
+uses
+    Session.Configuration.GlobalContainer
+    , Timestamps.Helpers;
 
-var
-  FirstTimestamp : Extended = 0;
-
-procedure StartTimestamp(ATimestamp : Extended);
+procedure StartEpikTimer;
 begin
-  FirstTimestamp := ATimestamp;
+  {$IFDEF WINDOWS}
+  Timestamps.Helpers.StartEpiktimer;
+  {$ENDIF}
+  GlobalContainer.TimeStart := TickCount;
+end;
+
+function GetLatency(AStart, ALatency: Extended): string;
+begin
+  if ALatency > 0 then begin
+      Result := TimestampToStr(ALatency - AStart);
+    end else begin
+      Result := 'NA';
+    end;
+end;
+
+function Elapsed: Extended;
+begin
+  Result := GetCustomTick - GlobalContainer.TimeStart;
 end;
 
 function GetTimeStampF: string;
@@ -52,7 +66,7 @@ function TickCount: Extended;
 begin
   Result := GetCustomTick;
 end;
-  
+
 function TimestampToStr(ATimestamp: Extended): string;
 begin
   Result:=FloatToStrF(ATimestamp,ffFixed,0,9)
@@ -60,7 +74,7 @@ end;
 
 function TimestampToStrDelta(ATimestamp : Extended) : string;
 begin
-  Result:=FloatToStrF(FirstTimestamp - ATimestamp,ffFixed,0,9)
+  Result:=FloatToStrF(GlobalContainer.TimeStart - ATimestamp,ffFixed,0,9)
 end;
 
 

@@ -146,6 +146,7 @@ begin
   GlobalContainer.TimeStart := TickCount;
   GlobalContainer.BaseFilename := BaseFilename;
   FTimer.Enabled:=True;
+  StartEpikTimer;
   PlayBloc;
 end;
 
