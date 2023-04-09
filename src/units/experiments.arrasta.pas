@@ -14,6 +14,9 @@ unit Experiments.Arrasta;
 interface
 
 function MakeConfigurationFile(
+  ATrials : integer;
+  AITI    : integer;
+  ALimitedHold : integer;
   ADesign : string;
   ASamples: integer;
   AComparisons: integer;
@@ -30,12 +33,15 @@ uses FileMethods
    , Session.ConfigurationFile
    ;
 
-function MakeConfigurationFile(ADesign: string; ASamples: integer;
+function MakeConfigurationFile(ATrials : integer; AITI : integer;
+  ALimitedHold : integer; ADesign: string; ASamples: integer;
   AComparisons: integer; AMouseMoveMode: string; AFactor: string;
   AUseHelpProgression : Boolean; AHasLimitedHold: Boolean): string;
 begin
   Result := NewConfigurationFile;
-  Experiments.DragDrop.WriteToConfigurationFile(
+  Experiments.DragDrop.ITI := AITI;
+  Experiments.DragDrop.LimitedHold:=ALimitedHold;
+  Experiments.DragDrop.WriteToConfigurationFile(ATrials,
     ADesign, ASamples, AComparisons, AMouseMoveMode, AFactor,
     AUseHelpProgression, AHasLimitedHold);
   ConfigurationFile.Invalidate;

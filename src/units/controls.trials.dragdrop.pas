@@ -177,14 +177,16 @@ end;
 procedure TDragDrop.WriteData(Sender: TObject);
 begin
   inherited WriteData(Sender);
-  Data := Data +
-    TimestampToStr(FTrialStart - FReportData.Latency);
+  with FReportData do begin
+    Data := Data + GetLatency(StimuliStart, Latency);
+  end;
 end;
 
 procedure TDragDrop.TrialLimitedHold(Sender: TObject);
 begin
   FStimuli.Stop;
   IDragDropHelpSerie.Iterator.Previous;
+  Result := 'Espera';
 end;
 
 function TDragDrop.GetHeader: string;
@@ -204,8 +206,9 @@ end;
 
 procedure TDragDrop.Response(Sender: TObject);
 begin
-  if FReportData.Latency < 0 then
+  if FReportData.Latency < 0 then begin
     FReportData.Latency := LogEvent(rsReportRspLat);
+  end;
 end;
 
 procedure TDragDrop.OtherDragDrop(Sender, Source: TObject; X, Y: Integer);

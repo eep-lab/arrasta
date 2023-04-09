@@ -11,7 +11,7 @@ object Background: TBackground
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  SessionProperties = 'CheckBoxCheatsMode.Checked;CheckBoxHelpProgression.Checked;CheckBoxHelpRegression.Checked;CheckBoxMouseModeMode.Checked;ComboBoxFactor.ItemIndex;ComboBoxParticipants.ItemIndex;ComboBoxParticipants.Items;EditParticipant.Text;FloatSpinEditScreenWidth.Value;LabelDragMoveFactor.Visible;PageControl1.ActivePage;PageControlConfigurations.TabIndex;RadioGroupCondition.ItemIndex;RadioGroupDesign.ItemIndex;RadioGroupDesign.Items;RadioGroupDesign1.ItemIndex;RadioGroupDesign2.ItemIndex;RadioGroupHelpType.ItemIndex;RadioGroupRestriction.ItemIndex;SpinEditComparisons.Enabled;SpinEditComparisons.Value;SpinEditDragMoveFactor.Value;SpinEditDragMoveFactor.Visible;SpinEditParticipant.Value;SpinEditSamples.Value;SpinEditSessionTime.Value;TabControlDesign.TabIndex'
+  SessionProperties = 'CheckBoxCheatsMode.Checked;CheckBoxHelpProgression.Checked;CheckBoxHelpRegression.Checked;CheckBoxMouseModeMode.Checked;ComboBoxFactor.ItemIndex;ComboBoxParticipants.ItemIndex;ComboBoxParticipants.Items;EditParticipant.Text;FloatSpinEditScreenWidth.Value;LabelDragMoveFactor.Visible;PageControl1.ActivePage;PageControlConfigurations.TabIndex;RadioGroupCondition.ItemIndex;RadioGroupDesign.ItemIndex;RadioGroupDesign.Items;RadioGroupDesign1.ItemIndex;RadioGroupDesign2.ItemIndex;RadioGroupHelpType.ItemIndex;RadioGroupRestriction.ItemIndex;SpinEditComparisons.Enabled;SpinEditComparisons.Value;SpinEditDragMoveFactor.Value;SpinEditDragMoveFactor.Visible;SpinEditITI.Value;SpinEditLimitedHold.Value;SpinEditParticipant.Value;SpinEditSamples.Value;SpinEditSessionTime.Value;SpinEditTrials.Value;TabControlDesign.TabIndex;SpinEditLimitedHold.Visible;LabelLimitedHold.Visible;LabelLimitedHoldTime.Visible'
   LCLVersion = '2.3.0.0'
   WindowState = wsFullScreen
   object PanelConfigurations: TPanel
@@ -117,17 +117,17 @@ object Background: TBackground
           AnchorSideLeft.Control = FloatSpinEditScreenWidth
           AnchorSideBottom.Control = FloatSpinEditScreenWidth
           Left = 8
-          Height = 15
-          Top = 36
-          Width = 205
+          Height = 30
+          Top = 35
+          Width = 91
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 5
-          Caption = 'Comprimento da Tela do Monitor (cm)'
+          Caption = 'Comprimento da'#13#10'Tela do Monitor'
         end
         object FloatSpinEditScreenWidth: TFloatSpinEdit
           Left = 8
           Height = 23
-          Top = 56
+          Top = 70
           Width = 72
           DecimalPlaces = 3
           TabOrder = 0
@@ -136,7 +136,7 @@ object Background: TBackground
         object SpinEditSessionTime: TSpinEdit
           Left = 8
           Height = 23
-          Top = 106
+          Top = 213
           Width = 72
           Increment = 5
           MaxValue = 25
@@ -149,7 +149,7 @@ object Background: TBackground
           AnchorSideBottom.Control = SpinEditSessionTime
           Left = 8
           Height = 15
-          Top = 86
+          Top = 193
           Width = 136
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 5
@@ -163,18 +163,18 @@ object Background: TBackground
           AnchorSideBottom.Side = asrBottom
           Left = 85
           Height = 15
-          Top = 109
-          Width = 44
+          Top = 216
+          Width = 21
           Anchors = [akLeft, akBottom]
           BorderSpacing.Left = 5
           BorderSpacing.Bottom = 5
-          Caption = 'minutos'
+          Caption = 'min'
         end
         object ComboBoxParticipants: TComboBox
           Left = 8
           Height = 23
           Top = 8
-          Width = 100
+          Width = 136
           ItemHeight = 15
           Items.Strings = (
             'Sujeito 1'
@@ -185,6 +185,77 @@ object Background: TBackground
           ReadOnly = True
           TabOrder = 2
           Text = 'Sujeito'
+        end
+        object SpinEditTrials: TSpinEdit
+          Left = 8
+          Height = 23
+          Top = 119
+          Width = 72
+          Increment = 3
+          MaxValue = 90
+          MinValue = 3
+          TabOrder = 3
+          Value = 24
+        end
+        object LabelTrials: TLabel
+          AnchorSideLeft.Control = SpinEditTrials
+          AnchorSideBottom.Control = SpinEditTrials
+          Left = 8
+          Height = 15
+          Top = 99
+          Width = 52
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Bottom = 5
+          Caption = 'Tentativas'
+        end
+        object SpinEditITI: TSpinEdit
+          Left = 8
+          Height = 23
+          Top = 166
+          Width = 72
+          MaxValue = 6
+          TabOrder = 4
+          Value = 6
+        end
+        object LabelITI: TLabel
+          AnchorSideLeft.Control = SpinEditITI
+          AnchorSideBottom.Control = SpinEditITI
+          Left = 8
+          Height = 15
+          Top = 146
+          Width = 130
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Bottom = 5
+          Caption = 'Intervalo entre tentativas'
+        end
+        object LabelITITime: TLabel
+          AnchorSideLeft.Control = SpinEditITI
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideRight.Control = SpinEditSessionTime
+          AnchorSideBottom.Control = SpinEditITI
+          AnchorSideBottom.Side = asrBottom
+          Left = 85
+          Height = 15
+          Top = 169
+          Width = 5
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Left = 5
+          BorderSpacing.Bottom = 5
+          Caption = 's'
+        end
+        object LabelScreenWidthUnit: TLabel
+          AnchorSideLeft.Control = FloatSpinEditScreenWidth
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideBottom.Control = FloatSpinEditScreenWidth
+          AnchorSideBottom.Side = asrBottom
+          Left = 85
+          Height = 15
+          Top = 73
+          Width = 17
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Left = 5
+          BorderSpacing.Bottom = 5
+          Caption = 'cm'
         end
       end
       object TabSheetComplexity: TTabSheet
@@ -301,9 +372,45 @@ object Background: TBackground
             Left = 8
             Height = 19
             Top = 48
-            Width = 266
-            Caption = 'Reduzir a complexidade após 1 min sem acerto'
+            Width = 271
+            Caption = 'Reduzir a complexidade após tempo sem acerto'
+            OnChange = CheckBoxHelpRegressionChange
             TabOrder = 5
+          end
+          object SpinEditLimitedHold: TSpinEdit
+            Left = 168
+            Height = 23
+            Top = 148
+            Width = 50
+            MaxValue = 5
+            MinValue = 1
+            TabOrder = 6
+            Value = 1
+          end
+          object LabelLimitedHold: TLabel
+            AnchorSideLeft.Control = SpinEditLimitedHold
+            AnchorSideBottom.Control = SpinEditLimitedHold
+            Left = 168
+            Height = 15
+            Top = 128
+            Width = 97
+            Anchors = [akLeft, akBottom]
+            BorderSpacing.Bottom = 5
+            Caption = 'Tempo sem acerto'
+          end
+          object LabelLimitedHoldTime: TLabel
+            AnchorSideLeft.Control = SpinEditLimitedHold
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideBottom.Control = SpinEditLimitedHold
+            AnchorSideBottom.Side = asrBottom
+            Left = 223
+            Height = 15
+            Top = 151
+            Width = 21
+            Anchors = [akLeft, akBottom]
+            BorderSpacing.Left = 5
+            BorderSpacing.Bottom = 5
+            Caption = 'min'
           end
         end
       end

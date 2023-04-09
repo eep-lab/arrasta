@@ -36,6 +36,11 @@ type
     GroupBoxComplexity: TGroupBox;
     GroupBoxDesign: TGroupBox;
     IniPropStorage: TIniPropStorage;
+    LabelScreenWidthUnit: TLabel;
+    LabelLimitedHoldTime: TLabel;
+    LabelITITime: TLabel;
+    LabelLimitedHold: TLabel;
+    LabelTrials: TLabel;
     LabelSessionTimeUnit: TLabel;
     LabelConfigurations: TLabel;
     LabelSessionTime: TLabel;
@@ -43,16 +48,21 @@ type
     LabelDragMoveFactor: TLabel;
     LabelSamples: TLabel;
     LabelScreenWidth: TLabel;
+    LabelITI: TLabel;
     PageControlConfigurations: TPageControl;
     PanelConfigurations: TPanel;
     RadioGroupRelation: TRadioGroup;
+    SpinEditTrials: TSpinEdit;
     SpinEditSessionTime: TSpinEdit;
     SpinEditComparisons: TSpinEdit;
     SpinEditSamples: TSpinEdit;
+    SpinEditITI: TSpinEdit;
+    SpinEditLimitedHold: TSpinEdit;
     TabControlDesign: TTabControl;
     TabSheetComplexity: TTabSheet;
     TabSheet2: TTabSheet;
     procedure ButtonStartTrialClick(Sender: TObject);
+    procedure CheckBoxHelpRegressionChange(Sender: TObject);
     procedure CheckBoxMouseModeModeChange(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ButtonStartAllClick(Sender: TObject);
@@ -107,6 +117,9 @@ begin
 
   ConfigurationFilename :=
     Experiments.Arrasta.MakeConfigurationFile(
+      SpinEditTrials.Value,
+      SpinEditITI.Value * 1000,
+      SpinEditLimitedHold.Value * 60000,
       GetRelation,
       SpinEditSamples.Value,
       SpinEditComparisons.Value,
@@ -154,6 +167,13 @@ begin
   LTrial.OnTrialEnd:=@EndSession;
   LTrial.Play;
   PanelConfigurations.Hide;
+end;
+
+procedure TBackground.CheckBoxHelpRegressionChange(Sender: TObject);
+begin
+  SpinEditLimitedHold.Visible:=CheckBoxHelpRegression.Checked;
+  LabelLimitedHold.Visible:=CheckBoxHelpRegression.Checked;
+  LabelLimitedHoldTime.Visible:=CheckBoxHelpRegression.Checked;
 end;
 
 procedure TBackground.CheckBoxMouseModeModeChange(Sender: TObject);
