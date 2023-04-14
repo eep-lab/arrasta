@@ -17,7 +17,9 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormPaint(Sender: TObject);
   private
-    FBitmap : TBGRABitmap;
+    FBitmaps : array [0..5] of TBGRABitmap;
+    FBorderColors : array [0..5] of TBGRAPixel;
+    procedure DrawBitmaps;
   public
 
   end;
@@ -32,33 +34,44 @@ implementation
 { TForm1 }
 
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  i : integer;
 begin
-  FBitmap := TBGRABitmap.Create(200, 200);
+  for i := 0 to 5 do begin
+    FBitmaps[i] := TBGRABitmap.Create(200, 200);
+    FBorderColors[i] := BGRA(255, 0, 0, 255 div (i + 1));
+  end;
 end;
 
 procedure TForm1.FormPaint(Sender: TObject);
-var
-  ACenterWidth : integer;
-  ACenterHeight: integer;
-  ASquareX : integer;
-  ASquareY : integer;
-  ABorderColor : TBGRAPixel;
 begin
-  ACenterWidth := ClientWidth div 2;
+  DrawBitmaps;
+end;
+
+procedure TForm1.DrawBitmaps;
+var
+  ACenterHeight: integer;
+  ASquareY : integer;
+  i : integer;
+begin
   ACenterHeight := ClientHeight div 2;
-  ASquareX := ACenterWidth - FBitmap.Width div 2;
-  ASquareY := ACenterHeight - FBitmap.Height div 2;
-  ABorderColor := BGRA(255, 0, 0, 255);
-  FBitmap.PenStyle := psSolid;
-  FBitmap.RectangleAntialias(0, 0, FBitmap.Width, FBitmap.Height, ABorderColor,
-                             15);
-  FBitmap.Draw(Canvas, ASquareX, ASquareY, False);
+  ASquareY := ACenterHeight - FBitmaps[0].Height div 2;
+
+  for i := 0 to 5 do begin
+    FBitmaps[i].PenStyle := psSolid;
+    FBitmaps[i].RectangleAntialias(0, 0, FBitmaps[i].Width, FBitmaps[i].Height,
+                                      FBorderColors[i], 15);
+    FBitmaps[i].Draw(Canvas, 240 * (i + 1), ASquareY, False);
+  end;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
+var
+  i : integer;
 begin
-  FBitmap.Free;
+  for i := 0 to 5 do begin
+    FBitmaps[i].Free;
+  end;
 end;
 
 end.
-
