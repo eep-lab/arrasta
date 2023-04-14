@@ -1,11 +1,11 @@
 object Background: TBackground
-  Left = 261
-  Height = 661
-  Top = 62
+  Left = 0
+  Height = 768
+  Top = 0
   Width = 1024
   BorderStyle = bsNone
   Caption = 'Configurar sessão'
-  ClientHeight = 661
+  ClientHeight = 768
   ClientWidth = 1024
   Color = clBlack
   OnCreate = FormCreate
@@ -120,6 +120,7 @@ object Background: TBackground
         Caption = 'Sessão'
         ClientHeight = 220
         ClientWidth = 314
+        OnContextPopup = TabSheet2ContextPopup
         object LabelScreenWidth: TLabel
           AnchorSideLeft.Control = FloatSpinEditScreenWidth
           AnchorSideBottom.Control = FloatSpinEditScreenWidth

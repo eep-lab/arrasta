@@ -18,7 +18,7 @@ uses
   ExtCtrls, StdCtrls, IniPropStorage, ComCtrls, Spin
   , Stimuli.Image.DragDropable
   , Session.Trial.HelpSeries.DragDrop
-  ;
+  , Types;
 
 type
 
@@ -71,6 +71,8 @@ type
     procedure BeforeStartSession(Sender: TObject);
     procedure SpinEditSamplesChange(Sender: TObject);
     procedure TabControlDesignChange(Sender: TObject);
+    procedure TabSheet2ContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
   private
     function GetDragMouseMoveMode : TDragMouseMoveMode;
     function GetRelation : string;
@@ -256,6 +258,12 @@ begin
       RadioGroupRelation.Items.Append('B-C');
     end;
   end;
+end;
+
+procedure TBackground.TabSheet2ContextPopup(Sender: TObject; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+
 end;
 
 function TBackground.GetDragMouseMoveMode: TDragMouseMoveMode;

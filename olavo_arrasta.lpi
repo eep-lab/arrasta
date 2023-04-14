@@ -348,7 +348,7 @@
         <PackageName Value="LCL"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="96">
+    <Units Count="97">
       <Unit0>
         <Filename Value="olavo_arrasta.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -831,6 +831,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="MachTime"/>
       </Unit95>
+      <Unit96>
+        <Filename Value="src/units/machfullscreenfix.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MachFullscreenFix"/>
+      </Unit96>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
