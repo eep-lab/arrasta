@@ -62,6 +62,10 @@ type
     property Color;
     property Caption;
     property Font;
+    property Top;
+    property Left;
+    property Height;
+    property Width;
   end;
 
 implementation
@@ -264,9 +268,14 @@ var
   begin
     LPNG := TPortableNetworkGraphic.Create;
     LPNG.LoadFromFile(FFileName);
+    {$IFDEF DARWIN}
+    FBitmap.SetSize(LPNG.Width, LPNG.Height);
+    FBitmap.Canvas.Draw(0, 0, LPNG);
+    {$ELSE}
     //Width := LPNG.Width;
     //Height := LPNG.Height;
     FBitmap.Assign(LPNG);
+    {$ENDIF}
     FBitmap.Transparent:=True;
     FBitmap.TransparentColor:=clFuchsia;
     LPNG.Free;

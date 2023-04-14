@@ -26,8 +26,10 @@ type
 
   TTrialFactory = class
     private
+      class var FCurrentTrial: TTrial;
       class var FRegistry: TTrialRegistry;
       class function GetRegistry: TTrialRegistry; static;
+      class constructor Create;
       class destructor Destroy;
     public
       class procedure RegisterTrialClass(
@@ -56,9 +58,15 @@ begin
   Result := FRegistry;
 end;
 
+class constructor TTrialFactory.Create;
+begin
+  FCurrentTrial := nil;
+  FRegistry := nil;
+end;
+
 class destructor TTrialFactory.Destroy;
 begin
-  if not Assigned(FRegistry) then
+  if Assigned(FRegistry) then
     FRegistry.Free;
 end;
 
@@ -72,8 +80,10 @@ class function TTrialFactory.GetNewTrial: ITrial;
 var
   Configurations : TCfgTrial;
   TrialClass : TTrialClass;
-  Trial : TTrial;
 begin
+  if Assigned(FCurrentTrial) then
+    FreeAndNil(FCurrentTrial);
+
   Configurations :=
     ConfigurationFile.Trial[Counters.CurrentBlc+1, Counters.CurrentTrial+1];
 
@@ -81,10 +91,10 @@ begin
     raise EArgumentException.CreateFmt(
       'Trial kind is not registered: %s %s', [Configurations.Kind, TrialClass]);
 
-  Trial := TrialClass.Create(Background);
-  Trial.Configurations := Configurations;
-  Trial.OnTrialEnd := InterTrialEvents.OnTrialEnd;
-  Result := Trial as ITrial;
+  FCurrentTrial := TrialClass.Create(Background);
+  FCurrentTrial.Configurations := Configurations;
+  FCurrentTrial.OnTrialEnd := InterTrialEvents.OnTrialEnd;
+  Result := FCurrentTrial as ITrial;
 end;
 
 initialization

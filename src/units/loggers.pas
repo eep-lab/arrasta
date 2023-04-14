@@ -70,7 +70,7 @@ begin
 
   // write data
   LSaveData := GetSaveDataProc(LGData);
-  LData := TRegData.Row([LData,
+  LData := TRegData.Row([LData +
     LTrialNo,
     LBlocID,
     LBlocName,

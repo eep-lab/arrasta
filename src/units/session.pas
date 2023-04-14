@@ -14,7 +14,7 @@ unit Session;
 interface
 
 uses
-  Classes, SysUtils, Session.Blocs;
+  Classes, SysUtils, ExtCtrls, Session.Blocs;
 
 type
 
@@ -22,11 +22,13 @@ type
 
   TSession = class(TComponent)
   private
+    FTimer : TTimer;
     FBloc : TBloc;
     FOnBeforeStart: TNotifyEvent;
     FOnEndSession: TNotifyEvent;
     function GetBaseFilename: string;
     procedure PlayBloc;
+    procedure TimerOnTimer(Sender : TObject);
     procedure EndBloc(Sender : TObject);
     procedure EndSession;
     procedure SetOnBeforeStart(AValue: TNotifyEvent);
@@ -38,6 +40,7 @@ type
     property OnEndSession : TNotifyEvent read FOnEndSession write SetOnEndSession;
     property OnBeforeStart : TNotifyEvent read FOnBeforeStart write SetOnBeforeStart;
     property BaseFilename : string read GetBaseFilename;
+    property Timer : TTimer read FTimer;
   end;
 
 implementation
@@ -47,9 +50,9 @@ uses
 , FileUtil
 , LazFileUtils
 , Loggers.Reports
+, Loggers
 , Session.ConfigurationFile
 , Session.Configuration.GlobalContainer
-, Session.EndCriteria
 ;
 
 { TSession }
@@ -64,12 +67,16 @@ begin
   if EndCriteria.OfSession then begin
     EndSession;
   end else begin
-    Counters.OnEndBlc(Self);
     FBloc.BeforePlay;
     Counters.SetVirtualTrialValue(
       ConfigurationFile.Bloc[Counters.CurrentBlc+1].VirtualTrialValue);
     FBloc.Play;
   end;
+end;
+
+procedure TSession.TimerOnTimer(Sender: TObject);
+begin
+  EndSession;
 end;
 
 function TSession.GetBaseFilename: string;
@@ -82,6 +89,7 @@ end;
 
 procedure TSession.EndBloc(Sender: TObject);
 begin
+  Counters.OnEndBlc(Self);
   PlayBloc;
 end;
 
@@ -110,8 +118,9 @@ end;
 constructor TSession.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  //MakeConfigurationFile(0, SessionBlocs);
-  EndCriteria := TEndCriteria.Create(Self);
+  FTimer := TTimer.Create(Self);
+  FTimer.Enabled:=False;
+  FTimer.OnTimer:=@TimerOnTimer;
   FBloc := TBloc.Create(Self);
   FBloc.OnEndBloc := @EndBloc;
   //FBloc.OnInterTrialEnd := @InterTrialStop;
@@ -119,6 +128,7 @@ end;
 
 destructor TSession.Destroy;
 begin
+  FTimer.Free;
   ConfigurationFile.Free;
   inherited Destroy;
 end;
@@ -135,6 +145,10 @@ begin
 
   GlobalContainer.TimeStart := TickCount;
   GlobalContainer.BaseFilename := BaseFilename;
+  FTimer.Enabled:=True;
+  {$IFDEF WINDOWS}
+  StartEpikTimer;
+  {$ENDIF}
   PlayBloc;
 end;
 

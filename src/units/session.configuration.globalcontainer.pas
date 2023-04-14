@@ -14,7 +14,7 @@ unit Session.Configuration.GlobalContainer;
 interface
 
 uses
-  CounterManager;
+  Session.EndCriteria, CounterManager;
 
 type
 
@@ -36,14 +36,17 @@ type
 var
   GlobalContainer : TGlobalContainer;
   Counters : TCounterManager;
+  EndCriteria : TEndCriteria;
 
 implementation
 
-uses SysUtils, Forms, Timestamps;
+uses SysUtils, Forms;
 
 initialization
   Counters := TCounterManager.Create(nil);
   GlobalContainer := TGlobalContainer.Create;
+  EndCriteria := TEndCriteria.Create;
+
   with GlobalContainer do
   begin
     BaseFileName := '';
@@ -53,7 +56,6 @@ initialization
     ForceDirectories(RootData);
     ForceDirectories(RootMedia);
     MonitorToShow := 0;
-    TimeStart := TickCount;
     PupilEnabled := False;
     TestMode := False;
   end
@@ -61,6 +63,7 @@ initialization
 finalization
   GlobalContainer.Free;
   Counters.Free;
+  EndCriteria.Free;
 
 end.
 

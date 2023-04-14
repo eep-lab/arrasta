@@ -1,6 +1,6 @@
 {
   Stimulus Control
-  Copyright (C) 2014-2017 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
+  Copyright (C) 2014-2023 Carlos Rafael Fernandes Picanço, Universidade Federal do Pará.
 
   The present file is distributed under the terms of the GNU General Public License (GPL v3.0).
 
@@ -13,38 +13,39 @@ unit Timestamps.Helpers;
 
 interface
 
-{ DONE -oRafael -cCrossplatform : On windows, implement EpikTimer as alternative for clock_gettime. }
-
 uses
   Classes, SysUtils
-{$ifdef UNIX}
+
+{$ifdef LINUX}
   , Linux
   , UnixType
 {$endif}
+
 {$ifdef WINDOWS}
   , epiktimer
+{$endif}
+
+{$ifdef DARWIN}
+  , ctypes
+  , MachTime
 {$endif}
   ;
 
   function GetCustomTick : Extended;
-{$ifdef UNIX}
+
+{$ifdef LINUX}
   function GetMonotonicTime : timespec;
   function GetMonotonicTimeRaw : timespec;
   function GetClockResolution : string; // granularity
 {$endif}
-implementation
 
 {$ifdef WINDOWS}
-var
-  ET: TEpikTimer;
-
-function GetCustomTick: Extended;
-begin
-  Result := ET.Elapsed;
-end;
+  procedure StartEpiktimer;
 {$endif}
 
-{$ifdef UNIX}
+implementation
+
+{$ifdef LINUX}
 function GetCustomTick: Extended;
 var
   tp: timespec;
@@ -83,12 +84,46 @@ end;
 {$endif}
 
 {$ifdef WINDOWS}
+var
+  ET: TEpikTimer;
+
+procedure StartEpiktimer;
+begin
+  ET.Start;
+end;
+
+
+function GetCustomTick: Extended;
+begin
+  Result := ET.GetSystemTicks * 1e-7;
+end;
+
 initialization
   ET := TEpikTimer.Create(nil);
-  ET.Start;
+  ET.Clear;
 
 finalization
   ET.Free;
+{$endif}
+
+{$ifdef DARWIN}
+{credits: https://github.com/pupil-labs/pyuvc/blob/master/pyuvc-source/darwin_time.pxi}
+
+var
+  timeConvert: Extended = 0.0;
+
+//function get_sys_time_monotonic: Extended;
+function GetCustomTick : Extended;
+var
+  timeBase: mach_timebase_info_data_t;
+begin
+  if timeConvert = 0.0 then begin
+    mach_timebase_info(@timeBase);
+    timeConvert := (timeBase.numer / timeBase.denom) / 1000000000.0;
+  end;
+  Result := mach_absolute_time() * timeConvert;
+end;
+
 {$endif}
 end.
 

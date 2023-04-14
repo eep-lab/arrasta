@@ -14,7 +14,6 @@ type
   TDragDropChannel = class(TObject)
   private
     FParent : TCanvas;
-    FDragArea     : TPoints;
     FBresenhamLine : TPoints;
     FIndex        : integer;
   public

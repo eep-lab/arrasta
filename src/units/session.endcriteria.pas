@@ -14,15 +14,15 @@ type
 
   { TEndCriteria }
 
-  TEndCriteria = class(TComponent)
+  TEndCriteria = class
   private
-    FBloc : TCfgBlc;
+    FCurrentBloc : TCfgBlc;
     //FTrial : TCfgTrial;
     procedure EndBlocOnEndTrial;
     procedure EndSessionOnEndBloc;
     function HitPorcentageInBloc : real;
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create;
     procedure Invalidate;
     function OfSession : Boolean;
     function OfBloc : Boolean;
@@ -40,14 +40,14 @@ uses
 
 { TEndCriteria }
 
-constructor TEndCriteria.Create(AOwner: TComponent);
+constructor TEndCriteria.Create;
 begin
-  inherited Create(AOwner);
+  Counters.OnBeginSess(Self);
 end;
 
 procedure TEndCriteria.Invalidate;
 begin
-  FBloc := ConfigurationFile.CurrentBloc;
+  FCurrentBloc := ConfigurationFile.CurrentBloc;
   //LCurrentTrial := Counters.CurrentTrial;
 end;
 
@@ -60,7 +60,7 @@ end;
 function TEndCriteria.OfBloc: Boolean;
 begin
   EndBlocOnEndTrial;
-  Result := Counters.CurrentTrial >= FBloc.TotalTrials;
+  Result := Counters.CurrentTrial >= FCurrentBloc.TotalTrials;
 end;
 
 function TEndCriteria.OfTrial: Boolean;
@@ -69,7 +69,11 @@ var
   S1 : string;
 begin
   Result := True;
-  S1 := ConfigurationFile.CurrentTrial.Parameters.Values['RepeatTrial'];
+  if Assigned(ConfigurationFile) then begin
+    S1 := ConfigurationFile.CurrentTrial.Parameters.Values['RepeatTrial'];
+  end else begin
+    S1 := '0';
+  end;
   RepeatTrial := StrToIntDef(S1, 0) -1;
   if RepeatTrial > 0 then begin
     if Counters.RepeatedTrials < RepeatTrial then begin
@@ -84,19 +88,19 @@ end;
 procedure TEndCriteria.EndBlocOnEndTrial;
   procedure EndBloc;
   begin
-    Counters.CurrentTrial := FBloc.TotalTrials;
+    Counters.CurrentTrial := FCurrentBloc.TotalTrials;
   end;
 
 begin
-  if FBloc.CrtConsecutiveHit > 0 then begin
-    if Counters.BlcCscHits >= FBloc.CrtConsecutiveHit then begin
+  if FCurrentBloc.CrtConsecutiveHit > 0 then begin
+    if Counters.BlcCscHits >= FCurrentBloc.CrtConsecutiveHit then begin
       EndBloc;
       Exit;
     end;
   end;
 
-  if FBloc.CrtMaxTrials > 0 then begin
-    if Counters.BlcTrials >= FBloc.CrtMaxTrials then begin
+  if FCurrentBloc.CrtMaxTrials > 0 then begin
+    if Counters.BlcTrials >= FCurrentBloc.CrtMaxTrials then begin
       EndBloc;
       Exit;
     end;
@@ -106,14 +110,14 @@ end;
 procedure TEndCriteria.EndSessionOnEndBloc;
   procedure EndSession;
   begin
-    if FBloc.MaxBlcRepetition > 0 then begin
-      if (Counters.BlcRepetitions < FBloc.MaxBlcRepetition) then begin
+    if FCurrentBloc.MaxBlcRepetition > 0 then begin
+      if (Counters.BlcRepetitions < FCurrentBloc.MaxBlcRepetition) then begin
         Counters.OnRepeatBlc(Self);
         Exit;
       end;
     end;
 
-    if FBloc.AutoEndSession then begin
+    if FCurrentBloc.AutoEndSession then begin
       { End session }
     end else begin
       Exit;
@@ -123,22 +127,22 @@ procedure TEndCriteria.EndSessionOnEndBloc;
   end;
   procedure NextBlocOnCriteria;
   begin
-    if FBloc.NextBlocOnCriteria > 0 then begin
-      Counters.CurrentBlc := FBloc.NextBlocOnCriteria-1;
+    if FCurrentBloc.NextBlocOnCriteria > 0 then begin
+      Counters.CurrentBlc := FCurrentBloc.NextBlocOnCriteria-1;
     end;
   end;
 begin
-  if (FBloc.CrtHitValue > 0) then begin
-    if (Counters.BlcHits < FBloc.CrtHitValue) then begin
+  if (FCurrentBloc.CrtHitValue > 0) then begin
+    if (Counters.BlcHits < FCurrentBloc.CrtHitValue) then begin
       EndSession;
     end else begin
       NextBlocOnCriteria;
     end;
   end;
 
-  if (FBloc.CrtHitPorcentage > 0) and
-     (FBloc.CrtHitPorcentage <= 100) then begin
-    if (HitPorcentageInBloc < FBloc.CrtHitPorcentage) then begin
+  if (FCurrentBloc.CrtHitPorcentage > 0) and
+     (FCurrentBloc.CrtHitPorcentage <= 100) then begin
+    if (HitPorcentageInBloc < FCurrentBloc.CrtHitPorcentage) then begin
       EndSession;
     end else begin
       NextBlocOnCriteria;
@@ -149,8 +153,9 @@ end;
 
 function TEndCriteria.HitPorcentageInBloc: real;
 begin
-  Result := (Counters.BlcHits * 100)/FBloc.TotalTrials;
+  Result := (Counters.BlcHits * 100)/FCurrentBloc.TotalTrials;
 end;
+
 
 end.
 

@@ -57,8 +57,6 @@ uses Forms, FileUtil, LazFileUtils, Session.Configuration.GlobalContainer
 { TAnimation }
 
 procedure TAnimation.Paint;
-var
-  LTextStyle: TTextStyle;
   procedure PaintSquare(Color: TColor);
   begin
     with Canvas do
@@ -83,7 +81,7 @@ var
     LCenter.X := ClientRect.Right - (Width div 2);
     LCenter.Y := ClientRect.Bottom - (Width div 2);
 
-    Canvas.TextStyle := LTextStyle;
+    //Canvas.TextStyle := LTextStyle;
     with Canvas do
       begin
         Pen.Width := FPenWidth;

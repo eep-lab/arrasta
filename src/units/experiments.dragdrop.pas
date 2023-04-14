@@ -14,11 +14,18 @@ unit Experiments.DragDrop;
 interface
 
 procedure WriteToConfigurationFile(
+  ATrials : integer;
   ARelation : string;
   ASamples: integer;
   AComparisons: integer;
-  AHelpType: integer;
-  AFactor: integer);
+  AMouseMoveMode: string;
+  AFactor: string;
+  AUseHelpProgression : Boolean;
+  AHasLimitedHold : Boolean);
+
+var
+  ITI : integer;
+  LimitedHold: integer;
 
 implementation
 
@@ -28,9 +35,13 @@ uses Classes, SysUtils
    , LazFileUtils
    , Session.Configuration.GlobalContainer
    , Session.ConfigurationFile
+   , Session.ConfigurationFile.Writer
    , Stimuli.Image.DragDropable
+   , Session.Trial.HelpSeries.DragDrop
    ;
 
+
+var Writer : TConfigurationWriter;
 {
   Planned
   'Style.Samples.Animation'=Constrast
@@ -48,50 +59,56 @@ uses Classes, SysUtils
   'Comparisons'= 1 .. 3 // Note: Minimum equals Samples
   'DragMoveFactor'= 5 .. 100;
 }
-procedure WriteTrial(ABlc : integer;
-  AName: string; ADragMode: string; ARelation: string;
-  ASamples: string; AComparisons: string; AFactor: string);
-var
-  i : integer;
+procedure WriteTrials(ATrials: integer; AName: string; ADragMode: string;
+  ARelation: string; ASamples: string; AComparisons: string; AFactor: string;
+  AUseHelpProgression : Boolean; AHasLimitedHold : Boolean);
 begin
-  i := ConfigurationFile.TrialCount[ABlc]+1;
-  with ConfigurationFile do
-  begin
-    WriteToTrial(i, ABlc, _Name, AName);
-    WriteToTrial(i, ABlc, _Cursor, '0');
-    WriteToTrial(i, ABlc, _Kind, T_DRAGDROP);
-    WriteToTrial(i, ABlc, 'RepeatTrial', (3).ToString);
-    //WriteToTrial(i, ABlc, _LimitedHold, (60000*15).ToString);
-    WriteToTrial(i, ABlc, _ITI, (6000).ToString);
-    WriteToTrial(i, ABlc, 'Style.Samples.DragMode', ADragMode);
-    WriteToTrial(i, ABlc, 'Relation', ARelation);
-    WriteToTrial(i, ABlc, 'Samples', ASamples);
-    WriteToTrial(i, ABlc, 'Comparisons', AComparisons);
-    WriteToTrial(i, ABlc, 'DragMoveFactor', AFactor);
+  case Writer.CurrentBloc of
+    0, 1, 2, 3, 4, 5 : begin
+      with Writer.TrialConfig do begin
+        Values[_Name] := AName;
+        Values[_Cursor] := '0';
+        Values[_Kind] := T_DRAGDROP;
+        if AHasLimitedHold then
+          Values[_LimitedHold] := LimitedHold.ToString;
+        Values[_ITI] := ITI.ToString;
+        Values['UseHelpProgression'] := AUseHelpProgression.ToString;
+        Values['RepeatTrial'] := ATrials.ToString;
+        Values['Style.Samples.DragMode'] := ADragMode;
+        Values['Relation'] := ARelation;
+        Values['Samples'] := ASamples;
+        Values['Comparisons'] := AComparisons;
+        Values['DragMoveFactor'] := AFactor.ToFactor.ToInteger.ToString;
+      end;
+      Writer.WriteTrial;
+    end;
   end;
 end;
 
-procedure WriteToConfigurationFile(ARelation: string; ASamples: integer;
-  AComparisons: integer; AHelpType: integer; AFactor: integer);
+procedure WriteToConfigurationFile(ATrials : integer; ARelation: string;
+  ASamples: integer; AComparisons: integer; AMouseMoveMode: string;
+  AFactor: string; AUseHelpProgression : Boolean; AHasLimitedHold : Boolean);
 var
-  LDragMode : string;
-  LBloc     , i: integer;
-  LName     : string;
+  LBloc : integer = 0;
+  LName : string;
 begin
-  case AHelpType of
-    0 : LDragMode := dragFree.ToString;
-    1 : LDragMode := dragChannel.ToString;
+  Writer := TConfigurationWriter.Create(ConfigurationFile);
+  try
+    LName := ARelation + #32 + AMouseMoveMode + #32 +
+      'S' + ASamples.ToString + 'C' + AComparisons.ToString;
+
+    Writer.CurrentBloc := LBloc;
+    with Writer.BlocConfig do begin
+      Values[_Name] := 'Bloco ' + LBloc.ToString;
+    end;
+    Writer.WriteBloc;
+    WriteTrials(ATrials, LName, AMouseMoveMode, ARelation,
+      ASamples.ToString, AComparisons.ToString, AFactor,
+      AUseHelpProgression, AHasLimitedHold);
+
+  finally
+    Writer.Free;
   end;
-
-  LBloc := 1;
-
-  LName := ARelation + #32 + LDragMode + #32 +
-    'S'+ ASamples.ToString + 'C'+AComparisons.ToString;
-
-
-  WriteTrial(LBloc, LName, LDragMode,
-    ARelation, ASamples.ToString, AComparisons.ToString, AFactor.ToString);
-
 end;
 
 end.

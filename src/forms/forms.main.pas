@@ -15,7 +15,10 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, IniPropStorage, ComCtrls, Spin;
+  ExtCtrls, StdCtrls, IniPropStorage, ComCtrls, Spin
+  , Stimuli.Image.DragDropable
+  , Session.Trial.HelpSeries.DragDrop
+  , Types;
 
 type
 
@@ -24,32 +27,59 @@ type
   TBackground = class(TForm)
     ButtonStartAll: TButton;
     ButtonStartTrial: TButton;
-    EditParticipant: TEdit;
+    CheckBoxHelpRegression: TCheckBox;
+    CheckBoxHelpProgression: TCheckBox;
+    CheckBoxMouseModeMode: TCheckBox;
+    ComboBoxFactor: TComboBox;
+    ComboBoxParticipants: TComboBox;
     FloatSpinEditScreenWidth: TFloatSpinEdit;
-    GroupBoxDesign: TGroupBox;
     GroupBoxComplexity: TGroupBox;
+    GroupBoxDesign: TGroupBox;
     IniPropStorage: TIniPropStorage;
-    LabelDragMoveFactor: TLabel;
+    LabelScreenWidthUnit: TLabel;
+    LabelLimitedHoldTime: TLabel;
+    LabelITITime: TLabel;
+    LabelLimitedHold: TLabel;
+    LabelTrials: TLabel;
+    LabelSessionTimeUnit: TLabel;
+    LabelConfigurations: TLabel;
+    LabelSessionTime: TLabel;
     LabelComparisons: TLabel;
+    LabelDragMoveFactor: TLabel;
     LabelSamples: TLabel;
     LabelScreenWidth: TLabel;
+    LabelITI: TLabel;
+    PageControlConfigurations: TPageControl;
     PanelConfigurations: TPanel;
-    RadioGroupHelpType: TRadioGroup;
     RadioGroupRelation: TRadioGroup;
-    SpinEditDragMoveFactor: TSpinEdit;
+    SpinEditTrials: TSpinEdit;
+    SpinEditSessionTime: TSpinEdit;
     SpinEditComparisons: TSpinEdit;
     SpinEditSamples: TSpinEdit;
+    SpinEditITI: TSpinEdit;
+    SpinEditLimitedHold: TSpinEdit;
     TabControlDesign: TTabControl;
+    TabSheetComplexity: TTabSheet;
+    TabSheet2: TTabSheet;
     procedure ButtonStartTrialClick(Sender: TObject);
-    procedure RadioGroupHelpTypeClick(Sender: TObject);
+    procedure CheckBoxHelpRegressionChange(Sender: TObject);
+    procedure CheckBoxMouseModeModeChange(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure ButtonStartAllClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure EndSession(Sender: TObject);
     procedure BeforeStartSession(Sender: TObject);
     procedure SpinEditSamplesChange(Sender: TObject);
     procedure TabControlDesignChange(Sender: TObject);
+    procedure TabSheet2ContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
   private
-
+    function GetDragMouseMoveMode : TDragMouseMoveMode;
+    function GetRelation : string;
+    function GetComparValue : TComparValue;
+    function GetSampleValue : TSampleValue;
+    function GetMouseMoveFactor : TFactor;
+    function GetSessionName : string;
   public
 
   end;
@@ -64,13 +94,11 @@ implementation
 uses
    FileUtil
    , Constants
+   , Session
    , Session.Backgrounds
    , Session.Configuration.GlobalContainer
-   , Session
-   , Experiments.Grids
    , Experiments.Arrasta
    , Controls.Trials.DragDrop
-   , Stimuli.Image.DragDropable
    , Cheats
    ;
 
@@ -81,45 +109,44 @@ var
   ConfigurationFilename : string;
 
 procedure TBackground.ButtonStartAllClick(Sender: TObject);
-var
-  LName       : string;
-  LDesign     : string;
-  LHelpTp     : string;
-  LExperiment : string;
 begin
   GlobalContainer.RootData := GlobalContainer.RootData +
-    EditParticipant.Text + DirectorySeparator;
+    ComboBoxParticipants.Text + DirectorySeparator;
   ForceDirectories(GlobalContainer.RootData);
   CheatsModeOn := False;
   PanelConfigurations.Hide;
   Session.Backgrounds.Background := Self;
 
-  LExperiment := TabControlDesign.Tabs[TabControlDesign.TabIndex];
-  LDesign     := RadioGroupRelation.Items[RadioGroupRelation.ItemIndex];
-  LHelpTp     := RadioGroupHelpType.Items[RadioGroupHelpType.ItemIndex];
-
   ConfigurationFilename :=
     Experiments.Arrasta.MakeConfigurationFile(
-      LDesign,
+      SpinEditTrials.Value,
+      SpinEditITI.Value * 1000,
+      SpinEditLimitedHold.Value * 60000,
+      GetRelation,
       SpinEditSamples.Value,
       SpinEditComparisons.Value,
-      RadioGroupHelpType.ItemIndex,
-      SpinEditDragMoveFactor.Value);
+      GetDragMouseMoveMode.ToString,
+      GetMouseMoveFactor.ToString,
+      CheckBoxHelpProgression.Checked,
+      CheckBoxHelpRegression.Checked);
 
-  LName := LExperiment + #32 + LDesign + #32 + LHelpTp;
-  GSession.Play(LName, EditParticipant.Text);
-end;
-
-procedure TBackground.RadioGroupHelpTypeClick(Sender: TObject);
-var
-  LVisible : Boolean;
-begin
-  case RadioGroupHelpType.ItemIndex of
-    0 : LVisible:=False;
-    1 : LVisible:=True;
+  DefaultDragMouveMoveMode := GetDragMouseMoveMode;
+  with DefaultDragDropData do begin
+    Relation := GetRelation.ToEquivalenceRelation;
+    Comparisons := GetComparValue;
+    Samples := GetSampleValue;
+    HelpType := DefaultDragMouveMoveMode;
+    Factor := GetMouseMoveFactor;
   end;
-  SpinEditDragMoveFactor.Visible := LVisible;
-  LabelDragMoveFactor.Visible:=LVisible;
+  if FileExists(DefaultComplexityFilename) then begin
+    DragDropHelpSerie := TDragDropHelpSerie.Create(DefaultComplexityFilename);
+  end else begin
+    DragDropHelpSerie := TDragDropHelpSerie.Create(hsDefault);
+  end;
+  IDragDropHelpSerie := DragDropHelpSerie;
+
+  GSession.Timer.Interval := SpinEditSessionTime.Value * 60000;
+  GSession.Play(GetSessionName, ComboBoxParticipants.Text);
 end;
 
 var
@@ -129,21 +156,63 @@ procedure TBackground.ButtonStartTrialClick(Sender: TObject);
 var
   DragMouseMoveMode : TDragMouseMoveMode;
 begin
-  case RadioGroupHelpType.ItemIndex of
-    0 : DragMouseMoveMode := dragFree;
-    1 : DragMouseMoveMode := dragChannel;
-  end;
+  DragMouseMoveMode := GetDragMouseMoveMode;
   LTrial := TDragDrop.Create(Self);
   with LTrial.Configurations.Parameters do begin
     Values['Style.Samples.DragMode'] := DragMouseMoveMode.ToString;
     Values['Relation'] := RadioGroupRelation.Items[RadioGroupRelation.ItemIndex];
     Values['Samples'] := SpinEditSamples.Value.ToString;
     Values['Comparisons'] := SpinEditComparisons.Value.ToString;
-    Values['DragMoveFactor'] := SpinEditDragMoveFactor.Value.ToString;
+    Values['DragMoveFactor'] := GetMouseMoveFactor.ToString;
+    Values['UseHelpSerie'] := 'False';
   end;
+  LTrial.OnTrialEnd:=@EndSession;
   LTrial.Play;
   PanelConfigurations.Hide;
 end;
+
+procedure TBackground.CheckBoxHelpRegressionChange(Sender: TObject);
+begin
+  SpinEditLimitedHold.Visible:=CheckBoxHelpRegression.Checked;
+  LabelLimitedHold.Visible:=CheckBoxHelpRegression.Checked;
+  LabelLimitedHoldTime.Visible:=CheckBoxHelpRegression.Checked;
+end;
+
+procedure TBackground.CheckBoxMouseModeModeChange(Sender: TObject);
+begin
+  ComboBoxFactor.Visible := CheckBoxMouseModeMode.Checked;
+  LabelDragMoveFactor.Visible:=CheckBoxMouseModeMode.Checked;
+end;
+
+procedure TBackground.FormDestroy(Sender: TObject);
+begin
+  DragDropHelpSerie.Free;
+end;
+
+// uses BGRABitmap, BGRABitmapTypes;
+//procedure TBackground.FormPaint(Sender: TObject);
+//const
+//  BorderSize : single = 50;
+//var
+//  BGRABitmap : TBGRABitmap;
+//  LColor: TBGRAPixel;
+//  Pos : integer = 0;
+//  i: Integer;
+//begin
+//  BGRABitmap := TBGRABitmap.Create(ClientWidth, ClientHeight, BGRABlack);
+//  try
+//    BGRABitmap.PenStyle := psSolid;
+//    for i := 1 to 4 do begin
+//      LColor := BGRA(255, 0, 0, 255 div i);
+//      BGRABitmap.RectangleAntialias(
+//        Pos, Pos, ClientWidth-Pos, ClientHeight-Pos, LColor, 50);
+//      Inc(Pos, trunc(BorderSize)+10);
+//    end;
+//    BGRABitmap.Draw(Canvas, 0, 0);
+//  finally
+//    BGRABitmap.Free;
+//  end;
+//end;
 
 procedure TBackground.FormCreate(Sender: TObject);
 begin
@@ -188,6 +257,78 @@ begin
       RadioGroupRelation.Items.Append('C-B');
       RadioGroupRelation.Items.Append('B-C');
     end;
+  end;
+end;
+
+procedure TBackground.TabSheet2ContextPopup(Sender: TObject; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+
+end;
+
+function TBackground.GetDragMouseMoveMode: TDragMouseMoveMode;
+begin
+  if CheckBoxMouseModeMode.Checked then begin
+    Result := dragChannel;
+  end else begin
+    Result := dragFree;
+  end;
+end;
+
+function TBackground.GetRelation: string;
+begin
+  Result := RadioGroupRelation.Items[RadioGroupRelation.ItemIndex];
+end;
+
+function TBackground.GetComparValue: TComparValue;
+begin
+  case SpinEditComparisons.Value of
+    1 : Result := compOne;
+    2 : Result := compTwo;
+    3 : Result := compThree;
+  end;
+end;
+
+function TBackground.GetSampleValue: TSampleValue;
+begin
+  case SpinEditSamples.Value of
+    1 : Result := sampOne;
+    2 : Result := sampTwo;
+    3 : Result := sampThree;
+  end;
+end;
+
+function TBackground.GetMouseMoveFactor: TFactor;
+begin
+  case ComboBoxFactor.ItemIndex of
+    0 : Result := facVeryEasy;
+    1 : Result := facEasy;
+    2 : Result := facNormal;
+    3 : Result := facHard;
+    4 : Result := facVeryHard;
+  end;
+end;
+
+function TBackground.GetSessionName: string;
+begin
+  Result :=
+    TabControlDesign.Tabs[TabControlDesign.TabIndex] + #32 +
+    GetRelation + #32 +
+    GetMouseMoveFactor.ToString;
+
+  if CheckBoxMouseModeMode.Checked then begin
+    Result := Result +
+      ', com movimentação retrita ao arrastar, na direção da comparação correta';
+  end else begin
+    Result := Result + ', com movimentação livre ao arrastar';
+  end;
+
+  if CheckBoxHelpProgression.Checked then begin
+    Result := Result + ', com progressão da complexidade ao acertar';
+  end;
+
+  if CheckBoxHelpRegression.Checked then begin
+    Result := Result + ', com regressão da complexidade após 1 min sem acertar';
   end;
 end;
 
