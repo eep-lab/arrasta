@@ -7,23 +7,30 @@
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="olavo_arrasta"/>
+      <Title Value="arrasta"/>
       <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <XPManifest>
         <DpiAware Value="True"/>
-        <TextName Value="Experimentos.RFT.Augusto"/>
-        <TextDesc Value="Experimento do Augusto"/>
+        <TextName Value="Arrasta"/>
+        <TextDesc Value=""/>
       </XPManifest>
+      <Icon Value="0"/>
     </General>
-    <BuildModes Count="4">
+    <VersionInfo>
+      <UseVersionInfo Value="True"/>
+      <RevisionNr Value="2"/>
+      <Attributes pvaPreRelease="True"/>
+      <StringTable CompanyName="Arrasta Team" FileDescription="Arrasta" InternalName="olavo_arrasta_darwin-M1-cocoa" LegalCopyright="GPL3" OriginalFilename="olavo_arrasta_darwin-M1-cocoa" ProductName="Arrasta"/>
+    </VersionInfo>
+    <BuildModes Count="6">
       <Item1 Name="win64-debug" Default="True"/>
       <Item2 Name="win64">
         <CompilerOptions>
           <Version Value="11"/>
           <Target>
-            <Filename Value="olavo_arrasta_$(BuildMode)"/>
+            <Filename Value="arrasta_$(BuildMode)"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -68,7 +75,7 @@
         <CompilerOptions>
           <Version Value="11"/>
           <Target>
-            <Filename Value="olavo_arrasta_$(BuildMode)"/>
+            <Filename Value="arrasta_$(BuildMode)"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -151,6 +158,117 @@
           </Other>
         </CompilerOptions>
       </Item4>
+      <Item5 Name="darwin-M1-cocoa">
+        <MacroValues Count="1">
+          <Macro1 Name="LCLWidgetType" Value="cocoa"/>
+        </MacroValues>
+        <CompilerOptions>
+          <Version Value="11"/>
+          <Target>
+            <Filename Value="arrasta_$(BuildMode)"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <OtherUnitFiles Value="src/forms;src/units;src/schedules;dependency/epiktimer;dependency/synaser"/>
+            <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Parsing>
+            <SyntaxOptions>
+              <IncludeAssertionCode Value="True"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <SmartLinkUnit Value="True"/>
+            <Checks>
+              <IOChecks Value="True"/>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+            <VerifyObjMethodCallValidity Value="True"/>
+            <TargetCPU Value="aarch64"/>
+            <TargetOS Value="darwin"/>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <GenerateDebugInfo Value="False"/>
+              <RunWithoutDebug Value="True"/>
+              <DebugInfoType Value="dsDwarf2Set"/>
+              <UseLineInfoUnit Value="False"/>
+            </Debugging>
+            <LinkSmart Value="True"/>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+            </Options>
+          </Linking>
+          <Other>
+            <CustomOptions Value="-dNO_LIBZMQ"/>
+            <OtherDefines Count="2">
+              <Define0 Value="NO_LIBZMQ"/>
+              <Define1 Value="DEBUG"/>
+            </OtherDefines>
+          </Other>
+        </CompilerOptions>
+      </Item5>
+      <Item6 Name="darwin-Intel-cocoa">
+        <MacroValues Count="1">
+          <Macro1 Name="LCLWidgetType" Value="cocoa"/>
+        </MacroValues>
+        <CompilerOptions>
+          <Version Value="11"/>
+          <Target>
+            <Filename Value="arrasta_$(BuildMode)"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <OtherUnitFiles Value="src/forms;src/units;src/schedules;dependency/epiktimer;dependency/synaser"/>
+            <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Parsing>
+            <SyntaxOptions>
+              <IncludeAssertionCode Value="True"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <SmartLinkUnit Value="True"/>
+            <Checks>
+              <IOChecks Value="True"/>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+            <VerifyObjMethodCallValidity Value="True"/>
+            <TargetCPU Value="x86_64"/>
+            <TargetOS Value="darwin"/>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <GenerateDebugInfo Value="False"/>
+              <RunWithoutDebug Value="True"/>
+              <DebugInfoType Value="dsDwarf2Set"/>
+              <UseLineInfoUnit Value="False"/>
+            </Debugging>
+            <LinkSmart Value="True"/>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+            </Options>
+          </Linking>
+          <Other>
+            <CustomOptions Value="-dNO_LIBZMQ"/>
+            <OtherDefines Count="2">
+              <Define0 Value="NO_LIBZMQ"/>
+              <Define1 Value="DEBUG"/>
+            </OtherDefines>
+          </Other>
+        </CompilerOptions>
+      </Item6>
+      <SharedMatrixOptions Count="1">
+        <Item1 ID="867482960946" Modes="darwin-M1-cocoa,darwin-Intel-cocoa" Type="IDEMacro" MacroName="LCLWidgetType" Value="cocoa"/>
+      </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -184,7 +302,7 @@
         <PackageName Value="LCL"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="95">
+    <Units Count="96">
       <Unit0>
         <Filename Value="olavo_arrasta.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -662,12 +780,17 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Generics.Aggregator.Contract"/>
       </Unit94>
+      <Unit95>
+        <Filename Value="src/units/machtime.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MachTime"/>
+      </Unit95>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="olavo_arrasta_$(BuildMode)"/>
+      <Filename Value="arrasta_$(BuildMode)"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>

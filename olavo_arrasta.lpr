@@ -13,7 +13,8 @@ uses
 
 begin
   Randomize;
-  Application.Scaled := True;
+  Application.Title:='arrasta';
+  Application.Scaled:=True;
   Application.Initialize;
   Application.CreateForm(TBackground, Background);
   {$IFDEF LINUX}

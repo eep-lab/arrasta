@@ -14,8 +14,9 @@ unit Timestamps;
 interface
 
 uses  SysUtils;
-
+{$IFDEF WINDOWS}
 procedure StartEpikTimer;
+{$ENDIF}
 function GetLatency(AStart, ALatency : Extended) : string;
 function Elapsed : Extended;
 function GetTimeStampF : string; overload;
@@ -30,13 +31,13 @@ uses
     Session.Configuration.GlobalContainer
     , Timestamps.Helpers;
 
+{$IFDEF WINDOWS}
 procedure StartEpikTimer;
 begin
-  {$IFDEF WINDOWS}
   Timestamps.Helpers.StartEpiktimer;
-  {$ENDIF}
   GlobalContainer.TimeStart := TickCount;
 end;
+{$ENDIF}
 
 function GetLatency(AStart, ALatency: Extended): string;
 begin
