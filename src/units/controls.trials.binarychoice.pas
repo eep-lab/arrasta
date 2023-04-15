@@ -13,7 +13,7 @@ unit Controls.Trials.BinaryChoice;
 
 interface
 
-uses LCLIntf, LCLType, Controls, Classes, SysUtils, StdCtrls
+uses LCLIntf, Controls, Classes, SysUtils, StdCtrls
 
   , Controls.Trials.Abstract
   , Stimuli.Choice

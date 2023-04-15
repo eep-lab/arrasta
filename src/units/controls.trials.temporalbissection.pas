@@ -13,7 +13,7 @@ unit Controls.Trials.TemporalBissection;
 
 interface
 
-uses LCLIntf, LCLType, Controls, Classes, SysUtils, ExtCtrls
+uses LCLIntf, Controls, Classes, SysUtils, ExtCtrls
 
   , Controls.Trials.Abstract
   , Stimuli.Sequence.TemporalBissection

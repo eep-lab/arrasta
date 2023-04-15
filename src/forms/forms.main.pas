@@ -14,7 +14,7 @@ unit Forms.Main;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, Forms, Controls, Dialogs,
   ExtCtrls, StdCtrls, IniPropStorage, ComCtrls, Spin
   , Stimuli.Image.DragDropable
   , Session.Trial.HelpSeries.DragDrop
@@ -93,7 +93,6 @@ implementation
 
 uses
    FileUtil
-   , Constants
    , Session
    , Session.Backgrounds
    , Session.Configuration.GlobalContainer

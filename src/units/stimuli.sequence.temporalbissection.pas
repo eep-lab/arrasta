@@ -71,7 +71,7 @@ type
 
 implementation
 
-uses Forms, Constants, Cheats;
+uses Forms, Constants;
 
 { TTBSequence }
 

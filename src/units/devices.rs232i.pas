@@ -13,7 +13,7 @@ unit Devices.RS232i;
 
 interface
 
-uses Classes, SysUtils
+uses SysUtils
     {$IFDEF WINDOWS}
     , Registry
     {$ENDIF}

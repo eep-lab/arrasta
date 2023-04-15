@@ -50,7 +50,6 @@ uses
 , FileUtil
 , LazFileUtils
 , Loggers.Reports
-, Loggers
 , Session.ConfigurationFile
 , Session.Configuration.GlobalContainer
 ;

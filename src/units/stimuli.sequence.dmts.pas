@@ -14,13 +14,11 @@ unit Stimuli.Sequence.DMTS;
 interface
 
 uses
-  Classes, SysUtils, Controls, Graphics
-  , Stimuli
+  Classes, SysUtils, Controls, Stimuli
   , Stimuli.Abstract
   , Controls.ObsConfKey
   , Schedules
   , SerialTimer
-  , Timestamps
   ;
 
 type
@@ -81,7 +79,7 @@ type
 
 implementation
 
-uses Forms, Constants, Cheats;
+uses Forms, Constants;
 
 { TDMTSSequence }
 

@@ -31,9 +31,7 @@ implementation
 
 uses Classes, SysUtils
    , Constants
-   , StrUtils
    , LazFileUtils
-   , Session.Configuration.GlobalContainer
    , Session.ConfigurationFile
    , Session.ConfigurationFile.Writer
    , Stimuli.Image.DragDropable

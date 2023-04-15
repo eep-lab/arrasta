@@ -73,7 +73,6 @@ implementation
 uses Forms, FileUtil, LazFileUtils, Session.Configuration.GlobalContainer
      , Dialogs
      , Types
-     , ExtCtrls
      ;
 
 { TLightImage }

@@ -14,9 +14,7 @@ implementation
 
 uses Classes, SysUtils
    , Constants
-   , LazFileUtils
    , Experiments.Eduardo.Comum
-   , Session.Configuration.GlobalContainer
    , Session.ConfigurationFile
    ;
 

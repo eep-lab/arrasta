@@ -50,7 +50,7 @@ implementation
 
 { TFakeStimulus }
 
-uses Experiments.Augusto, Dialogs;
+uses Dialogs;
 
 constructor TFakeStimulus.Create(AID: integer; AIndex: array of integer;
   AKey: word);

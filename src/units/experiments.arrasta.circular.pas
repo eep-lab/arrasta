@@ -13,7 +13,6 @@ uses Classes, SysUtils
    , StrUtils
    , LazFileUtils
    , Experiments.Vinicius.Comum
-   , Session.Configuration.GlobalContainer
    , Session.ConfigurationFile
    ;
 

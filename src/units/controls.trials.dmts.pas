@@ -13,9 +13,7 @@ unit Controls.Trials.DMTS;
 
 interface
 
-uses LCLIntf, LCLType, Controls, Classes, SysUtils, ExtCtrls
-
-  , Controls.Trials.Abstract
+uses LCLIntf, LCLType, Controls, Classes, SysUtils, Controls.Trials.Abstract
   , Stimuli.Sequence.DMTS
   , Consequences
   , Timestamps

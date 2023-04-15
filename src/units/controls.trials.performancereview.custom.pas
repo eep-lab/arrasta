@@ -13,9 +13,7 @@ unit Controls.Trials.Performancereview.Custom;
 
 interface
 
-uses LCLIntf, LCLType, Controls, Classes, SysUtils, StdCtrls, Graphics
-
-  , Controls.Trials.Abstract
+uses LCLIntf, LCLType, Controls, Classes, SysUtils, StdCtrls, Controls.Trials.Abstract
   , Controls.Trials.Helpers
   , Controls.Counters.PerformanceReview
   ;

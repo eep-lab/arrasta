@@ -51,7 +51,7 @@ type
 
 implementation
 
-uses Forms, Constants, Cheats;
+uses Constants;
 
 { TFreeSquare }
 

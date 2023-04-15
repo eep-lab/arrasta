@@ -12,7 +12,6 @@ uses FileMethods
    , Experiments.Augusto.BeforeAfter
    , Experiments.Augusto.SameDifferent
    , Experiments.Augusto.Derivation
-   , Session.Configuration.GlobalContainer
    , Session.ConfigurationFile
    ;
 

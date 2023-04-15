@@ -29,7 +29,6 @@ implementation
 
 uses FileMethods
    , Experiments.DragDrop
-   , Session.Configuration.GlobalContainer
    , Session.ConfigurationFile
    ;
 

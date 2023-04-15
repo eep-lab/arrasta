@@ -13,12 +13,7 @@ unit Session.Configuration;
 
 interface
 
-uses Classes, ComCtrls, SysUtils,  Dialogs, Forms
-    {$IFNDEF NO_LIBZMQ}
-    , Pupil.Client
-    {$ENDIF}
-    , CounterManager
-    ;
+uses Classes, ComCtrls, SysUtils,  Dialogs;
 
 type
 

@@ -6,9 +6,6 @@ unit Session.Trials;
 
 interface
 
-uses
-  Classes, SysUtils;
-
 type
 
    { IInterTrial }

@@ -14,7 +14,7 @@ unit Session.Trials.Factory;
 interface
 
 uses
-  Classes, SysUtils, fgl, Session.Trials, Controls.Trials.Abstract;
+  SysUtils, fgl, Session.Trials, Controls.Trials.Abstract;
 
 type
 

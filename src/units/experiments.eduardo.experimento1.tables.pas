@@ -5,7 +5,7 @@ unit Experiments.Eduardo.Experimento1.Tables;
 interface
 
 uses
-  Classes, SysUtils, Loggers.Tables, Loggers.Helpers;
+  Classes, SysUtils, Loggers.Tables;
 
 type
 

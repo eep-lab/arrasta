@@ -35,8 +35,7 @@ var
 implementation
 
 uses
-  LazFileUtils,
-  Session.Configuration.GlobalContainer;
+  LazFileUtils;
 
 constructor TConsequence.Create(AFilename: string);
 begin

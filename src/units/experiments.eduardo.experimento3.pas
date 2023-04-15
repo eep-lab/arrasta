@@ -21,9 +21,7 @@ uses Classes, SysUtils
    , Constants
    , LazFileUtils
    , Experiments.Eduardo.Comum
-   , Session.Configuration.GlobalContainer
    , Session.ConfigurationFile
-   , Cheats
    ;
 
 procedure WriteOperantTask(ABlc : integer; AName: string;

@@ -14,7 +14,7 @@ unit Session.InterTrialEvents;
 interface
 
 uses
-  Classes, SysUtils, ExtCtrls, StdCtrls, Controls
+  Classes, SysUtils, StdCtrls, Controls
   , SerialTimer
   ;
 
@@ -56,8 +56,7 @@ var
 
 implementation
 
-uses Constants
-   , Timestamps
+uses Timestamps
    , Loggers
    , Session.Backgrounds
    , Session.Configuration.GlobalContainer

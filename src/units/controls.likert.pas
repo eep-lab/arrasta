@@ -6,7 +6,6 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, ExtCtrls, StdCtrls,
-  Forms,
   Controls.Stimuli.Key;
 
 type

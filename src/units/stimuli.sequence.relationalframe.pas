@@ -128,7 +128,7 @@ type
 
 implementation
 
-uses Forms, Constants, math;
+uses Forms, math;
 
 { TRFTSequence }
 

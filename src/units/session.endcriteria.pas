@@ -5,9 +5,8 @@ unit Session.EndCriteria;
 interface
 
 uses
-  Classes, SysUtils
+  SysUtils
   , Session.Configuration
-  , CounterManager
   ;
 
 type

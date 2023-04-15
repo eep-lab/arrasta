@@ -21,7 +21,6 @@ uses FileMethods
    , Experiments.Eduardo.Experimento1
    , Experiments.Eduardo.Experimento2
    , Experiments.Eduardo.Experimento3
-   , Session.Configuration.GlobalContainer
    , Session.ConfigurationFile
    ;
 

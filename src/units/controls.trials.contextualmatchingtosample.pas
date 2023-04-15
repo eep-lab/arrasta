@@ -55,7 +55,7 @@ type
 
 implementation
 
-uses Constants, Timestamps, Session.ConfigurationFile;
+uses Constants, Timestamps;
 
 constructor TCMTS.Create(AOwner: TCustomControl);
 begin

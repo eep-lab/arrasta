@@ -63,7 +63,7 @@ type
 
 implementation
 
-uses Constants, Timestamps, Session.ConfigurationFile;
+uses Constants, Timestamps;
 
 constructor TBeforeAfter.Create(AOwner: TCustomControl);
 begin

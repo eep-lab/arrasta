@@ -13,9 +13,7 @@ unit Controls.Trials.Freesquare.MixVTFI;
 
 interface
 
-uses LCLIntf, LCLType, Controls, Classes, SysUtils, ExtCtrls
-
-  , Controls.Trials.Abstract
+uses LCLIntf, LCLType, Controls, Classes, SysUtils, Controls.Trials.Abstract
   , Stimuli.Game.FreeSquare
   , Stimuli.Image
   , Schedules
@@ -77,7 +75,7 @@ type
 
 implementation
 
-uses Constants, Timestamps, Forms, Graphics
+uses Constants, Timestamps, Graphics
   , Cheats, Session.Configuration.GlobalContainer
   , Experiments.Eduardo.Experimento3.Tables;
 

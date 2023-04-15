@@ -13,8 +13,7 @@ unit Controls.Trials.PerformanceReview;
 
 interface
 
-uses Classes, SysUtils, Graphics
-    , Controls
+uses Classes, SysUtils, Controls
     , Controls.Trials.Abstract
     , Controls.Trials.Helpers
     , Controls.Counters.PerformanceReview

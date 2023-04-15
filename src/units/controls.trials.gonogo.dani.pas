@@ -19,7 +19,6 @@ uses LCLIntf, Controls, Classes, SysUtils, LazFileUtils
   , Controls.Trials.Helpers
   , Controls.Stimuli.Text
   , Controls.GoLeftGoRight
-  , Stimuli.Image
   , Schedules
   , Consequences
   ;

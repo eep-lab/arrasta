@@ -13,8 +13,7 @@ unit Controls.Trials.TextInput;
 
 interface
 
-uses LCLIntf, LCLType, Controls, Classes, SysUtils, StdCtrls, Graphics, IpHtml
-
+uses LCLIntf, LCLType, Controls, Classes, SysUtils, StdCtrls, Graphics
   , Stimuli.NextButton
   , Controls.Trials.Abstract
   , Controls.Trials.Helpers

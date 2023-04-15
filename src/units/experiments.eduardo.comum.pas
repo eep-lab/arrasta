@@ -39,7 +39,6 @@ implementation
 
 uses Classes, SysUtils
    , Constants
-   , LazFileUtils
    , FileMethods
    , Session.Configuration.GlobalContainer
    , Session.ConfigurationFile

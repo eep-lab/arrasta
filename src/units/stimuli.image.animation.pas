@@ -49,8 +49,7 @@ type
 
 implementation
 
-uses Forms, FileUtil, LazFileUtils, Session.Configuration.GlobalContainer
-     , Dialogs
+uses Forms, LazFileUtils, Dialogs
      , Types
      ;
 

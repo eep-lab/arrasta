@@ -13,7 +13,7 @@ unit Controls.Trials.MoveSquare;
 
 interface
 
-uses LCLIntf, Classes, SysUtils, Forms, Graphics, Controls
+uses LCLIntf, Classes, SysUtils, Graphics, Controls
 
   , Controls.Trials.Abstract
   , Controls.Trials.Helpers

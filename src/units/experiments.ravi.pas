@@ -11,8 +11,7 @@ var
 
 implementation
 
-uses Classes, SysUtils, Forms, FileUtil
-   , Forms.CheckStimuli
+uses Classes, SysUtils, Forms, Forms.CheckStimuli
    , Constants
    , Session.ConfigurationFile
    , Session.Configuration.GlobalContainer

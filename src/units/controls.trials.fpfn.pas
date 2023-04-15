@@ -13,7 +13,7 @@ unit Controls.Trials.FPFN;
 
 interface
 
-uses LCLIntf, LCLType, Controls, Classes, SysUtils, ExtCtrls, Graphics
+uses LCLIntf, LCLType, Controls, Classes, SysUtils, Graphics
 
   , Controls.Trials.Abstract
   , Controls.Trials.Helpers

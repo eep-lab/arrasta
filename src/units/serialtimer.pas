@@ -14,7 +14,7 @@ unit SerialTimer;
 interface
 
 uses
-  Classes, SysUtils, Forms, ExtCtrls;
+  Classes, SysUtils, ExtCtrls;
 
 type
 

@@ -14,7 +14,7 @@ unit Audio.CastleSound;
 interface
 
 uses
-  Classes, SysUtils, ExtCtrls, CastleSoundEngine;
+  Classes, SysUtils, CastleSoundEngine;
 
 type
 

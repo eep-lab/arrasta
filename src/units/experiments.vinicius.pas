@@ -21,7 +21,6 @@ implementation
 uses FileMethods
    , Experiments.Vinicius.Experimento1
    , Experiments.Vinicius.Experimento2
-   , Session.Configuration.GlobalContainer
    , Session.ConfigurationFile
    ;
 

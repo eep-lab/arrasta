@@ -17,12 +17,6 @@ interface
 
 uses Classes, SysUtils
 
-    , Dialogs
-
-    {$IFDEF Linux}
-    , Ports
-    {$ENDIF}
-
     , custom_timer
     ;
 

@@ -14,7 +14,7 @@ unit Stimuli.Sequence.DragDrop;
 interface
 
 uses
-  Classes, SysUtils, Controls, ExtCtrls, fgl, Graphics
+  Classes, SysUtils, Controls, fgl, Graphics
   , Stimuli
   , Stimuli.Abstract
   , Stimuli.Image.DragDropable

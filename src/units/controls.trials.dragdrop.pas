@@ -13,7 +13,7 @@ unit Controls.Trials.DragDrop;
 
 interface
 
-uses LCLIntf, LCLType, Controls, Classes, SysUtils, ExtCtrls
+uses LCLIntf, Controls, Classes, SysUtils, ExtCtrls
 
   , Session.Trials
   , Stimuli.Image.DragDropable
@@ -70,8 +70,7 @@ type
 
 implementation
 
-uses Forms, Graphics
-  , Constants, Cheats
+uses Constants, Cheats
   //, Experiments.Grids
   , Session.Configuration.GlobalContainer
   , Devices.RS232i;

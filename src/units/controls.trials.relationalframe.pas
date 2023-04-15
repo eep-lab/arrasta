@@ -55,7 +55,7 @@ type
 
 implementation
 
-uses Constants, Timestamps, Session.ConfigurationFile, Dialogs;
+uses Constants, Timestamps, Dialogs;
 
 constructor TFrame.Create(AOwner: TCustomControl);
 begin

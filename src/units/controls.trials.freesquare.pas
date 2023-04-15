@@ -13,9 +13,7 @@ unit Controls.Trials.FreeSquare;
 
 interface
 
-uses LCLIntf, LCLType, Controls, Classes, SysUtils, ExtCtrls
-
-  , Controls.Trials.Abstract
+uses LCLIntf, Controls, Classes, SysUtils, Controls.Trials.Abstract
   , Stimuli.Game.FreeSquare
   ;
 
@@ -66,7 +64,7 @@ type
 
 implementation
 
-uses Constants, Timestamps, Forms, Graphics
+uses Constants, Timestamps, Graphics
   , Cheats, Session.Configuration.GlobalContainer
   , Experiments.Eduardo.Experimento1.Tables
   , Experiments.Eduardo.Experimento3.Tables;

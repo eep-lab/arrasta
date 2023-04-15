@@ -1,12 +1,12 @@
 object Background: TBackground
-  Left = 0
-  Height = 768
-  Top = 0
-  Width = 1024
+  Left = 266
+  Height = 561
+  Top = 104
+  Width = 814
   BorderStyle = bsNone
   Caption = 'Configurar sessão'
-  ClientHeight = 768
-  ClientWidth = 1024
+  ClientHeight = 561
+  ClientWidth = 814
   Color = clBlack
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -17,10 +17,11 @@ object Background: TBackground
   object PanelConfigurations: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
     AnchorSideTop.Side = asrCenter
-    Left = 351
+    Left = 246
     Height = 500
-    Top = 134
+    Top = 30
     Width = 322
     Align = alCustom
     ClientHeight = 500
@@ -39,24 +40,18 @@ object Background: TBackground
       TabOrder = 0
     end
     object GroupBoxDesign: TGroupBox
-      Left = 1
-      Height = 185
-      Top = 274
+      Left = 0
+      Height = 176
+      Top = 280
       Width = 320
-      Align = alClient
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Top = 257
-      BorderSpacing.Bottom = 40
       Caption = 'Delineamento'
-      ClientHeight = 166
-      ClientWidth = 310
+      ClientHeight = 156
+      ClientWidth = 316
       TabOrder = 1
       object TabControlDesign: TTabControl
-        AnchorSideRight.Side = asrBottom
-        AnchorSideBottom.Side = asrBottom
         Left = 0
-        Height = 40
-        Top = 8
+        Height = 146
+        Top = 10
         Width = 316
         OnChange = TabControlDesignChange
         TabIndex = 0
@@ -64,51 +59,52 @@ object Background: TBackground
           'Identidade'
           'Arbritrariedade'
         )
-        Align = alCustom
+        Align = alClient
+        BorderSpacing.Top = 10
         TabOrder = 0
-      end
-      object ButtonStartTrial: TButton
-        Left = 8
-        Height = 25
-        Top = 136
-        Width = 128
-        Caption = 'Começar Tentativa'
-        OnClick = ButtonStartTrialClick
-        TabOrder = 1
-      end
-      object RadioGroupRelation: TRadioGroup
-        Left = 8
-        Height = 70
-        Top = 56
-        Width = 289
-        AutoFill = True
-        Caption = 'Relações'
-        ChildSizing.LeftRightSpacing = 6
-        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-        ChildSizing.EnlargeVertical = crsHomogenousChildResize
-        ChildSizing.ShrinkHorizontal = crsScaleChilds
-        ChildSizing.ShrinkVertical = crsScaleChilds
-        ChildSizing.Layout = cclTopToBottomThenLeftToRight
-        ChildSizing.ControlsPerLine = 1
-        ClientHeight = 51
-        ClientWidth = 279
-        ColumnLayout = clVerticalThenHorizontal
-        Columns = 3
-        Constraints.MaxHeight = 70
-        ItemIndex = 0
-        Items.Strings = (
-          'A-A'
-          'B-B'
-          'C-C'
-        )
-        ParentFont = False
-        TabOrder = 2
+        object RadioGroupRelation: TRadioGroup
+          Left = 3
+          Height = 70
+          Top = 24
+          Width = 296
+          AutoFill = True
+          Caption = 'Relações'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclTopToBottomThenLeftToRight
+          ChildSizing.ControlsPerLine = 1
+          ClientHeight = 50
+          ClientWidth = 292
+          ColumnLayout = clVerticalThenHorizontal
+          Columns = 3
+          Constraints.MaxHeight = 70
+          ItemIndex = 0
+          Items.Strings = (
+            'A-A'
+            'B-B'
+            'C-C'
+          )
+          ParentFont = False
+          TabOrder = 1
+        end
+        object ButtonStartTrial: TButton
+          Left = 8
+          Height = 25
+          Top = 104
+          Width = 128
+          Caption = 'Começar Tentativa'
+          OnClick = ButtonStartTrialClick
+          TabOrder = 2
+        end
       end
     end
     object PageControlConfigurations: TPageControl
       Left = 1
       Height = 250
-      Top = 22
+      Top = 21
       Width = 320
       ActivePage = TabSheet2
       Align = alClient
@@ -118,23 +114,22 @@ object Background: TBackground
       TabOrder = 2
       object TabSheet2: TTabSheet
         Caption = 'Sessão'
-        ClientHeight = 220
-        ClientWidth = 314
-        OnContextPopup = TabSheet2ContextPopup
+        ClientHeight = 222
+        ClientWidth = 312
         object LabelScreenWidth: TLabel
           AnchorSideLeft.Control = FloatSpinEditScreenWidth
           AnchorSideBottom.Control = FloatSpinEditScreenWidth
           Left = 8
-          Height = 32
-          Top = 59
-          Width = 101
+          Height = 30
+          Top = 61
+          Width = 91
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 5
           Caption = 'Comprimento da'#13#10'Tela do Monitor'
         end
         object FloatSpinEditScreenWidth: TFloatSpinEdit
           Left = 8
-          Height = 21
+          Height = 23
           Top = 96
           Width = 72
           DecimalPlaces = 3
@@ -143,7 +138,7 @@ object Background: TBackground
         end
         object SpinEditSessionTime: TSpinEdit
           Left = 160
-          Height = 21
+          Height = 23
           Top = 184
           Width = 72
           Increment = 5
@@ -156,9 +151,9 @@ object Background: TBackground
           AnchorSideLeft.Control = SpinEditSessionTime
           AnchorSideBottom.Control = SpinEditSessionTime
           Left = 160
-          Height = 16
-          Top = 163
-          Width = 156
+          Height = 15
+          Top = 164
+          Width = 136
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 5
           Caption = 'Tempo máximo de sessão'
@@ -170,9 +165,9 @@ object Background: TBackground
           AnchorSideBottom.Control = SpinEditSessionTime
           AnchorSideBottom.Side = asrBottom
           Left = 237
-          Height = 16
-          Top = 184
-          Width = 22
+          Height = 15
+          Top = 187
+          Width = 21
           Anchors = [akLeft, akBottom]
           BorderSpacing.Left = 5
           BorderSpacing.Bottom = 5
@@ -180,10 +175,10 @@ object Background: TBackground
         end
         object ComboBoxParticipants: TComboBox
           Left = 8
-          Height = 20
+          Height = 23
           Top = 8
           Width = 136
-          ItemHeight = 19
+          ItemHeight = 15
           Items.Strings = (
             'Sujeito 1'
             'Sujeito 2'
@@ -196,7 +191,7 @@ object Background: TBackground
         end
         object SpinEditTrials: TSpinEdit
           Left = 160
-          Height = 21
+          Height = 23
           Top = 96
           Width = 72
           Increment = 3
@@ -209,16 +204,16 @@ object Background: TBackground
           AnchorSideLeft.Control = SpinEditTrials
           AnchorSideBottom.Control = SpinEditTrials
           Left = 160
-          Height = 16
-          Top = 75
-          Width = 62
+          Height = 15
+          Top = 76
+          Width = 52
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 5
           Caption = 'Tentativas'
         end
         object SpinEditITI: TSpinEdit
           Left = 8
-          Height = 21
+          Height = 23
           Top = 182
           Width = 72
           MaxValue = 6
@@ -229,9 +224,9 @@ object Background: TBackground
           AnchorSideLeft.Control = SpinEditITI
           AnchorSideBottom.Control = SpinEditITI
           Left = 8
-          Height = 16
-          Top = 161
-          Width = 150
+          Height = 15
+          Top = 162
+          Width = 130
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 5
           Caption = 'Intervalo entre tentativas'
@@ -243,9 +238,9 @@ object Background: TBackground
           AnchorSideBottom.Control = SpinEditITI
           AnchorSideBottom.Side = asrBottom
           Left = 85
-          Height = 16
-          Top = 182
-          Width = 7
+          Height = 15
+          Top = 185
+          Width = 5
           Anchors = [akLeft, akBottom]
           BorderSpacing.Left = 5
           BorderSpacing.Bottom = 5
@@ -257,9 +252,9 @@ object Background: TBackground
           AnchorSideBottom.Control = FloatSpinEditScreenWidth
           AnchorSideBottom.Side = asrBottom
           Left = 85
-          Height = 16
-          Top = 96
-          Width = 18
+          Height = 15
+          Top = 99
+          Width = 17
           Anchors = [akLeft, akBottom]
           BorderSpacing.Left = 5
           BorderSpacing.Bottom = 5
@@ -268,19 +263,19 @@ object Background: TBackground
       end
       object TabSheetComplexity: TTabSheet
         Caption = 'Tarefa'
-        ClientHeight = 220
-        ClientWidth = 314
+        ClientHeight = 222
+        ClientWidth = 312
         object GroupBoxComplexity: TGroupBox
           Left = 0
-          Height = 205
+          Height = 207
           Top = 5
-          Width = 314
+          Width = 312
           Align = alClient
           BorderSpacing.Top = 5
           BorderSpacing.Bottom = 10
           Caption = 'Complexidade'
-          ClientHeight = 186
-          ClientWidth = 304
+          ClientHeight = 187
+          ClientWidth = 308
           ParentBackground = False
           TabOrder = 0
           object LabelSamples: TLabel
@@ -288,9 +283,9 @@ object Background: TBackground
             AnchorSideTop.Control = SpinEditSamples
             AnchorSideBottom.Control = SpinEditSamples
             Left = 8
-            Height = 16
-            Top = 78
-            Width = 52
+            Height = 15
+            Top = 79
+            Width = 46
             Anchors = [akLeft, akBottom]
             BorderSpacing.Bottom = 5
             Caption = 'Modelos'
@@ -300,16 +295,16 @@ object Background: TBackground
             AnchorSideTop.Control = SpinEditComparisons
             AnchorSideBottom.Control = SpinEditComparisons
             Left = 8
-            Height = 16
-            Top = 134
-            Width = 84
+            Height = 15
+            Top = 135
+            Width = 73
             Anchors = [akLeft, akBottom]
             BorderSpacing.Bottom = 5
             Caption = 'Comparações'
           end
           object SpinEditSamples: TSpinEdit
             Left = 8
-            Height = 21
+            Height = 23
             Top = 99
             Width = 58
             MaxValue = 3
@@ -320,7 +315,7 @@ object Background: TBackground
           end
           object SpinEditComparisons: TSpinEdit
             Left = 8
-            Height = 21
+            Height = 23
             Top = 155
             Width = 54
             MaxValue = 3
@@ -332,9 +327,9 @@ object Background: TBackground
             AnchorSideLeft.Control = ComboBoxFactor
             AnchorSideBottom.Control = ComboBoxFactor
             Left = 168
-            Height = 16
-            Top = 78
-            Width = 121
+            Height = 15
+            Top = 79
+            Width = 109
             Anchors = [akLeft, akBottom]
             BorderSpacing.Bottom = 5
             Caption = 'Fator do movimento'
@@ -342,10 +337,10 @@ object Background: TBackground
           end
           object ComboBoxFactor: TComboBox
             Left = 168
-            Height = 20
+            Height = 23
             Top = 99
             Width = 116
-            ItemHeight = 19
+            ItemHeight = 15
             ItemIndex = 0
             Items.Strings = (
               'Muito Fácil'
@@ -360,10 +355,10 @@ object Background: TBackground
           end
           object CheckBoxMouseModeMode: TCheckBox
             Left = 8
-            Height = 18
+            Height = 19
             Hint = 'O modelo irá na direção da comparação correta independente da direção do arrastar.'
             Top = 4
-            Width = 327
+            Width = 298
             Caption = 'Restringir modelo na direção da comparação correta.'
             OnChange = CheckBoxMouseModeModeChange
             ParentShowHint = False
@@ -372,24 +367,24 @@ object Background: TBackground
           end
           object CheckBoxHelpProgression: TCheckBox
             Left = 8
-            Height = 18
+            Height = 19
             Top = 28
-            Width = 237
+            Width = 216
             Caption = 'Aumentar a complexidade ao acertar.'
             TabOrder = 4
           end
           object CheckBoxHelpRegression: TCheckBox
             Left = 8
-            Height = 18
+            Height = 19
             Top = 52
-            Width = 298
+            Width = 271
             Caption = 'Reduzir a complexidade após tempo sem acerto'
             OnChange = CheckBoxHelpRegressionChange
             TabOrder = 5
           end
           object SpinEditLimitedHold: TSpinEdit
             Left = 168
-            Height = 21
+            Height = 23
             Top = 155
             Width = 50
             MaxValue = 5
@@ -401,9 +396,9 @@ object Background: TBackground
             AnchorSideLeft.Control = SpinEditLimitedHold
             AnchorSideBottom.Control = SpinEditLimitedHold
             Left = 168
-            Height = 16
-            Top = 134
-            Width = 112
+            Height = 15
+            Top = 135
+            Width = 97
             Anchors = [akLeft, akBottom]
             BorderSpacing.Bottom = 5
             Caption = 'Tempo sem acerto'
@@ -414,9 +409,9 @@ object Background: TBackground
             AnchorSideBottom.Control = SpinEditLimitedHold
             AnchorSideBottom.Side = asrBottom
             Left = 223
-            Height = 16
-            Top = 155
-            Width = 22
+            Height = 15
+            Top = 158
+            Width = 21
             Anchors = [akLeft, akBottom]
             BorderSpacing.Left = 5
             BorderSpacing.Bottom = 5
@@ -427,7 +422,7 @@ object Background: TBackground
     end
     object LabelConfigurations: TLabel
       Left = 1
-      Height = 16
+      Height = 15
       Top = 1
       Width = 320
       Align = alTop

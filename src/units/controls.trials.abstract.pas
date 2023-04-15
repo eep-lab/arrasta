@@ -14,7 +14,6 @@ unit Controls.Trials.Abstract;
 interface
 
 uses Controls, ExtCtrls, Classes, SysUtils
-  , Session.Trials
   , Session.Configuration
   , Loggers.Reports
   {$IFDEF RS232}

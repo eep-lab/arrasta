@@ -14,7 +14,7 @@ unit Timestamps.Helpers;
 interface
 
 uses
-  Classes, SysUtils
+  SysUtils
 
 {$ifdef LINUX}
   , Linux

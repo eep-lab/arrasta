@@ -22,9 +22,7 @@ uses Classes, SysUtils
    , LazFileUtils
    , StrUtils
    , Experiments.Eduardo.Comum
-   , Session.Configuration.GlobalContainer
    , Session.ConfigurationFile
-   , Cheats
    ;
 
 procedure WriteTemporalBissection(ABlc : integer; AName: string;

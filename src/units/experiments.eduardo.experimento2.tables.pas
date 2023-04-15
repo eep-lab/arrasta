@@ -29,7 +29,7 @@ type
 
 implementation
 
-uses Session.Configuration.GlobalContainer, Constants;
+uses Session.Configuration.GlobalContainer;
 
 { TExperiment1Table }
 

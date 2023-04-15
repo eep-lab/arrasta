@@ -10,9 +10,7 @@ implementation
 
 uses Classes, SysUtils
    , Constants
-   , LazFileUtils
    , Experiments.Vinicius.Comum
-   , Session.Configuration.GlobalContainer
    , Session.ConfigurationFile
    ;
 
