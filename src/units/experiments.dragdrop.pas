@@ -21,7 +21,8 @@ procedure WriteToConfigurationFile(
   AMouseMoveMode: string;
   AFactor: string;
   AUseHelpProgression : Boolean;
-  AHasLimitedHold : Boolean);
+  AHasLimitedHold : Boolean;
+  AShowMouse : Boolean);
 
 var
   ITI : integer;
@@ -59,13 +60,18 @@ var Writer : TConfigurationWriter;
 }
 procedure WriteTrials(ATrials: integer; AName: string; ADragMode: string;
   ARelation: string; ASamples: string; AComparisons: string; AFactor: string;
-  AUseHelpProgression : Boolean; AHasLimitedHold : Boolean);
+  AUseHelpProgression : Boolean; AHasLimitedHold : Boolean;
+  AShowMouse: Boolean);
 begin
   case Writer.CurrentBloc of
     0, 1, 2, 3, 4, 5 : begin
       with Writer.TrialConfig do begin
         Values[_Name] := AName;
-        Values[_Cursor] := '0';
+        if AShowMouse then begin
+          Values[_Cursor] := '0';
+        end else begin
+          Values[_Cursor] := '-1';
+        end;
         Values[_Kind] := T_DRAGDROP;
         if AHasLimitedHold then
           Values[_LimitedHold] := LimitedHold.ToString;
@@ -83,9 +89,10 @@ begin
   end;
 end;
 
-procedure WriteToConfigurationFile(ATrials : integer; ARelation: string;
+procedure WriteToConfigurationFile(ATrials: integer; ARelation: string;
   ASamples: integer; AComparisons: integer; AMouseMoveMode: string;
-  AFactor: string; AUseHelpProgression : Boolean; AHasLimitedHold : Boolean);
+  AFactor: string; AUseHelpProgression: Boolean; AHasLimitedHold: Boolean;
+  AShowMouse: Boolean);
 var
   LBloc : integer = 0;
   LName : string;
@@ -102,7 +109,7 @@ begin
     Writer.WriteBloc;
     WriteTrials(ATrials, LName, AMouseMoveMode, ARelation,
       ASamples.ToString, AComparisons.ToString, AFactor,
-      AUseHelpProgression, AHasLimitedHold);
+      AUseHelpProgression, AHasLimitedHold, AShowMouse);
 
   finally
     Writer.Free;

@@ -23,7 +23,8 @@ function MakeConfigurationFile(
   AMouseMoveMode: string;
   AFactor: string;
   AUseHelpProgression : Boolean;
-  AHasLimitedHold: Boolean) : string;
+  AHasLimitedHold: Boolean;
+  AShowMouse: Boolean) : string;
 
 implementation
 
@@ -35,14 +36,15 @@ uses FileMethods
 function MakeConfigurationFile(ATrials : integer; AITI : integer;
   ALimitedHold : integer; ADesign: string; ASamples: integer;
   AComparisons: integer; AMouseMoveMode: string; AFactor: string;
-  AUseHelpProgression : Boolean; AHasLimitedHold: Boolean): string;
+  AUseHelpProgression : Boolean; AHasLimitedHold: Boolean;
+  AShowMouse: Boolean): string;
 begin
   Result := NewConfigurationFile;
   Experiments.DragDrop.ITI := AITI;
   Experiments.DragDrop.LimitedHold:=ALimitedHold;
   Experiments.DragDrop.WriteToConfigurationFile(ATrials,
     ADesign, ASamples, AComparisons, AMouseMoveMode, AFactor,
-    AUseHelpProgression, AHasLimitedHold);
+    AUseHelpProgression, AHasLimitedHold, AShowMouse);
   ConfigurationFile.Invalidate;
   ConfigurationFile.UpdateFile;
 end;

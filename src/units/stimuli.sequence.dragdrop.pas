@@ -84,6 +84,8 @@ uses
   , Consequences.DragDrop
   ;
 
+var Cursor : integer;
+
 { TDragDropStimuli }
 
 function TDragDropStimuli.AsInterface : IStimuli;
@@ -109,7 +111,7 @@ var
 begin
   if not Assigned(FParent) then
     raise Exception.Create('You must assigned a parent before loading.');
-
+  Cursor := StrToIntDef(AParameters.Values['Cursor'], -1);
   ChannelDragMouseMoveFactor :=
     AParameters.Values['DragMoveFactor'].ToInteger;
   DragMouseMoveMode :=
@@ -127,6 +129,7 @@ begin
     for i := low(Comparisons) to high(Comparisons) do
     begin
       LItem := Comparisons[i].Item as TDragDropableItem;
+      LItem.Cursor := Cursor;
       LItem.LoadFromFile(ComparLetter+(i+1).ToString);
       LItem.Parent := Parent;
       LItem.Invalidate;
@@ -135,6 +138,7 @@ begin
     for i := low(Samples) to high(Samples) do
     begin
       LItem := Samples[i].Item as TDragDropableItem;
+      LItem.Cursor := Cursor;
       LItem.LoadFromFile(SampleLetter+(i+1).ToString);
       LItem.DragMouseMoveMode:=DragMouseMoveMode;
       LItem.Parent := Parent;
@@ -311,6 +315,7 @@ begin
   Sample.Top := Comparison.Top - Sample.Height - 10;
 
   LAnimation := TAnimation.Create(Self);
+  LAnimation.Cursor:=Cursor;
   LAnimation.Parent := Parent;
   LAnimation.Join(Sample, Comparison);
   LAnimation.SendToBack;
@@ -421,6 +426,7 @@ end;
 
 procedure TDragDropStimuli.Animate(ASample: TDragDropableItem);
 begin
+  FAnimation.Cursor := Cursor;
   FAnimation.BringToFront;
   ASample.BringToFront;
   ASample.UpdateDragMouseMoveMode;

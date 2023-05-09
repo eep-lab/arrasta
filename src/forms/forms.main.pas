@@ -28,6 +28,7 @@ type
     ButtonTestDispenser: TButton;
     ButtonStartAll: TButton;
     ButtonStartTrial: TButton;
+    CheckBoxShowMouse: TCheckBox;
     CheckBoxHelpRegression: TCheckBox;
     CheckBoxHelpProgression: TCheckBox;
     CheckBoxMouseModeMode: TCheckBox;
@@ -37,10 +38,11 @@ type
     GroupBoxComplexity: TGroupBox;
     GroupBoxDesign: TGroupBox;
     IniPropStorage: TIniPropStorage;
-    LabelScreenWidthUnit: TLabel;
     LabelLimitedHoldTime: TLabel;
     LabelITITime: TLabel;
     LabelLimitedHold: TLabel;
+    LabelScreenWidth: TLabel;
+    LabelScreenWidthUnit: TLabel;
     LabelTrials: TLabel;
     LabelSessionTimeUnit: TLabel;
     LabelConfigurations: TLabel;
@@ -48,7 +50,6 @@ type
     LabelComparisons: TLabel;
     LabelDragMoveFactor: TLabel;
     LabelSamples: TLabel;
-    LabelScreenWidth: TLabel;
     LabelITI: TLabel;
     PageControlConfigurations: TPageControl;
     PanelConfigurations: TPanel;
@@ -61,9 +62,9 @@ type
     SpinEditITI: TSpinEdit;
     SpinEditLimitedHold: TSpinEdit;
     TabControlDesign: TTabControl;
-    TabSheet1: TTabSheet;
+    TabSheetMisc: TTabSheet;
     TabSheetComplexity: TTabSheet;
-    TabSheet2: TTabSheet;
+    TabSheetSession: TTabSheet;
     procedure ButtonStartTrialClick(Sender: TObject);
     procedure ButtonTestDispenserClick(Sender: TObject);
     procedure CheckBoxHelpRegressionChange(Sender: TObject);
@@ -138,7 +139,8 @@ begin
       GetDragMouseMoveMode.ToString,
       GetMouseMoveFactor.ToString,
       CheckBoxHelpProgression.Checked,
-      CheckBoxHelpRegression.Checked);
+      CheckBoxHelpRegression.Checked,
+      CheckBoxShowMouse.Checked);
 
   DefaultDragMouveMoveMode := GetDragMouseMoveMode;
   with DefaultDragDropData do begin
