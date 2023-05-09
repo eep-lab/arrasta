@@ -208,6 +208,8 @@ begin
   ResetLimitedHold;
   if FReportData.Latency < 0 then begin
     FReportData.Latency := LogEvent(rsReportRspLat);
+  end else begin
+    LogEvent('R');
   end;
 end;
 
