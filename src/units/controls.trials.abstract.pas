@@ -122,6 +122,7 @@ type
     procedure MouseDown(Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
+    procedure ResetLimitedHold;
     {$IFDEF RS232}
     procedure Dispenser(AParallelPort: Byte; ARS232: string);
     {$ENDIF}
@@ -460,6 +461,12 @@ begin
   end;
 
   if Assigned(OnTrialPaint) and FResponseEnabled then OnTrialPaint;
+end;
+
+procedure TTrial.ResetLimitedHold;
+begin
+  FClock.Enabled:=False;
+  FClock.Enabled:=True;
 end;
 
 {$IFDEF RS232}

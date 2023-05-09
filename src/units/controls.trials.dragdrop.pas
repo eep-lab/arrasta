@@ -205,6 +205,7 @@ end;
 
 procedure TDragDrop.Response(Sender: TObject);
 begin
+  ResetLimitedHold;
   if FReportData.Latency < 0 then begin
     FReportData.Latency := LogEvent(rsReportRspLat);
   end;
