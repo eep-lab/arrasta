@@ -25,6 +25,7 @@ type
   { TBackground }
 
   TBackground = class(TForm)
+    ButtonTestDispenser: TButton;
     ButtonStartAll: TButton;
     ButtonStartTrial: TButton;
     CheckBoxHelpRegression: TCheckBox;
@@ -51,6 +52,7 @@ type
     LabelITI: TLabel;
     PageControlConfigurations: TPageControl;
     PanelConfigurations: TPanel;
+    RadioGroupDispenser: TRadioGroup;
     RadioGroupRelation: TRadioGroup;
     SpinEditTrials: TSpinEdit;
     SpinEditSessionTime: TSpinEdit;
@@ -59,9 +61,11 @@ type
     SpinEditITI: TSpinEdit;
     SpinEditLimitedHold: TSpinEdit;
     TabControlDesign: TTabControl;
+    TabSheet1: TTabSheet;
     TabSheetComplexity: TTabSheet;
     TabSheet2: TTabSheet;
     procedure ButtonStartTrialClick(Sender: TObject);
+    procedure ButtonTestDispenserClick(Sender: TObject);
     procedure CheckBoxHelpRegressionChange(Sender: TObject);
     procedure CheckBoxMouseModeModeChange(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -99,6 +103,7 @@ uses
    , Experiments.Arrasta
    , Controls.Trials.DragDrop
    , Cheats
+   , Devices.RS232i
    ;
 
 { TBackground }
@@ -109,6 +114,12 @@ var
 
 procedure TBackground.ButtonStartAllClick(Sender: TObject);
 begin
+  case RadioGroupDispenser.ItemIndex of
+    0 : RS232.DefaultDispenser := disp1;
+    1 : RS232.DefaultDispenser := disp2;
+    2 : RS232.DefaultDispenser := disp3;
+    3 : RS232.DefaultDispenser := disp4;
+  end;
   GlobalContainer.RootData := GlobalContainer.RootData +
     ComboBoxParticipants.Text + DirectorySeparator;
   ForceDirectories(GlobalContainer.RootData);
@@ -168,6 +179,16 @@ begin
   LTrial.OnTrialEnd:=@EndSession;
   LTrial.Play;
   PanelConfigurations.Hide;
+end;
+
+procedure TBackground.ButtonTestDispenserClick(Sender: TObject);
+begin
+  case RadioGroupDispenser.ItemIndex of
+    0 : RS232.Dispenser(disp1);
+    1 : RS232.Dispenser(disp2);
+    2 : RS232.Dispenser(disp3);
+    3 : RS232.Dispenser(disp4);
+  end;
 end;
 
 procedure TBackground.CheckBoxHelpRegressionChange(Sender: TObject);

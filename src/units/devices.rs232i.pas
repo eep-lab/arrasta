@@ -22,24 +22,37 @@ uses SysUtils
 
 type
 
+  TDispenser = (dispDefault, disp1, disp2, disp3, disp4);
+
   { TRS232 }
 
   TRS232 = class(TObject)
     private
       FBlockSerial : TBlockSerial;
+      FDefaultDispenser: TDispenser;
       function GetCommPortNumber : ShortInt;
       function GetCommPortName : string;
+      procedure SetDefaultDispenser(AValue: TDispenser);
     public
       constructor Create; reintroduce;
       destructor Destroy; override;
-      procedure Dispenser(Data : String);
+      procedure Dispenser(ADispenser : TDispenser = dispDefault);
+      property DefaultDispenser : TDispenser
+        read FDefaultDispenser write SetDefaultDispenser;
   end;
 
-var RS232 : TRS232;
+var
+  RS232 : TRS232;
 
 implementation
 
 {TRS232}
+
+type
+  TDispRange = disp1..disp4;
+
+var
+  DispenserCodes : array [TDispRange] of string = ('1', '2', '3', '4');
 
 function TRS232.GetCommPortNumber: ShortInt;
 {$IFDEF WINDOWS}
@@ -90,11 +103,19 @@ begin
 {$ENDIF}
 end;
 
+procedure TRS232.SetDefaultDispenser(AValue: TDispenser);
+begin
+  if FDefaultDispenser=AValue then Exit;
+  if AValue <> dispDefault then
+    FDefaultDispenser:=AValue;
+end;
+
 constructor TRS232.Create;
 var ComX : shortint;
     PortName : string;
 begin
   inherited Create;
+  FDefaultDispenser := disp1;
   {$IFDEF DEBUG}
   WriteLn( 'Ports available: ' +  GetSerialPortNames);
   {$ENDIF}
@@ -126,10 +147,13 @@ begin
   inherited Destroy;
 end;
 
-procedure TRS232.Dispenser(Data: String);
+procedure TRS232.Dispenser(ADispenser: TDispenser);
 begin
-  if Assigned(FBlockSerial) then
-    FBlockSerial.SendString(Data);
+  if not Assigned(FBlockSerial) then Exit;
+  if ADispenser = dispDefault then begin
+    ADispenser := DefaultDispenser;
+  end;
+  FBlockSerial.SendString(DispenserCodes[ADispenser]);
 end;
 
 initialization

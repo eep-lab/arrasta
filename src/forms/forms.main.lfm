@@ -11,7 +11,7 @@ object Background: TBackground
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  SessionProperties = 'CheckBoxCheatsMode.Checked;CheckBoxHelpProgression.Checked;CheckBoxHelpRegression.Checked;CheckBoxMouseModeMode.Checked;ComboBoxFactor.ItemIndex;ComboBoxParticipants.ItemIndex;ComboBoxParticipants.Items;EditParticipant.Text;FloatSpinEditScreenWidth.Value;LabelDragMoveFactor.Visible;PageControl1.ActivePage;PageControlConfigurations.TabIndex;RadioGroupCondition.ItemIndex;RadioGroupDesign.ItemIndex;RadioGroupDesign.Items;RadioGroupDesign1.ItemIndex;RadioGroupDesign2.ItemIndex;RadioGroupHelpType.ItemIndex;RadioGroupRestriction.ItemIndex;SpinEditComparisons.Enabled;SpinEditComparisons.Value;SpinEditDragMoveFactor.Value;SpinEditDragMoveFactor.Visible;SpinEditITI.Value;SpinEditLimitedHold.Value;SpinEditParticipant.Value;SpinEditSamples.Value;SpinEditSessionTime.Value;SpinEditTrials.Value;TabControlDesign.TabIndex;SpinEditLimitedHold.Visible;LabelLimitedHold.Visible;LabelLimitedHoldTime.Visible'
+  SessionProperties = 'CheckBoxCheatsMode.Checked;CheckBoxHelpProgression.Checked;CheckBoxHelpRegression.Checked;CheckBoxMouseModeMode.Checked;ComboBoxFactor.ItemIndex;ComboBoxParticipants.ItemIndex;ComboBoxParticipants.Items;EditParticipant.Text;FloatSpinEditScreenWidth.Value;LabelDragMoveFactor.Visible;LabelLimitedHold.Visible;LabelLimitedHoldTime.Visible;PageControl1.ActivePage;PageControlConfigurations.TabIndex;RadioGroupCondition.ItemIndex;RadioGroupDesign.ItemIndex;RadioGroupDesign.Items;RadioGroupDesign1.ItemIndex;RadioGroupDesign2.ItemIndex;RadioGroupHelpType.ItemIndex;RadioGroupRestriction.ItemIndex;SpinEditComparisons.Enabled;SpinEditComparisons.Value;SpinEditDragMoveFactor.Value;SpinEditDragMoveFactor.Visible;SpinEditITI.Value;SpinEditLimitedHold.Value;SpinEditLimitedHold.Visible;SpinEditParticipant.Value;SpinEditSamples.Value;SpinEditSessionTime.Value;SpinEditTrials.Value;TabControlDesign.TabIndex;RadioGroupDispenser.ItemIndex'
   LCLVersion = '2.3.0.0'
   WindowState = wsFullScreen
   object PanelConfigurations: TPanel
@@ -106,11 +106,11 @@ object Background: TBackground
       Height = 250
       Top = 21
       Width = 320
-      ActivePage = TabSheet2
+      ActivePage = TabSheet1
       Align = alClient
       BorderSpacing.Top = 5
       Constraints.MaxHeight = 250
-      TabIndex = 0
+      TabIndex = 2
       TabOrder = 2
       object TabSheet2: TTabSheet
         Caption = 'Sessão'
@@ -417,6 +417,48 @@ object Background: TBackground
             BorderSpacing.Bottom = 5
             Caption = 'min'
           end
+        end
+      end
+      object TabSheet1: TTabSheet
+        Caption = 'Configurações gerais'
+        ClientHeight = 222
+        ClientWidth = 312
+        object RadioGroupDispenser: TRadioGroup
+          Left = 0
+          Height = 67
+          Top = 0
+          Width = 312
+          Align = alClient
+          AutoFill = True
+          BorderSpacing.Bottom = 155
+          Caption = 'Dispensador de pelotas'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 4
+          ClientHeight = 47
+          ClientWidth = 308
+          Columns = 4
+          ItemIndex = 0
+          Items.Strings = (
+            '1'
+            '2'
+            '3'
+            '4'
+          )
+          TabOrder = 0
+        end
+        object ButtonTestDispenser: TButton
+          Left = 37
+          Height = 75
+          Top = 104
+          Width = 226
+          Caption = 'Testar'
+          OnClick = ButtonTestDispenserClick
+          TabOrder = 1
         end
       end
     end
