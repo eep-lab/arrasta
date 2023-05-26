@@ -225,12 +225,20 @@ end;
 procedure TDragDropableItem.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   Point : TPoint;
+  DeltaX : integer;
+  DeltaY : integer;
 begin
   if FIsDragging then begin
     case DragMouseMoveMode of
       dragFree : begin
-        Point.X := Left - (FStartMouseDown.X -X);
-        Point.Y := Top - (FStartMouseDown.Y -Y);
+        DeltaX := FStartMouseDown.X -X;
+        DeltaY := FStartMouseDown.Y -Y;
+        if (Abs(DeltaX) > (Self.Width div 2)) or
+           (Abs(DeltaY) > (Self.Height div 2)) then begin
+           Exit;
+           end;
+        Point.X := Left - DeltaX;
+        Point.Y := Top - DeltaY;
       end;
       dragChannel : begin
         Point := DragDropChannel.NextPoint;
