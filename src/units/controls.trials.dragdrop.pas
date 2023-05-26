@@ -217,7 +217,6 @@ procedure TDragDrop.OtherDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
   Sample : TDragDropableItem;
 begin
-  RS232.Dispenser;
   Sample := Source as TDragDropableItem;
   LogEvent('Outro' + HeaderTabs +
     Sample.ShortName + HeaderTabs + X.ToString + #32 + Y.ToString);
