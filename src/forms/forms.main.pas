@@ -246,7 +246,6 @@ end;
 procedure TBackground.EndSession(Sender: TObject);
 begin
   ShowMessage('Fim.');
-  Close;
 end;
 
 procedure TBackground.BeforeStartSession(Sender: TObject);
