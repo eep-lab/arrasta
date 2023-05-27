@@ -13,11 +13,12 @@ unit Stimuli.Image.Animation;
 
 interface
 
-uses SysUtils, Classes, Graphics, Controls, ExtCtrls, Stimuli.Image.Base;
+uses SysUtils, Classes, Graphics, Controls, ExtCtrls, Stimuli.Image.Base,
+     BGRABitmap, BGRABitmapTypes;
 
 type
 
-  TAnimationStyle = (asCircle, asSquare, asGif);
+  TAnimationStyle = (asCircle, asSquare, asBitmap);
 
   { TAnimation }
 
@@ -71,7 +72,7 @@ procedure TAnimation.Paint;
           (((ClientRect.Bottom-ClientRect.Top) div 2) - (TextHeight(Caption)div 2)),
           Caption);
       end;
-  end;
+    end;
 
   procedure PaintCircle(Color : TColor);
   var
@@ -87,17 +88,37 @@ procedure TAnimation.Paint;
       begin
         Pen.Width := FPenWidth;
         Pen.Color := Color;
-        //Brush.Color:= Color;
+        Brush.Style := bsClear;
         with LCenter do
           Ellipse(X - LSize, Y - LSize, X + LSize, Y + LSize);
       end;
+  end;
+
+  procedure PaintBitmap(Color : TColor);
+  var
+    FBitmap : TBGRABitmap;
+    ACenterHeight : integer;
+    ACenterWidth : integer;
+    ASquareY : integer;
+    ASquareX : integer;
+  begin
+    ACenterHeight := ClientHeight div 2;
+    ACenterWidth := ClientWidth div 2;
+    FBitmap := TBGRABitmap.Create(200, 200);
+    ASquareY := ACenterHeight - FBitmap.Height div 2;
+    ASquareX := ACenterWidth - FBitmap.Width div 2;
+    FBitmap.PenStyle := psSolid;
+    FBitmap.RectangleAntialias(0, 0, FBitmap.Width,
+                                FBitmap.Height, BGRA(255, 0, 0, 255), 15);
+    FBitmap.Draw(Canvas, ASquareX, ASquareY, False);
+    FBitmap.Free;
   end;
 
 begin
   case FAnimationStyle of
     asSquare: PaintSquare(Color);
     asCircle: PaintCircle(Color);
-    asGif: ;
+    asBitmap: PaintBitmap(Color);
   end;
 end;
 
@@ -105,7 +126,7 @@ procedure TAnimation.OnStartTimer(Sender: TObject);
 begin
   FShow := true;
   FAcum := 0;
-  Color := clRed
+  Color := clRed;
 end;
 
 procedure TAnimation.OnStopTimer(Sender: TObject);
@@ -116,6 +137,7 @@ end;
 procedure TAnimation.OnTimer(Sender: TObject);
 var
   temp: double;
+  i : integer;
 begin
   FAcum := FAcum + FStep;
   if FStep > 1 then
@@ -161,7 +183,7 @@ var
 begin
   ASibling.EdgeColor := clNone;
   FSibling := ASibling;
-  //Kind := ikAnimate;
+  //Kind := ikLetter;
   R := ASibling.ClientRect;
   InflateRect(R, 10, 10);
   Self.SetOriginalBounds(ASibling.Left, ASibling.Top, R.Width, R.Height);
@@ -192,6 +214,8 @@ begin
 end;
 
 constructor TAnimation.Create(AOwner: TComponent);
+var
+  i : integer;
 begin
   inherited Create(AOwner);
   FTimer := TTimer.Create(Self);
@@ -203,12 +227,12 @@ begin
   FTimer.OnStartTimer := @OnStartTimer;
   FTimer.OnStopTimer := @OnStopTimer;
   FPenWidth := 6;
-  FAnimationStyle := asSquare;
+  FAnimationStyle := asBitmap;
   Visible := False;
   FHeight:= 220;
   Height:= 200;
   Width:= 300;
-  Color:= clDkGray;
+  Color := clDkGray;
   Canvas.Font.Size := 20;
   FSibling := nil;
 end;
