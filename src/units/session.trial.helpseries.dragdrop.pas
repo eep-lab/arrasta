@@ -36,6 +36,10 @@ type
   TFactor = (facVeryEasy, facEasy, facNormal, facHard, facVeryHard);
   TFactorRange = facVeryEasy..facVeryHard;
 
+  TOrientation = (goTopToBottom, goBottomToTop, goLeftToRight,
+                     goRightToLeft, goRandom);
+  TOrientationRange = goTopToBottom..goRandom;
+
   TDragDropData = record
     Relation : TEquivalenceRelation;
     Samples: TSampleValue;

@@ -32,6 +32,7 @@ type
     CheckBoxHelpRegression: TCheckBox;
     CheckBoxHelpProgression: TCheckBox;
     CheckBoxMouseModeMode: TCheckBox;
+    ComboBoxOrientations: TComboBox;
     ComboBoxFactor: TComboBox;
     ComboBoxParticipants: TComboBox;
     FloatSpinEditScreenWidth: TFloatSpinEdit;
@@ -85,6 +86,7 @@ type
     function GetSampleValue : TSampleValue;
     function GetMouseMoveFactor : TFactor;
     function GetSessionName : string;
+    function GetOrientation : TOrientation;
   public
 
   end;
@@ -126,6 +128,7 @@ begin
   ForceDirectories(GlobalContainer.RootData);
   CheatsModeOn := False;
   PanelConfigurations.Hide;
+  WriteLn(GetOrientation);
   Session.Backgrounds.Background := Self;
 
   ConfigurationFilename :=
@@ -353,6 +356,16 @@ begin
   end;
 end;
 
+function TBackground.GetOrientation : TOrientation;
+begin
+  case ComboBoxOrientations.ItemIndex of
+    0 : Result := goTopToBottom;
+    1 : Result := goBottomToTop;
+    2 : Result := goLeftToRight;
+    3 : Result := goRightToLeft;
+    4 : Result := goRandom;
+  end;
+end;
 
 end.
 
