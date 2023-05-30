@@ -86,7 +86,7 @@ type
     function GetSampleValue : TSampleValue;
     function GetMouseMoveFactor : TFactor;
     function GetSessionName : string;
-    function GetOrientation : TOrientation;
+    function GetOrientation : string;
   public
 
   end;
@@ -128,11 +128,12 @@ begin
   ForceDirectories(GlobalContainer.RootData);
   CheatsModeOn := False;
   PanelConfigurations.Hide;
-  WriteLn(GetOrientation);
+  //WriteLn(GetOrientation);
   Session.Backgrounds.Background := Self;
 
   ConfigurationFilename :=
     Experiments.Arrasta.MakeConfigurationFile(
+      GetOrientation,
       SpinEditTrials.Value,
       SpinEditITI.Value * 1000,
       SpinEditLimitedHold.Value * 60000,
@@ -356,14 +357,14 @@ begin
   end;
 end;
 
-function TBackground.GetOrientation : TOrientation;
+function TBackground.GetOrientation : string;
 begin
   case ComboBoxOrientations.ItemIndex of
-    0 : Result := goTopToBottom;
-    1 : Result := goBottomToTop;
-    2 : Result := goLeftToRight;
-    3 : Result := goRightToLeft;
-    4 : Result := goRandom;
+    0 : Result := 'goTopToBottom';
+    1 : Result := 'goBottomToTop';
+    2 : Result := 'goLeftToRight';
+    3 : Result := 'goRightToLeft';
+    4 : Result := 'goRandom';
   end;
 end;
 
