@@ -32,6 +32,7 @@ type
     procedure Paint; virtual;
     procedure Update(AOrigin, ADestin : TRect);
     function NextPoint : TPoint;
+    function GetPoint(AValue : real) : TPoint;
     property Line : TPoints read FBresenhamLine;
     property Canvas : TCanvas read FParent write FParent;
   end;
@@ -100,6 +101,16 @@ begin
 
   if FIndex >= LLength then
     FIndex := LLength-1;
+end;
+
+function TDragDropChannel.GetPoint(AValue: real): TPoint;
+var
+  LLength: real;
+  LLineIndex : real;
+begin
+  LLength := Length(FBresenhamLine);
+  LLineIndex := AValue * LLength / 100;
+  Result := FBresenhamLine[round(LLineIndex)];
 end;
 
 end.

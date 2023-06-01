@@ -165,6 +165,7 @@ begin
       LItem.LoadFromFile(SampleLetter+(i+1).ToString);
       LItem.DragMouseMoveMode:=DragMouseMoveMode;
       LItem.Parent := Parent;
+      LItem.MoveToPoint(50);
       LItem.Invalidate;
     end;
   end;
@@ -328,6 +329,7 @@ var
   Comparison : TDragDropableItem;
   LAnimation : TAnimation;
   FDragDropDone : Boolean = False;
+  S1 : string;
 begin
   SoundRight.Play;
   Sample := Source as TDragDropableItem;
@@ -350,6 +352,12 @@ begin
     TGridOrientation.goRightToLeft : begin
       Sample.Left := Comparison.Left + Sample.Width + 10;
       Sample.Top := Comparison.Top;
+    end;
+    else
+    begin
+      WriteStr(S1, FGridOrientation);
+      raise Exception.Create(
+        'TDragDropStimuli.RightDragDrop: ' + S1);
     end;
   end;
 
