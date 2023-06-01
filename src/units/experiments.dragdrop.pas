@@ -38,6 +38,7 @@ uses Classes, SysUtils
    , Session.ConfigurationFile.Writer
    , Stimuli.Image.DragDropable
    , Session.Trial.HelpSeries.DragDrop
+   , Constants.DragDrop
    ;
 
 
@@ -77,14 +78,16 @@ begin
         if AHasLimitedHold then
           Values[_LimitedHold] := LimitedHold.ToString;
         Values[_ITI] := ITI.ToString;
-        Values['Orientation'] := AOrientation;
-        Values['UseHelpProgression'] := AUseHelpProgression.ToString;
-        Values['RepeatTrial'] := ATrials.ToString;
-        Values['Style.Samples.DragMode'] := ADragMode;
-        Values['Relation'] := ARelation;
-        Values['Samples'] := ASamples;
-        Values['Comparisons'] := AComparisons;
-        Values['DragMoveFactor'] := AFactor.ToFactor.ToInteger.ToString;
+        with DragDropKeys do begin
+          Values[DragDropOrientation] := AOrientation;
+          Values[UseHelpProgression] := AUseHelpProgression.ToString;
+          Values[RepeatTrials] := ATrials.ToString;
+          Values[SamplesDragMode] := ADragMode;
+          Values[Relation] := ARelation;
+          Values[Samples] := ASamples;
+          Values[Comparisons] := AComparisons;
+          Values[DragMoveFactor] := AFactor.ToFactor.ToInteger.ToString;
+        end;
       end;
       Writer.WriteTrial;
     end;

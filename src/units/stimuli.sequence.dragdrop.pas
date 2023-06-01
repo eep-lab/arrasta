@@ -81,7 +81,9 @@ uses
   , StrUtils
   , Experiments.Grids
   , Stimuli.Helpers.DragDropChannel
+  , Session.Trial.HelpSeries.DragDrop
   , Consequences.DragDrop
+  , Constants.DragDrop
   ;
 
 var Cursor : integer;
@@ -104,27 +106,46 @@ var
   DragMouseMoveMode : TDragMouseMoveMode;
   SampleLetter : string;
   ComparLetter : string;
-  Samples      : integer;
-  Comparisons  : integer;
+  LSamples      : integer;
+  LComparisons  : integer;
   LItem : TDragDropableItem;
   i: Integer;
+
+  procedure RandomizeDragDropOrientation(
+      DragDropOrientation : TDragDropOrientation);
+  begin
+    case DragDropOrientation of
+      goTopToBottom : Grid.GridOrientation := TGridOrientation.goTopToBottom;
+      goBottomToTop : Grid.GridOrientation := TGridOrientation.goBottomToTop;
+      goLeftToRight : Grid.GridOrientation := TGridOrientation.goLeftToRight;
+      goRightToLeft : Grid.GridOrientation := TGridOrientation.goRightToLeft;
+      goRandom : Grid.RandomizeGridOrientation;
+    end;
+  end;
+
 begin
   if not Assigned(FParent) then
     raise Exception.Create('You must assigned a parent before loading.');
   Cursor := StrToIntDef(AParameters.Values['Cursor'], -1);
-  ChannelDragMouseMoveFactor :=
-    AParameters.Values['DragMoveFactor'].ToInteger;
-  DragMouseMoveMode :=
-    AParameters.Values['Style.Samples.DragMode'].ToDragMouseMoveMode;
 
-  S1 := AParameters.Values['Relation'];
-  SampleLetter := ExtractDelimited(1,S1,['-']);
-  ComparLetter := ExtractDelimited(2,S1,['-']);
+  with DragDropKeys do begin
+    ChannelDragMouseMoveFactor :=
+      AParameters.Values[DragMoveFactor].ToInteger;
+    DragMouseMoveMode :=
+      AParameters.Values[SamplesDragMode].ToDragMouseMoveMode;
 
-  Samples := AParameters.Values['Samples'].ToInteger;
-  Comparisons := AParameters.Values['Comparisons'].ToInteger;
+    S1 := AParameters.Values[Relation];
+    SampleLetter := ExtractDelimited(1,S1,['-']);
+    ComparLetter := ExtractDelimited(2,S1,['-']);
 
-  NewGridItems(Samples, Comparisons);
+    LSamples := AParameters.Values[Samples].ToInteger;
+    LComparisons := AParameters.Values[Comparisons].ToInteger;
+    RandomizeDragDropOrientation(
+      AParameters.Values[DragDropOrientation].ToDragDropOrientation);
+  end;
+
+
+  NewGridItems(LSamples, LComparisons);
   with Grid.RandomPositions do begin
     for i := low(Comparisons) to high(Comparisons) do
     begin

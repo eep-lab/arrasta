@@ -36,9 +36,9 @@ type
   TFactor = (facVeryEasy, facEasy, facNormal, facHard, facVeryHard);
   TFactorRange = facVeryEasy..facVeryHard;
 
-  TOrientation = (goTopToBottom, goBottomToTop, goLeftToRight,
+  TDragDropOrientation = (goTopToBottom, goBottomToTop, goLeftToRight,
                      goRightToLeft, goRandom);
-  TOrientationRange = goTopToBottom..goRandom;
+  TDragDropOrientationRange = goTopToBottom..goRandom;
 
   TDragDropData = record
     Relation : TEquivalenceRelation;
@@ -46,6 +46,7 @@ type
     Comparisons: TComparValue;
     HelpType: TDragMouseMoveMode;
     Factor: TFactor;
+    Orientation : TDragDropOrientation;
     class operator = (A, B: TDragDropData): Boolean;
   end;
 
@@ -104,6 +105,13 @@ type
     function ToInteger: integer;
   end;
 
+  { TDragDropOrientationHelper }
+
+  TDragDropOrientationHelper = type helper for TDragDropOrientation
+    function ToString : string;
+    //function ToInteger : integer;
+  end;
+
   { THelpSeriesStringHelper }
 
   THelpSeriesStringHelper = type helper(TCustomStringHelper) for string
@@ -111,6 +119,7 @@ type
     function ToSampleValue : TSampleValue;
     function ToComparValue : TComparValue;
     function ToFactor : TFactor;
+    function ToDragDropOrientation : TDragDropOrientation;
   end;
 
     { THelpSeriesIntegerHelper }
@@ -129,7 +138,8 @@ const
 
 implementation
 
-uses IniFiles, Session.Configuration.GlobalContainer;
+uses IniFiles, Session.Configuration.GlobalContainer,
+   Constants.DragDrop;
 
 class operator TDragDropData.=(A, B : TDragDropData) : Boolean;
 begin
@@ -205,11 +215,14 @@ var
   FCurrentIndex : integer;
 begin
   with AParameters do begin
-    Data.HelpType := Values['Style.Samples.DragMode'].ToDragMouseMoveMode;
-    Data.Relation := Values['Relation'].ToEquivalenceRelation;
-    Data.Samples := Values['Samples'].ToSampleValue;
-    Data.Comparisons := Values['Comparisons'].ToComparValue;
-    Data.Factor := Values['DragMoveFactor'].ToInteger.ToFactor;
+    with DragDropKeys do begin
+      Data.HelpType := Values[SamplesDragMode].ToDragMouseMoveMode;
+      Data.Relation := Values[Relation].ToEquivalenceRelation;
+      Data.Samples := Values[Samples].ToSampleValue;
+      Data.Comparisons := Values[Comparisons].ToComparValue;
+      Data.Factor := Values[DragMoveFactor].ToInteger.ToFactor;
+      Data.Orientation := Values[DragDropOrientation].ToDragDropOrientation;
+    end;
   end;
 
   FCurrentIndex := Iterator.IndexOf(Data);
@@ -226,11 +239,14 @@ var
 begin
   Data := Iterator.GetCurrent;
   with AParameters do begin
-    Values['Style.Samples.DragMode'] := Data.HelpType.ToString;
-    Values['Relation'] := Data.Relation.ToString;
-    Values['Samples'] := Data.Samples.ToString;
-    Values['Comparisons'] := Data.Comparisons.ToString;
-    Values['DragMoveFactor'] := Data.Factor.ToInteger.ToString;
+    with DragDropKeys do begin
+      Values[SamplesDragMode] := Data.HelpType.ToString;
+      Values[Relation] := Data.Relation.ToString;
+      Values[Samples] := Data.Samples.ToString;
+      Values[Comparisons] := Data.Comparisons.ToString;
+      Values[DragMoveFactor] := Data.Factor.ToInteger.ToString;
+      Values[DragDropOrientation] := Data.Orientation.ToString;
+    end;
   end;
 end;
 
@@ -257,21 +273,26 @@ var
 
   function DragDropDataFromSection(ASection : string) : TDragDropData;
   begin
-    Result.HelpType :=
-      LIniFile.ReadString(
-        ASection, 'Style.Samples.DragMode', 'Default').ToDragMouseMoveMode;
-    Result.Relation :=
-      LIniFile.ReadString(
-        ASection, 'Relation', 'Default').ToEquivalenceRelation;
-    Result.Samples :=
-      LIniFile.ReadString(
-        ASection, 'Samples', 'Default').ToSampleValue;
-    Result.Comparisons :=
-      LIniFile.ReadString(
-        ASection, 'Comparisons', 'Default').ToComparValue;
-    Result.Factor :=
-      LIniFile.ReadString(
-        ASection, 'DragMoveFactor', 'Default').ToInteger.ToFactor;
+    with DragDropKeys do begin
+      Result.HelpType :=
+        LIniFile.ReadString(
+          ASection, SamplesDragMode, 'Default').ToDragMouseMoveMode;
+      Result.Relation :=
+        LIniFile.ReadString(
+          ASection, Relation, 'Default').ToEquivalenceRelation;
+      Result.Samples :=
+        LIniFile.ReadString(
+          ASection, Samples, 'Default').ToSampleValue;
+      Result.Comparisons :=
+        LIniFile.ReadString(
+          ASection, Comparisons, 'Default').ToComparValue;
+      Result.Factor :=
+        LIniFile.ReadString(
+          ASection, DragMoveFactor, 'Default').ToInteger.ToFactor;
+      Result.Orientation :=
+        LIniFile.ReadString(
+          ASection, DragDropOrientation, 'Default').ToDragDropOrientation;
+    end;
     Inc(i);
   end;
 
@@ -307,13 +328,20 @@ begin
 
   IniFile := TIniFile.Create(Filename);
   for Data in List do begin
-    with Data do begin
+    with DragDropKeys do begin
       with IniFile do begin
-        WriteString(GetSection, 'Style.Samples.DragMode', HelpType.ToString);
-        WriteString(GetSection, 'Relation', Relation.ToString);
-        WriteString(GetSection, 'Samples', Samples.ToString);
-        WriteString(GetSection, 'Comparisons', Comparisons.ToString);
-        WriteString(GetSection, 'DragMoveFactor', Factor.ToInteger.ToString);
+        WriteString(GetSection,
+          SamplesDragMode, Data.HelpType.ToString);
+        WriteString(GetSection,
+          Relation, Data.Relation.ToString);
+        WriteString(GetSection,
+          Samples, Data.Samples.ToString);
+        WriteString(GetSection,
+          Comparisons, Data.Comparisons.ToString);
+        WriteString(GetSection,
+          DragMoveFactor, Data.Factor.ToInteger.ToString);
+        WriteString(GetSection,
+          DragDropOrientation, Data.Orientation.ToString);
       end;
     end;
     Inc(i);
@@ -383,6 +411,14 @@ begin
   Result := Factors[Self];
 end;
 
+{ TOrientationHelper }
+
+function TDragDropOrientationHelper.ToString : string;
+begin
+  WriteStr(Result, Self);
+  Result := Result.Replace('go', '');
+end;
+
 { THelpSeriesStringHelper }
 
 function THelpSeriesStringHelper.ToEquivalenceRelation: TEquivalenceRelation;
@@ -442,6 +478,21 @@ begin
     else
       raise Exception.Create(
         'THelpSeriesStringHelper.ToFactor: ' + Self);
+  end;
+end;
+
+function THelpSeriesStringHelper.ToDragDropOrientation: TDragDropOrientation;
+begin
+  case UpperCase(Self) of
+    'TOPTOBOTTOM' : Result := goTopToBottom;
+    'BOTTOMTOTOP' : Result := goBottomToTop;
+    'LEFTTORIGHT' : Result := goLeftToRight;
+    'RIGHTTOLEFT' : Result := goRightToLeft;
+    'RANDOM' : Result := goRandom;
+    'DEFAULT' : Result := DefaultDragDropData.Orientation;
+    else
+      raise Exception.Create(
+        'THelpSeriesStringHelper.ToOrientation: ' + Self);
   end;
 end;
 

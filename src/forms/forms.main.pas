@@ -39,6 +39,7 @@ type
     GroupBoxComplexity: TGroupBox;
     GroupBoxDesign: TGroupBox;
     IniPropStorage: TIniPropStorage;
+    LabelDragDropOrientation: TLabel;
     LabelLimitedHoldTime: TLabel;
     LabelITITime: TLabel;
     LabelLimitedHold: TLabel;
@@ -86,7 +87,8 @@ type
     function GetSampleValue : TSampleValue;
     function GetMouseMoveFactor : TFactor;
     function GetSessionName : string;
-    function GetOrientation : string;
+    function GetOrientation : TDragDropOrientation;
+    //function GetOrientation : string;
   public
 
   end;
@@ -107,6 +109,7 @@ uses
    , Controls.Trials.DragDrop
    , Cheats
    , Devices.RS232i
+   , Constants.DragDrop
    ;
 
 { TBackground }
@@ -133,7 +136,7 @@ begin
 
   ConfigurationFilename :=
     Experiments.Arrasta.MakeConfigurationFile(
-      GetOrientation,
+      GetOrientation.ToString,
       SpinEditTrials.Value,
       SpinEditITI.Value * 1000,
       SpinEditLimitedHold.Value * 60000,
@@ -146,6 +149,13 @@ begin
       CheckBoxHelpRegression.Checked,
       CheckBoxShowMouse.Checked);
 
+  {Existem duas formas de se criar uma configuração padrão do arquivo de
+  configuração. Uma forma é o hard coding. A segunda forma é usando o
+  DefaultDragDropData, juntamente com a extração de valores da GUI,
+  essa variável global deve conter todos os parâmetros necessários para o
+  experimento. O valor padrão de um parâmetro selecionado na GUI será utilizado]
+  na progressão de ajuda quando o valor não for encontrado no arquivo
+  ComplexityGradient.ini}
   DefaultDragMouveMoveMode := GetDragMouseMoveMode;
   with DefaultDragDropData do begin
     Relation := GetRelation.ToEquivalenceRelation;
@@ -153,6 +163,7 @@ begin
     Samples := GetSampleValue;
     HelpType := DefaultDragMouveMoveMode;
     Factor := GetMouseMoveFactor;
+    Orientation := GetOrientation;
   end;
   if FileExists(DefaultComplexityFilename) then begin
     DragDropHelpSerie := TDragDropHelpSerie.Create(DefaultComplexityFilename);
@@ -175,12 +186,16 @@ begin
   DragMouseMoveMode := GetDragMouseMoveMode;
   LTrial := TDragDrop.Create(Self);
   with LTrial.Configurations.Parameters do begin
-    Values['Style.Samples.DragMode'] := DragMouseMoveMode.ToString;
-    Values['Relation'] := RadioGroupRelation.Items[RadioGroupRelation.ItemIndex];
-    Values['Samples'] := SpinEditSamples.Value.ToString;
-    Values['Comparisons'] := SpinEditComparisons.Value.ToString;
-    Values['DragMoveFactor'] := GetMouseMoveFactor.ToString;
-    Values['UseHelpSerie'] := 'False';
+    with DragDropKeys do begin
+      Values[UseHelpProgression] := CheckBoxHelpProgression.Checked.ToString;
+      Values[RepeatTrials] := SpinEditTrials.Value.ToString;
+      Values[SamplesDragMode] := GetDragMouseMoveMode.ToString;
+      Values[Relation] := GetRelation;
+      Values[Samples] := SpinEditSamples.Value.ToString;
+      Values[Comparisons] := SpinEditComparisons.Value.ToString;
+      Values[DragMoveFactor] := GetMouseMoveFactor.ToInteger.ToString;
+      Values[DragDropOrientation] := GetOrientation.ToString;
+    end;
   end;
   LTrial.OnTrialEnd:=@EndSession;
   LTrial.Play;
@@ -357,14 +372,14 @@ begin
   end;
 end;
 
-function TBackground.GetOrientation : string;
+function TBackground.GetOrientation : TDragDropOrientation;
 begin
   case ComboBoxOrientations.ItemIndex of
-    0 : Result := 'goTopToBottom';
-    1 : Result := 'goBottomToTop';
-    2 : Result := 'goLeftToRight';
-    3 : Result := 'goRightToLeft';
-    4 : Result := 'goRandom';
+    0 : Result := goTopToBottom;
+    1 : Result := goBottomToTop;
+    2 : Result := goLeftToRight;
+    3 : Result := goRightToLeft;
+    4 : Result := goRandom;
   end;
 end;
 

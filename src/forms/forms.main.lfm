@@ -106,11 +106,11 @@ object Background: TBackground
       Height = 250
       Top = 21
       Width = 320
-      ActivePage = TabSheetSession
+      ActivePage = TabSheetComplexity
       Align = alClient
       BorderSpacing.Top = 5
       Constraints.MaxHeight = 250
-      TabIndex = 0
+      TabIndex = 1
       TabOrder = 2
       object TabSheetSession: TTabSheet
         Caption = 'Sessão'
@@ -227,9 +227,9 @@ object Background: TBackground
           Text = 'Sujeito'
         end
         object ComboBoxOrientations: TComboBox
-          Left = 168
+          Left = 5
           Height = 23
-          Top = 8
+          Top = 101
           Width = 128
           ItemHeight = 15
           ItemIndex = 0
@@ -242,6 +242,17 @@ object Background: TBackground
           )
           TabOrder = 4
           Text = 'Cima para Baixo'
+        end
+        object LabelDragDropOrientation: TLabel
+          AnchorSideLeft.Control = ComboBoxOrientations
+          AnchorSideBottom.Control = ComboBoxOrientations
+          Left = 5
+          Height = 15
+          Top = 81
+          Width = 117
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Bottom = 5
+          Caption = 'Orientação do arrastar'
         end
       end
       object TabSheetComplexity: TTabSheet

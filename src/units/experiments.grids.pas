@@ -80,6 +80,7 @@ type
       {Cria seleção randômica de modelos e comparações em posições diferentes no AGrid}
       procedure RandomizePositions;
       procedure RandomizeOrientations;
+      procedure RandomizeGridOrientation;
       function RectFromPosition(APosition: integer) : TRect;
   end;
 
@@ -503,6 +504,16 @@ var
 begin
   i:= RandomRange(1, 5);
   SetGridOrientation(TGridOrientation(i));
+end;
+
+procedure TGrid.RandomizeGridOrientation;
+begin
+  case RandomRange(0, 4) of
+    0 : GridOrientation := goLeftToRight;
+    1 : GridOrientation := goRightToLeft;
+    2 : GridOrientation := goTopToBottom;
+    3 : GridOrientation := goBottomToTop;
+  end;
 end;
 
 constructor TGrid.Create(ASeed: integer);
