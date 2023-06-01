@@ -21,6 +21,7 @@ uses
   , Stimuli.Image.Animation
   , Stimuli.Image.Base
   , Loggers.Reports
+  , Experiments.Grids
   ;
 
 type
@@ -42,6 +43,7 @@ type
     FSamples : TDragDropableItems;
     FAnimation : TAnimation;
     FDoneAnimations : TAnimations;
+    FGridOrientation : TGridOrientation;
     procedure OtherDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure RightDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure SetFocus(Sender: TObject; Button: TMouseButton;
@@ -79,7 +81,6 @@ implementation
 uses
   Math
   , StrUtils
-  , Experiments.Grids
   , Stimuli.Helpers.DragDropChannel
   , Session.Trial.HelpSeries.DragDrop
   , Consequences.DragDrop
@@ -115,12 +116,13 @@ var
       DragDropOrientation : TDragDropOrientation);
   begin
     case DragDropOrientation of
-      goTopToBottom : Grid.GridOrientation := TGridOrientation.goTopToBottom;
-      goBottomToTop : Grid.GridOrientation := TGridOrientation.goBottomToTop;
-      goLeftToRight : Grid.GridOrientation := TGridOrientation.goLeftToRight;
-      goRightToLeft : Grid.GridOrientation := TGridOrientation.goRightToLeft;
+      goTopToBottom : Grid.Orientation := TGridOrientation.goTopToBottom;
+      goBottomToTop : Grid.Orientation := TGridOrientation.goBottomToTop;
+      goLeftToRight : Grid.Orientation := TGridOrientation.goLeftToRight;
+      goRightToLeft : Grid.Orientation := TGridOrientation.goRightToLeft;
       goRandom : Grid.RandomizeGridOrientation;
     end;
+    FGridOrientation := Grid.Orientation;
   end;
 
 begin
@@ -332,13 +334,29 @@ begin
   Comparison := Sender as TDragDropableItem;
 
   Sample.Color := clGreen;
-  Sample.Left := Comparison.Left;
-  Sample.Top := Comparison.Top - Sample.Height - 10;
+  case FGridOrientation of
+    TGridOrientation.goTopToBottom : begin
+      Sample.Left := Comparison.Left;
+      Sample.Top := Comparison.Top - Sample.Height - 10;
+    end;
+    TGridOrientation.goBottomToTop : begin
+      Sample.Left := Comparison.Left;
+      Sample.Top := Comparison.Top + Sample.Height + 10;
+    end;
+    TGridOrientation.goLeftToRight : begin
+      Sample.Left := Comparison.Left - Sample.Width - 10;
+      Sample.Top := Comparison.Top;
+    end;
+    TGridOrientation.goRightToLeft : begin
+      Sample.Left := Comparison.Left + Sample.Width + 10;
+      Sample.Top := Comparison.Top;
+    end;
+  end;
 
   LAnimation := TAnimation.Create(Self);
   LAnimation.Cursor:=Cursor;
   LAnimation.Parent := Parent;
-  LAnimation.Join(Sample, Comparison);
+  LAnimation.Join(Sample, Comparison, FGridOrientation);
   LAnimation.SendToBack;
   LAnimation.Show;
   FDoneAnimations.Add(LAnimation);

@@ -75,7 +75,7 @@ type
       property CellsSize : real read FCellsSize write SetCellsSize;
       property RandomPositions : TRandomPositions read FRandomPositions;
       property Seed : integer read FSeed write FSeed;
-      property GridOrientation: TGridOrientation read FGridOrientation write SetGridOrientation;
+      property Orientation: TGridOrientation read FGridOrientation write SetGridOrientation;
       procedure UpdatePositions(ASamples, AComparisons: integer);
       {Cria seleção randômica de modelos e comparações em posições diferentes no AGrid}
       procedure RandomizePositions;
@@ -509,10 +509,10 @@ end;
 procedure TGrid.RandomizeGridOrientation;
 begin
   case RandomRange(0, 4) of
-    0 : GridOrientation := goLeftToRight;
-    1 : GridOrientation := goRightToLeft;
-    2 : GridOrientation := goTopToBottom;
-    3 : GridOrientation := goBottomToTop;
+    0 : Orientation := goLeftToRight;
+    1 : Orientation := goRightToLeft;
+    2 : Orientation := goTopToBottom;
+    3 : Orientation := goBottomToTop;
   end;
 end;
 

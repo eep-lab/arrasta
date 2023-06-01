@@ -11,7 +11,7 @@ object Background: TBackground
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  SessionProperties = 'CheckBoxCheatsMode.Checked;CheckBoxHelpProgression.Checked;CheckBoxHelpRegression.Checked;CheckBoxMouseModeMode.Checked;ComboBoxFactor.ItemIndex;ComboBoxParticipants.ItemIndex;ComboBoxParticipants.Items;EditParticipant.Text;FloatSpinEditScreenWidth.Value;LabelDragMoveFactor.Visible;LabelLimitedHold.Visible;LabelLimitedHoldTime.Visible;PageControl1.ActivePage;PageControlConfigurations.TabIndex;RadioGroupCondition.ItemIndex;RadioGroupDesign.ItemIndex;RadioGroupDesign.Items;RadioGroupDesign1.ItemIndex;RadioGroupDesign2.ItemIndex;RadioGroupDispenser.ItemIndex;RadioGroupHelpType.ItemIndex;RadioGroupRestriction.ItemIndex;SpinEditComparisons.Enabled;SpinEditComparisons.Value;SpinEditDragMoveFactor.Value;SpinEditDragMoveFactor.Visible;SpinEditITI.Value;SpinEditLimitedHold.Value;SpinEditLimitedHold.Visible;SpinEditParticipant.Value;SpinEditSamples.Value;SpinEditSessionTime.Value;SpinEditTrials.Value;TabControlDesign.TabIndex;CheckBoxShowMouse.Checked'
+  SessionProperties = 'CheckBoxCheatsMode.Checked;CheckBoxHelpProgression.Checked;CheckBoxHelpRegression.Checked;CheckBoxMouseModeMode.Checked;CheckBoxShowMouse.Checked;ComboBoxFactor.ItemIndex;ComboBoxParticipants.ItemIndex;ComboBoxParticipants.Items;EditParticipant.Text;FloatSpinEditScreenWidth.Value;LabelDragMoveFactor.Visible;LabelLimitedHold.Visible;LabelLimitedHoldTime.Visible;PageControl1.ActivePage;PageControlConfigurations.TabIndex;RadioGroupCondition.ItemIndex;RadioGroupDesign.ItemIndex;RadioGroupDesign.Items;RadioGroupDesign1.ItemIndex;RadioGroupDesign2.ItemIndex;RadioGroupDispenser.ItemIndex;RadioGroupHelpType.ItemIndex;RadioGroupRestriction.ItemIndex;SpinEditComparisons.Enabled;SpinEditComparisons.Value;SpinEditDragMoveFactor.Value;SpinEditDragMoveFactor.Visible;SpinEditITI.Value;SpinEditLimitedHold.Value;SpinEditLimitedHold.Visible;SpinEditParticipant.Value;SpinEditSamples.Value;SpinEditSessionTime.Value;SpinEditTrials.Value;TabControlDesign.TabIndex;ComboBoxOrientations.ItemIndex'
   LCLVersion = '2.3.0.0'
   WindowState = wsFullScreen
   object PanelConfigurations: TPanel
@@ -106,11 +106,11 @@ object Background: TBackground
       Height = 250
       Top = 21
       Width = 320
-      ActivePage = TabSheetComplexity
+      ActivePage = TabSheetSession
       Align = alClient
       BorderSpacing.Top = 5
       Constraints.MaxHeight = 250
-      TabIndex = 1
+      TabIndex = 0
       TabOrder = 2
       object TabSheetSession: TTabSheet
         Caption = 'Sessão'

@@ -349,7 +349,7 @@
         <PackageName Value="LCL"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="99">
+    <Units Count="98">
       <Unit0>
         <Filename Value="olavo_arrasta.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -842,10 +842,6 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Constants.DragDrop"/>
       </Unit97>
-      <Unit98>
-        <Filename Value="src/units/constants.dragdrop.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit98>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
