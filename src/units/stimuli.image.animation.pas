@@ -13,7 +13,8 @@ unit Stimuli.Image.Animation;
 
 interface
 
-uses SysUtils, Classes, Graphics, Controls, ExtCtrls, Stimuli.Image.Base;
+uses SysUtils, Classes, Graphics, Controls, ExtCtrls, Stimuli.Image.Base,
+     Experiments.Grids;
 
 type
 
@@ -44,7 +45,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Animate(ASibling : TLightImage);
-    procedure Join(ATopItem, ABottomItem : TLightImage);
+    procedure Join(ASample, AComparison : TLightImage;
+      AGridOrientation : TGridOrientation);
     procedure Stop;
     property Sibling : TLightImage read FSibling;
   end;
@@ -175,15 +177,38 @@ begin
   Constraints.MinWidth := R.Width;
 end;
 
-procedure TAnimation.Join(ATopItem, ABottomItem: TLightImage);
+procedure TAnimation.Join(ASample, AComparison: TLightImage;
+  AGridOrientation : TGridOrientation);
 begin
   Stop;
   AnchorSideTop.Control := nil;
-  ATopItem.EdgeColor:=clInactiveCaption;
-  Top := ATopItem.Top -10;
-  Left := ATopItem.Left -15;
-  Height := ATopItem.Height + ABottomItem.Height + 30;
-  Width := ATopItem.Width + 30;
+  ASample.EdgeColor:=clInactiveCaption;
+  case AGridOrientation of
+    goTopToBottom : begin
+      Top := ASample.Top -10;
+      Left := ASample.Left -15;
+      Height := ASample.Height + AComparison.Height + 30;
+      Width := ASample.Width + 30;
+    end;
+    goBottomToTop : begin
+      Top := AComparison.Top -10;
+      Left := AComparison.Left -15;
+      Height := AComparison.Height + ASample.Height + 30;
+      Width := AComparison.Width + 30;
+    end;
+    goLeftToRight : begin
+      Top := ASample.Top -15;
+      Left := ASample.Left -10;
+      Width := ASample.Width + AComparison.Width + 30;
+      Height := ASample.Height + 30;
+    end;
+    goRightToLeft : begin
+      Top := AComparison.Top -15;
+      Left := AComparison.Left -10;
+      Width := AComparison.Width + ASample.Width + 30;
+      Height := AComparison.Height + 30;
+    end;
+  end;
 end;
 
 procedure TAnimation.Stop;

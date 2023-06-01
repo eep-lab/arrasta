@@ -4,6 +4,7 @@
     <Version Value="12"/>
     <General>
       <Flags>
+        <MainUnitHasUsesSectionForAllUnits Value="False"/>
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
@@ -348,7 +349,7 @@
         <PackageName Value="LCL"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="97">
+    <Units Count="98">
       <Unit0>
         <Filename Value="olavo_arrasta.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -836,6 +837,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="MachFullscreenFix"/>
       </Unit96>
+      <Unit97>
+        <Filename Value="src/units/constants.dragdrop.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Constants.DragDrop"/>
+      </Unit97>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -1,17 +1,17 @@
 object Background: TBackground
-  Left = 266
-  Height = 561
-  Top = 104
-  Width = 814
+  Left = 951
+  Height = 780
+  Top = 100
+  Width = 1041
   BorderStyle = bsNone
   Caption = 'Configurar sessão'
-  ClientHeight = 561
-  ClientWidth = 814
+  ClientHeight = 780
+  ClientWidth = 1041
   Color = clBlack
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  SessionProperties = 'CheckBoxCheatsMode.Checked;CheckBoxHelpProgression.Checked;CheckBoxHelpRegression.Checked;CheckBoxMouseModeMode.Checked;ComboBoxFactor.ItemIndex;ComboBoxParticipants.ItemIndex;ComboBoxParticipants.Items;EditParticipant.Text;FloatSpinEditScreenWidth.Value;LabelDragMoveFactor.Visible;LabelLimitedHold.Visible;LabelLimitedHoldTime.Visible;PageControl1.ActivePage;PageControlConfigurations.TabIndex;RadioGroupCondition.ItemIndex;RadioGroupDesign.ItemIndex;RadioGroupDesign.Items;RadioGroupDesign1.ItemIndex;RadioGroupDesign2.ItemIndex;RadioGroupDispenser.ItemIndex;RadioGroupHelpType.ItemIndex;RadioGroupRestriction.ItemIndex;SpinEditComparisons.Enabled;SpinEditComparisons.Value;SpinEditDragMoveFactor.Value;SpinEditDragMoveFactor.Visible;SpinEditITI.Value;SpinEditLimitedHold.Value;SpinEditLimitedHold.Visible;SpinEditParticipant.Value;SpinEditSamples.Value;SpinEditSessionTime.Value;SpinEditTrials.Value;TabControlDesign.TabIndex;CheckBoxShowMouse.Checked'
+  SessionProperties = 'CheckBoxCheatsMode.Checked;CheckBoxHelpProgression.Checked;CheckBoxHelpRegression.Checked;CheckBoxMouseModeMode.Checked;CheckBoxShowMouse.Checked;ComboBoxFactor.ItemIndex;ComboBoxParticipants.ItemIndex;ComboBoxParticipants.Items;EditParticipant.Text;FloatSpinEditScreenWidth.Value;LabelDragMoveFactor.Visible;LabelLimitedHold.Visible;LabelLimitedHoldTime.Visible;PageControl1.ActivePage;PageControlConfigurations.TabIndex;RadioGroupCondition.ItemIndex;RadioGroupDesign.ItemIndex;RadioGroupDesign.Items;RadioGroupDesign1.ItemIndex;RadioGroupDesign2.ItemIndex;RadioGroupDispenser.ItemIndex;RadioGroupHelpType.ItemIndex;RadioGroupRestriction.ItemIndex;SpinEditComparisons.Enabled;SpinEditComparisons.Value;SpinEditDragMoveFactor.Value;SpinEditDragMoveFactor.Visible;SpinEditITI.Value;SpinEditLimitedHold.Value;SpinEditLimitedHold.Visible;SpinEditParticipant.Value;SpinEditSamples.Value;SpinEditSessionTime.Value;SpinEditTrials.Value;TabControlDesign.TabIndex;ComboBoxOrientations.ItemIndex'
   LCLVersion = '2.3.0.0'
   WindowState = wsFullScreen
   object PanelConfigurations: TPanel
@@ -19,9 +19,9 @@ object Background: TBackground
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = Owner
     AnchorSideTop.Side = asrCenter
-    Left = 246
+    Left = 359
     Height = 500
-    Top = 30
+    Top = 140
     Width = 322
     Align = alCustom
     ClientHeight = 500
@@ -106,18 +106,18 @@ object Background: TBackground
       Height = 250
       Top = 21
       Width = 320
-      ActivePage = TabSheetMisc
+      ActivePage = TabSheetSession
       Align = alClient
       BorderSpacing.Top = 5
       Constraints.MaxHeight = 250
-      TabIndex = 2
+      TabIndex = 0
       TabOrder = 2
       object TabSheetSession: TTabSheet
         Caption = 'Sessão'
         ClientHeight = 222
         ClientWidth = 312
         object SpinEditSessionTime: TSpinEdit
-          Left = 160
+          Left = 168
           Height = 23
           Top = 184
           Width = 72
@@ -130,7 +130,7 @@ object Background: TBackground
         object LabelSessionTime: TLabel
           AnchorSideLeft.Control = SpinEditSessionTime
           AnchorSideBottom.Control = SpinEditSessionTime
-          Left = 160
+          Left = 168
           Height = 15
           Top = 164
           Width = 136
@@ -144,7 +144,7 @@ object Background: TBackground
           AnchorSideRight.Control = SpinEditSessionTime
           AnchorSideBottom.Control = SpinEditSessionTime
           AnchorSideBottom.Side = asrBottom
-          Left = 237
+          Left = 245
           Height = 15
           Top = 187
           Width = 21
@@ -153,39 +153,23 @@ object Background: TBackground
           BorderSpacing.Bottom = 5
           Caption = 'min'
         end
-        object ComboBoxParticipants: TComboBox
-          Left = 8
-          Height = 23
-          Top = 8
-          Width = 136
-          ItemHeight = 15
-          Items.Strings = (
-            'Sujeito 1'
-            'Sujeito 2'
-            'Sujeito 3'
-            'Sujeito 4'
-          )
-          ReadOnly = True
-          TabOrder = 1
-          Text = 'Sujeito'
-        end
         object SpinEditTrials: TSpinEdit
-          Left = 160
+          Left = 168
           Height = 23
-          Top = 96
+          Top = 101
           Width = 72
           Increment = 3
           MaxValue = 90
           MinValue = 3
-          TabOrder = 2
+          TabOrder = 1
           Value = 24
         end
         object LabelTrials: TLabel
           AnchorSideLeft.Control = SpinEditTrials
           AnchorSideBottom.Control = SpinEditTrials
-          Left = 160
+          Left = 168
           Height = 15
-          Top = 76
+          Top = 81
           Width = 52
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 5
@@ -197,7 +181,7 @@ object Background: TBackground
           Top = 182
           Width = 72
           MaxValue = 6
-          TabOrder = 3
+          TabOrder = 2
           Value = 6
         end
         object LabelITI: TLabel
@@ -225,6 +209,50 @@ object Background: TBackground
           BorderSpacing.Left = 5
           BorderSpacing.Bottom = 5
           Caption = 's'
+        end
+        object ComboBoxParticipants: TComboBox
+          Left = 8
+          Height = 23
+          Top = 8
+          Width = 136
+          ItemHeight = 15
+          Items.Strings = (
+            'Sujeito 1'
+            'Sujeito 2'
+            'Sujeito 3'
+            'Sujeito 4'
+          )
+          ReadOnly = True
+          TabOrder = 3
+          Text = 'Sujeito'
+        end
+        object ComboBoxOrientations: TComboBox
+          Left = 5
+          Height = 23
+          Top = 101
+          Width = 128
+          ItemHeight = 15
+          ItemIndex = 0
+          Items.Strings = (
+            'Cima para Baixo'
+            'Baixo para cima'
+            'Esquerda para a direita'
+            'Direita para a esquerda'
+            'Aleatório'
+          )
+          TabOrder = 4
+          Text = 'Cima para Baixo'
+        end
+        object LabelDragDropOrientation: TLabel
+          AnchorSideLeft.Control = ComboBoxOrientations
+          AnchorSideBottom.Control = ComboBoxOrientations
+          Left = 5
+          Height = 15
+          Top = 81
+          Width = 117
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Bottom = 5
+          Caption = 'Orientação do arrastar'
         end
       end
       object TabSheetComplexity: TTabSheet

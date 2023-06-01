@@ -73,7 +73,9 @@ implementation
 uses Constants, Cheats
   //, Experiments.Grids
   , Session.Configuration.GlobalContainer
-  , Devices.RS232i;
+  , Devices.RS232i
+  , Constants.DragDrop
+  ;
 
 constructor TDragDrop.Create(AOwner: TCustomControl);
 begin
@@ -139,7 +141,8 @@ begin
   inherited Play;
   FCounterType := ctNone;
   LParameters := Configurations.Parameters;
-  FUseHelpProgression := LParameters.Values['UseHelpProgression'].ToBoolean;
+  with DragDropKeys do
+    FUseHelpProgression := LParameters.Values[UseHelpProgression].ToBoolean;
   HasLimitedHold := StrToIntDef(LParameters.Values[_LimitedHold], -1) > 0;
   if FUseHelpProgression or HasLimitedHold then begin
     if Counters.BlcTrials = 0 then begin
@@ -154,13 +157,16 @@ end;
 procedure TDragDrop.LoadMockParameters;
 begin
   with Configurations.Parameters do begin
-    Values['UseHelpProgression'] := 'False';
-    Values['RepeatTrial'] := '1';
-    Values['Style.Samples.DragMode'] := dragFree.ToString;
-    Values['Relation'] := 'A-A';
-    Values['Samples'] := '3';
-    Values['Comparisons'] := '3';
-    Values['DragMoveFactor'] := '10';
+    with DragDropKeys do begin
+      Values[UseHelpProgression] := 'False';
+      Values[RepeatTrials] := '1';
+      Values[SamplesDragMode] := dragFree.ToString;
+      Values[Relation] := 'A-A';
+      Values[Samples] := '3';
+      Values[Comparisons] := '3';
+      Values[DragMoveFactor] := '10';
+      Values[DragDropOrientation] := goRandom.ToString;
+    end;
   end;
 end;
 

@@ -21,6 +21,7 @@ uses
   , Stimuli.Image.Animation
   , Stimuli.Image.Base
   , Loggers.Reports
+  , Experiments.Grids
   ;
 
 type
@@ -42,6 +43,7 @@ type
     FSamples : TDragDropableItems;
     FAnimation : TAnimation;
     FDoneAnimations : TAnimations;
+    FGridOrientation : TGridOrientation;
     procedure OtherDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure RightDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure SetFocus(Sender: TObject; Button: TMouseButton;
@@ -79,9 +81,10 @@ implementation
 uses
   Math
   , StrUtils
-  , Experiments.Grids
   , Stimuli.Helpers.DragDropChannel
+  , Session.Trial.HelpSeries.DragDrop
   , Consequences.DragDrop
+  , Constants.DragDrop
   ;
 
 var Cursor : integer;
@@ -104,27 +107,47 @@ var
   DragMouseMoveMode : TDragMouseMoveMode;
   SampleLetter : string;
   ComparLetter : string;
-  Samples      : integer;
-  Comparisons  : integer;
+  LSamples      : integer;
+  LComparisons  : integer;
   LItem : TDragDropableItem;
   i: Integer;
+
+  procedure RandomizeDragDropOrientation(
+      DragDropOrientation : TDragDropOrientation);
+  begin
+    case DragDropOrientation of
+      goTopToBottom : Grid.Orientation := TGridOrientation.goTopToBottom;
+      goBottomToTop : Grid.Orientation := TGridOrientation.goBottomToTop;
+      goLeftToRight : Grid.Orientation := TGridOrientation.goLeftToRight;
+      goRightToLeft : Grid.Orientation := TGridOrientation.goRightToLeft;
+      goRandom : Grid.RandomizeGridOrientation;
+    end;
+    FGridOrientation := Grid.Orientation;
+  end;
+
 begin
   if not Assigned(FParent) then
     raise Exception.Create('You must assigned a parent before loading.');
   Cursor := StrToIntDef(AParameters.Values['Cursor'], -1);
-  ChannelDragMouseMoveFactor :=
-    AParameters.Values['DragMoveFactor'].ToInteger;
-  DragMouseMoveMode :=
-    AParameters.Values['Style.Samples.DragMode'].ToDragMouseMoveMode;
 
-  S1 := AParameters.Values['Relation'];
-  SampleLetter := ExtractDelimited(1,S1,['-']);
-  ComparLetter := ExtractDelimited(2,S1,['-']);
+  with DragDropKeys do begin
+    ChannelDragMouseMoveFactor :=
+      AParameters.Values[DragMoveFactor].ToInteger;
+    DragMouseMoveMode :=
+      AParameters.Values[SamplesDragMode].ToDragMouseMoveMode;
 
-  Samples := AParameters.Values['Samples'].ToInteger;
-  Comparisons := AParameters.Values['Comparisons'].ToInteger;
+    S1 := AParameters.Values[Relation];
+    SampleLetter := ExtractDelimited(1,S1,['-']);
+    ComparLetter := ExtractDelimited(2,S1,['-']);
 
-  NewGridItems(Samples, Comparisons);
+    LSamples := AParameters.Values[Samples].ToInteger;
+    LComparisons := AParameters.Values[Comparisons].ToInteger;
+    RandomizeDragDropOrientation(
+      AParameters.Values[DragDropOrientation].ToDragDropOrientation);
+  end;
+
+
+  NewGridItems(LSamples, LComparisons);
   with Grid.RandomPositions do begin
     for i := low(Comparisons) to high(Comparisons) do
     begin
@@ -311,13 +334,29 @@ begin
   Comparison := Sender as TDragDropableItem;
 
   Sample.Color := clGreen;
-  Sample.Left := Comparison.Left;
-  Sample.Top := Comparison.Top - Sample.Height - 10;
+  case FGridOrientation of
+    TGridOrientation.goTopToBottom : begin
+      Sample.Left := Comparison.Left;
+      Sample.Top := Comparison.Top - Sample.Height - 10;
+    end;
+    TGridOrientation.goBottomToTop : begin
+      Sample.Left := Comparison.Left;
+      Sample.Top := Comparison.Top + Sample.Height + 10;
+    end;
+    TGridOrientation.goLeftToRight : begin
+      Sample.Left := Comparison.Left - Sample.Width - 10;
+      Sample.Top := Comparison.Top;
+    end;
+    TGridOrientation.goRightToLeft : begin
+      Sample.Left := Comparison.Left + Sample.Width + 10;
+      Sample.Top := Comparison.Top;
+    end;
+  end;
 
   LAnimation := TAnimation.Create(Self);
   LAnimation.Cursor:=Cursor;
   LAnimation.Parent := Parent;
-  LAnimation.Join(Sample, Comparison);
+  LAnimation.Join(Sample, Comparison, FGridOrientation);
   LAnimation.SendToBack;
   LAnimation.Show;
   FDoneAnimations.Add(LAnimation);
