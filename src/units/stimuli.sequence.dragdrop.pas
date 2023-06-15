@@ -165,7 +165,9 @@ begin
       LItem.LoadFromFile(SampleLetter+(i+1).ToString);
       LItem.DragMouseMoveMode:=DragMouseMoveMode;
       LItem.Parent := Parent;
-      LItem.MoveToPoint(50);
+      with DragDropKeys do begin
+        LItem.MoveToPoint(AParameters.Values[Distance].ToInteger);
+      end;
       LItem.Invalidate;
     end;
   end;

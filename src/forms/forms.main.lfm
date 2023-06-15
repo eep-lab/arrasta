@@ -254,6 +254,41 @@ object Background: TBackground
           BorderSpacing.Bottom = 5
           Caption = 'Orientação do arrastar'
         end
+        object SpinEditDistance: TSpinEdit
+          Left = 168
+          Height = 23
+          Top = 48
+          Width = 74
+          Increment = 10
+          MaxValue = 50
+          TabOrder = 5
+        end
+        object Label1: TLabel
+          AnchorSideLeft.Control = SpinEditDistance
+          AnchorSideBottom.Control = SpinEditDistance
+          Left = 168
+          Height = 15
+          Top = 28
+          Width = 132
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Bottom = 5
+          Caption = 'Distância entre estímulos'
+        end
+        object Label2: TLabel
+          AnchorSideLeft.Control = SpinEditDistance
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideRight.Control = SpinEditDistance
+          AnchorSideBottom.Control = SpinEditDistance
+          AnchorSideBottom.Side = asrBottom
+          Left = 247
+          Height = 15
+          Top = 51
+          Width = 10
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Left = 5
+          BorderSpacing.Bottom = 5
+          Caption = '%'
+        end
       end
       object TabSheetComplexity: TTabSheet
         Caption = 'Tarefa'

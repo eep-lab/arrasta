@@ -9,6 +9,7 @@ type
     DragDropOrientation : string;
     UseHelpProgression : string;
     RepeatTrials : string;
+    Distance : string;
     SamplesDragMode : string;
     Relation : string;
     Samples : string;
@@ -21,6 +22,7 @@ const
     DragDropOrientation : 'Orientation';
     UseHelpProgression : 'UseHelpProgression';
     RepeatTrials : 'RepeatTrial';
+    Distance : 'Distance';
     SamplesDragMode : 'Style.Samples.DragMode';
     Relation : 'Relation';
     Samples : 'Samples';
