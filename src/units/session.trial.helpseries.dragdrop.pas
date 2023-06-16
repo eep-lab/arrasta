@@ -40,6 +40,9 @@ type
                      goRightToLeft, goRandom);
   TDragDropOrientationRange = goTopToBottom..goRandom;
 
+  TDistanceValue = (distZero, distTen, distTwenty, distThirty, distForty, distFifty);
+  TDistanceRange = distZero..distFifty;
+
   TDragDropData = record
     Relation : TEquivalenceRelation;
     Samples: TSampleValue;
@@ -47,6 +50,7 @@ type
     HelpType: TDragMouseMoveMode;
     Factor: TFactor;
     Orientation : TDragDropOrientation;
+    Distance : TDistanceValue;
     class operator = (A, B: TDragDropData): Boolean;
   end;
 
@@ -105,6 +109,13 @@ type
     function ToInteger: integer;
   end;
 
+  { TDistanceValueHelper }
+
+  TDistanceValueHelper = type helper for TDistanceValue
+    function ToString : string;
+    function ToInteger: integer;
+  end;
+
   { TDragDropOrientationHelper }
 
   TDragDropOrientationHelper = type helper for TDragDropOrientation
@@ -120,6 +131,7 @@ type
     function ToComparValue : TComparValue;
     function ToFactor : TFactor;
     function ToDragDropOrientation : TDragDropOrientation;
+    function ToDistanceValue : TDistanceValue;
   end;
 
     { THelpSeriesIntegerHelper }
@@ -222,6 +234,7 @@ begin
       Data.Comparisons := Values[Comparisons].ToComparValue;
       Data.Factor := Values[DragMoveFactor].ToInteger.ToFactor;
       Data.Orientation := Values[DragDropOrientation].ToDragDropOrientation;
+      Data.Distance := Values[Distance].ToDistanceValue;
     end;
   end;
 
@@ -246,6 +259,7 @@ begin
       Values[Comparisons] := Data.Comparisons.ToString;
       Values[DragMoveFactor] := Data.Factor.ToInteger.ToString;
       Values[DragDropOrientation] := Data.Orientation.ToString;
+      Values[Distance] := Data.Distance.ToString;
     end;
   end;
 end;
@@ -292,6 +306,9 @@ var
       Result.Orientation :=
         LIniFile.ReadString(
           ASection, DragDropOrientation, 'Default').ToDragDropOrientation;
+      Result.Distance :=
+        LIniFile.ReadString(
+          ASection, Distance, 'Default').ToDistanceValue;
     end;
     Inc(i);
   end;
@@ -342,6 +359,8 @@ begin
           DragMoveFactor, Data.Factor.ToInteger.ToString);
         WriteString(GetSection,
           DragDropOrientation, Data.Orientation.ToString);
+        WriteString(GetSection,
+          Distance, Data.Distance.ToString);
       end;
     end;
     Inc(i);
@@ -409,6 +428,27 @@ var
 function TFactorHelper.ToInteger: integer;
 begin
   Result := Factors[Self];
+end;
+
+{ TDistanceValueHelper }
+
+function TDistanceValueHelper.ToString: string;
+begin
+  case Self of
+    distZero   : Result := '0';
+    distTen    : Result := '10';
+    distTwenty : Result := '20';
+    distThirty : Result := '30';
+    distForty  : Result := '40';
+    distFifty  : Result := '50';
+  end;
+end;
+
+function TDistanceValueHelper.ToInteger: integer;
+var
+  DistanceValues : array [TDistanceRange] of integer = (0, 10, 20, 30, 40, 50);
+begin
+  Result := DistanceValues[Self];
 end;
 
 { TOrientationHelper }
@@ -493,6 +533,22 @@ begin
     else
       raise Exception.Create(
         'THelpSeriesStringHelper.ToOrientation: ' + Self);
+  end;
+end;
+
+function THelpSeriesStringHelper.ToDistanceValue: TDistanceValue;
+begin
+  case UpperCase(Self) of
+    '0' : Result := distZero;
+    '10' : Result := distTen;
+    '20' : Result := distTwenty;
+    '30' : Result := distThirty;
+    '40' : Result := distForty;
+    '50' : Result := distFifty;
+    'DEFAULT' : Result := DefaultDragDropData.Distance;
+    else
+      raise Exception.Create(
+        'THelpSeriesStringHelper.ToDistanceValue: ' + Self);
   end;
 end;
 

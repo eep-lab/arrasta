@@ -39,6 +39,8 @@ type
     GroupBoxComplexity: TGroupBox;
     GroupBoxDesign: TGroupBox;
     IniPropStorage: TIniPropStorage;
+    Label1: TLabel;
+    Label2: TLabel;
     LabelDragDropOrientation: TLabel;
     LabelLimitedHoldTime: TLabel;
     LabelITITime: TLabel;
@@ -57,6 +59,7 @@ type
     PanelConfigurations: TPanel;
     RadioGroupDispenser: TRadioGroup;
     RadioGroupRelation: TRadioGroup;
+    SpinEditDistance: TSpinEdit;
     SpinEditTrials: TSpinEdit;
     SpinEditSessionTime: TSpinEdit;
     SpinEditComparisons: TSpinEdit;
@@ -88,6 +91,7 @@ type
     function GetMouseMoveFactor : TFactor;
     function GetSessionName : string;
     function GetOrientation : TDragDropOrientation;
+    function GetDistance : TDistanceValue;
     //function GetOrientation : string;
   public
 
@@ -131,7 +135,6 @@ begin
   ForceDirectories(GlobalContainer.RootData);
   CheatsModeOn := False;
   PanelConfigurations.Hide;
-  //WriteLn(GetOrientation);
   Session.Backgrounds.Background := Self;
 
   ConfigurationFilename :=
@@ -140,6 +143,7 @@ begin
       SpinEditTrials.Value,
       SpinEditITI.Value * 1000,
       SpinEditLimitedHold.Value * 60000,
+      SpinEditDistance.Value,
       GetRelation,
       SpinEditSamples.Value,
       SpinEditComparisons.Value,
@@ -164,6 +168,7 @@ begin
     HelpType := DefaultDragMouveMoveMode;
     Factor := GetMouseMoveFactor;
     Orientation := GetOrientation;
+    Distance := GetDistance;
   end;
   if FileExists(DefaultComplexityFilename) then begin
     DragDropHelpSerie := TDragDropHelpSerie.Create(DefaultComplexityFilename);
@@ -195,6 +200,7 @@ begin
       Values[Comparisons] := SpinEditComparisons.Value.ToString;
       Values[DragMoveFactor] := GetMouseMoveFactor.ToInteger.ToString;
       Values[DragDropOrientation] := GetOrientation.ToString;
+      Values[Distance] := SpinEditDistance.Value.ToString;
     end;
   end;
   LTrial.OnTrialEnd:=@EndSession;
@@ -380,6 +386,18 @@ begin
     2 : Result := goLeftToRight;
     3 : Result := goRightToLeft;
     4 : Result := goRandom;
+  end;
+end;
+
+function TBackground.GetDistance: TDistanceValue;
+begin
+  case SpinEditDistance.Value of
+    1 : Result := distZero;
+    2 : Result := distTen;
+    3 : Result := distTwenty;
+    4 : Result := distThirty;
+    5 : Result := distForty;
+    6 : Result := distFifty;
   end;
 end;
 

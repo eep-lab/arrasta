@@ -161,6 +161,7 @@ begin
       Values[UseHelpProgression] := 'False';
       Values[RepeatTrials] := '1';
       Values[SamplesDragMode] := dragFree.ToString;
+      Values[Distance] := '0';
       Values[Relation] := 'A-A';
       Values[Samples] := '3';
       Values[Comparisons] := '3';

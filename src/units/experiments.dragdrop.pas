@@ -16,6 +16,7 @@ interface
 procedure WriteToConfigurationFile(
   AOrientation : string;
   ATrials : integer;
+  ADistance : integer;
   ARelation : string;
   ASamples: integer;
   AComparisons: integer;
@@ -60,10 +61,10 @@ var Writer : TConfigurationWriter;
   'Comparisons'= 1 .. 3 // Note: Minimum equals Samples
   'DragMoveFactor'= 5 .. 100;
 }
-procedure WriteTrials(AOrientation : string; ATrials: integer; AName: string;
-  ADragMode: string; ARelation: string; ASamples: string; AComparisons: string;
-  AFactor: string; AUseHelpProgression : Boolean; AHasLimitedHold : Boolean;
-  AShowMouse: Boolean);
+procedure WriteTrials(AOrientation : string; ATrials: integer;
+  ADistance : integer; AName: string; ADragMode: string; ARelation: string;
+  ASamples: string; AComparisons: string; AFactor: string;
+  AUseHelpProgression : Boolean; AHasLimitedHold : Boolean; AShowMouse: Boolean);
 begin
   case Writer.CurrentBloc of
     0, 1, 2, 3, 4, 5 : begin
@@ -82,6 +83,7 @@ begin
           Values[DragDropOrientation] := AOrientation;
           Values[UseHelpProgression] := AUseHelpProgression.ToString;
           Values[RepeatTrials] := ATrials.ToString;
+          Values[Distance] := ADistance.ToString;
           Values[SamplesDragMode] := ADragMode;
           Values[Relation] := ARelation;
           Values[Samples] := ASamples;
@@ -95,9 +97,9 @@ begin
 end;
 
 procedure WriteToConfigurationFile(AOrientation : string; ATrials: integer;
-  ARelation: string; ASamples: integer; AComparisons: integer;
-  AMouseMoveMode: string; AFactor: string; AUseHelpProgression: Boolean;
-  AHasLimitedHold: Boolean; AShowMouse: Boolean);
+  ADistance : integer; ARelation: string; ASamples: integer;
+  AComparisons: integer; AMouseMoveMode: string; AFactor: string;
+  AUseHelpProgression: Boolean; AHasLimitedHold: Boolean; AShowMouse: Boolean);
 var
   LBloc : integer = 0;
   LName : string;
@@ -112,7 +114,7 @@ begin
       Values[_Name] := 'Bloco ' + LBloc.ToString;
     end;
     Writer.WriteBloc;
-    WriteTrials(AOrientation, ATrials, LName, AMouseMoveMode, ARelation,
+    WriteTrials(AOrientation, ATrials, ADistance, LName, AMouseMoveMode, ARelation,
       ASamples.ToString, AComparisons.ToString, AFactor,
       AUseHelpProgression, AHasLimitedHold, AShowMouse);
 

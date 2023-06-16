@@ -60,6 +60,7 @@ type
     destructor Destroy; override;
     procedure AddTarget(ATarget : TObject);
     procedure UpdateDragMouseMoveMode;
+    procedure MoveToPoint(AValue : real);
     property Targets : TDragDropTargets read FTargets;
     property Target : TDragDropableItem read GetTarget;
     property Draggable : Boolean read GetDraggable write FCanDrag;
@@ -307,17 +308,54 @@ begin
   FTargets.Add(ATarget);
 end;
 
+{
+  3x3
+  0..1..2
+  3..4..5
+  6..7..8
+}
 procedure TDragDropableItem.UpdateDragMouseMoveMode;
+var
+  LRect : TRect;
 begin
   case DragMouseMoveMode of
     dragFree : begin
-      // do nothing
+      if Targets.Count > 0 then begin
+        LRect := BoundsRect;
+        case Grid.Orientation of
+          goLeftToRight: begin
+            LRect.Left := Grid.RectFromPosition(5).Left - Width;
+            DragDropChannel.Update(BoundsRect, LRect);
+          end;
+          goRightToLeft: begin
+            LRect.Left := Grid.RectFromPosition(3).Right;
+            DragDropChannel.Update(BoundsRect, LRect);
+          end;
+          goBottomToTop: begin
+            LRect.Top := Grid.RectFromPosition(1).Bottom;
+            DragDropChannel.Update(BoundsRect, LRect);
+          end;
+          goTopToBottom: begin
+            LRect.Top := Grid.RectFromPosition(7).Top;
+            DragDropChannel.Update(BoundsRect, LRect);
+          end;
+        end;
+      end;
     end;
     dragChannel : begin
       if Targets.Count > 0 then
         DragDropChannel.Update(BoundsRect, Target.BoundsRect);
     end;
   end;
+end;
+
+procedure TDragDropableItem.MoveToPoint(AValue: real);
+var
+  LPoint : TPoint;
+begin
+  LPoint := DragDropChannel.GetPoint(AValue);
+  Left := LPoint.X;
+  Top := LPoint.Y;
 end;
 
 end.
