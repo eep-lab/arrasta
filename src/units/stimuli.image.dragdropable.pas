@@ -320,7 +320,7 @@ var
 begin
   case DragMouseMoveMode of
     dragFree : begin
-      if Targets.Count > 0 then begin
+      if Targets.Count > 1 then begin
         LRect := BoundsRect;
         case Grid.Orientation of
           goLeftToRight: begin
@@ -339,6 +339,11 @@ begin
             LRect.Top := Grid.RectFromPosition(7).Top;
             DragDropChannel.Update(BoundsRect, LRect);
           end;
+        end;
+      end else begin
+        if Targets.Count = 1 then begin
+          LRect := TDragDropableItem(Targets[0]).BoundsRect;
+          DragDropChannel.Update(BoundsRect, LRect);
         end;
       end;
     end;
