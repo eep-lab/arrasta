@@ -39,8 +39,8 @@ type
     GroupBoxComplexity: TGroupBox;
     GroupBoxDesign: TGroupBox;
     IniPropStorage: TIniPropStorage;
-    Label1: TLabel;
-    Label2: TLabel;
+    LabelDistance: TLabel;
+    LabelDistancePercentage: TLabel;
     LabelDragDropOrientation: TLabel;
     LabelLimitedHoldTime: TLabel;
     LabelITITime: TLabel;
@@ -398,6 +398,7 @@ begin
     4 : Result := distThirty;
     5 : Result := distForty;
     6 : Result := distFifty;
+    7 : Result := distSixty;
   end;
 end;
 

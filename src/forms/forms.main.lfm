@@ -260,7 +260,7 @@ object Background: TBackground
           Top = 48
           Width = 74
           Increment = 10
-          MaxValue = 50
+          MaxValue = 60
           TabOrder = 5
         end
         object Label1: TLabel

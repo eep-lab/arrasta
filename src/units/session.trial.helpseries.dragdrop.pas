@@ -36,12 +36,14 @@ type
   TFactor = (facVeryEasy, facEasy, facNormal, facHard, facVeryHard);
   TFactorRange = facVeryEasy..facVeryHard;
 
-  TDragDropOrientation = (goTopToBottom, goBottomToTop, goLeftToRight,
-                     goRightToLeft, goRandom);
+  TDragDropOrientation =
+    (goTopToBottom, goBottomToTop, goLeftToRight, goRightToLeft, goRandom);
   TDragDropOrientationRange = goTopToBottom..goRandom;
 
-  TDistanceValue = (distZero, distTen, distTwenty, distThirty, distForty, distFifty);
-  TDistanceRange = distZero..distFifty;
+  TDistanceValue =
+    (distZero, distTen, distTwenty, distThirty, distForty, distFifty,
+      distSixty);
+  TDistanceRange = distZero..distSixty;
 
   TDragDropData = record
     Relation : TEquivalenceRelation;
@@ -441,12 +443,14 @@ begin
     distThirty : Result := '30';
     distForty  : Result := '40';
     distFifty  : Result := '50';
+    distSixty  : Result := '60';
   end;
 end;
 
 function TDistanceValueHelper.ToInteger: integer;
 var
-  DistanceValues : array [TDistanceRange] of integer = (0, 10, 20, 30, 40, 50);
+  DistanceValues : array [TDistanceRange] of integer =
+    (0, 10, 20, 30, 40, 50, 60);
 begin
   Result := DistanceValues[Self];
 end;
@@ -545,6 +549,7 @@ begin
     '30' : Result := distThirty;
     '40' : Result := distForty;
     '50' : Result := distFifty;
+    '60' : Result := distSixty;
     'DEFAULT' : Result := DefaultDragDropData.Distance;
     else
       raise Exception.Create(
