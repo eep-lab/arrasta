@@ -28,6 +28,7 @@ type
     ButtonTestDispenser: TButton;
     ButtonStartAll: TButton;
     ButtonStartTrial: TButton;
+    CheckBoxDistance: TCheckBox;
     CheckBoxShowMouse: TCheckBox;
     CheckBoxHelpRegression: TCheckBox;
     CheckBoxHelpProgression: TCheckBox;
@@ -72,6 +73,7 @@ type
     TabSheetSession: TTabSheet;
     procedure ButtonStartTrialClick(Sender: TObject);
     procedure ButtonTestDispenserClick(Sender: TObject);
+    procedure CheckBoxDistanceChange(Sender: TObject);
     procedure CheckBoxHelpRegressionChange(Sender: TObject);
     procedure CheckBoxMouseModeModeChange(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -218,6 +220,13 @@ begin
   end;
 end;
 
+procedure TBackground.CheckBoxDistanceChange(Sender: TObject);
+begin
+  SpinEditDistance.Visible := CheckBoxDistance.Checked;
+  LabelDistance.Visible := CheckBoxDistance.Checked;
+  LabelDistancePercentage.Visible := CheckBoxDistance.Checked;
+end;
+
 procedure TBackground.CheckBoxHelpRegressionChange(Sender: TObject);
 begin
   SpinEditLimitedHold.Visible:=CheckBoxHelpRegression.Checked;
@@ -280,6 +289,16 @@ end;
 
 procedure TBackground.SpinEditSamplesChange(Sender: TObject);
 begin
+  if SpinEditSamples.Value = 1 then begin
+    CheckBoxDistance.Visible := True;
+  end
+  else begin
+    CheckBoxDistance.Visible := False;
+    SpinEditDistance.Visible := False;
+    LabelDistance.Visible := False;
+    LabelDistancePercentage.Visible := False;
+    SpinEditDistance.Value := 0;
+  end;
   SpinEditComparisons.Enabled := SpinEditSamples.Value <> 3;
   SpinEditComparisons.MinValue := SpinEditSamples.Value;
   SpinEditComparisons.Value := SpinEditSamples.Value;

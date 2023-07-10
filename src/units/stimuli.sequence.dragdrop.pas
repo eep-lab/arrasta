@@ -67,7 +67,8 @@ type
     procedure LoadFromParameters(AParameters : TStringList);
     procedure Start;
     procedure Stop;
-    procedure NewGridItems(ASamples, AComparisons : integer);
+    procedure NewGridItems(ASamples, AComparisons : integer;
+                            AGridOrientation : TGridOrientation);
     property Parent : TWinControl read FParent write SetParent;
     property LogEvent : TDataProcedure read FLogEvent write SetLogEvent;
     property OnDragDropDone : TNotifyEvent read FOnDragDropDone write SetOnDragDropDone;
@@ -112,17 +113,16 @@ var
   LItem : TDragDropableItem;
   i: Integer;
 
-  procedure RandomizeDragDropOrientation(
-      DragDropOrientation : TDragDropOrientation);
+  function DragDropToGridOrientation(
+      DragDropOrientation : TDragDropOrientation) : TGridOrientation;
   begin
     case DragDropOrientation of
-      goTopToBottom : Grid.Orientation := TGridOrientation.goTopToBottom;
-      goBottomToTop : Grid.Orientation := TGridOrientation.goBottomToTop;
-      goLeftToRight : Grid.Orientation := TGridOrientation.goLeftToRight;
-      goRightToLeft : Grid.Orientation := TGridOrientation.goRightToLeft;
-      goRandom : Grid.RandomizeGridOrientation;
+      goTopToBottom : Result := TGridOrientation.goTopToBottom;
+      goBottomToTop : Result := TGridOrientation.goBottomToTop;
+      goLeftToRight : Result := TGridOrientation.goLeftToRight;
+      goRightToLeft : Result := TGridOrientation.goRightToLeft;
+      goRandom : Result:= Grid.GetRandomGridOrientation;
     end;
-    FGridOrientation := Grid.Orientation;
   end;
 
 begin
@@ -142,12 +142,12 @@ begin
 
     LSamples := AParameters.Values[Samples].ToInteger;
     LComparisons := AParameters.Values[Comparisons].ToInteger;
-    RandomizeDragDropOrientation(
+    FGridOrientation := DragDropToGridOrientation(
       AParameters.Values[DragDropOrientation].ToDragDropOrientation);
   end;
 
 
-  NewGridItems(LSamples, LComparisons);
+  NewGridItems(LSamples, LComparisons, FGridOrientation);
   with Grid.RandomPositions do begin
     for i := low(Comparisons) to high(Comparisons) do
     begin
@@ -168,6 +168,7 @@ begin
       with DragDropKeys do begin
         LItem.MoveToPoint(AParameters.Values[Distance].ToInteger);
       end;
+      LItem.SetOriginalBounds(LItem.Left, LItem.Top, LItem.Width, LItem.Height);
       LItem.Invalidate;
     end;
   end;
@@ -246,14 +247,15 @@ begin
     LAnimation.Hide;
 end;
 
-procedure TDragDropStimuli.NewGridItems(ASamples, AComparisons: integer);
+procedure TDragDropStimuli.NewGridItems(ASamples, AComparisons: integer;
+                                         AGridOrientation : TGridOrientation);
 var
   LItem : TDragDropableItem;
   LComparison : TDragDropableItem;
   LComparisons : TDragDropableItems;
   i : integer;
 begin
-  Grid.UpdatePositions(ASamples, AComparisons);
+  Grid.UpdatePositions(ASamples, AComparisons, AGridOrientation);
   with Grid.RandomPositions do begin
     LComparisons := TDragDropableItems.Create;
     for i := low(Comparisons) to high(Comparisons) do

@@ -76,12 +76,14 @@ type
       property RandomPositions : TRandomPositions read FRandomPositions;
       property Seed : integer read FSeed write FSeed;
       property Orientation: TGridOrientation read FGridOrientation write SetGridOrientation;
-      procedure UpdatePositions(ASamples, AComparisons: integer);
+      procedure UpdatePositions(ASamples, AComparisons: integer;
+                                 AGridOrientation : TGridOrientation);
       {Cria seleção randômica de modelos e comparações em posições diferentes no AGrid}
       procedure RandomizePositions;
       procedure RandomizeOrientations;
       procedure RandomizeGridOrientation;
       function RectFromPosition(APosition: integer) : TRect;
+      function GetRandomGridOrientation : TGridOrientation;
   end;
 
 var
@@ -480,6 +482,14 @@ begin
   end;
 end;
 
+function TGrid.GetRandomGridOrientation : TGridOrientation;
+var
+  i: integer;
+begin
+  i:= RandomRange(1, 5);
+  Result := TGridOrientation(i);
+end;
+
 procedure TGrid.SetCellsCount(AValue: integer);
 begin
   if FCellsCount=AValue then Exit;
@@ -537,11 +547,15 @@ begin
   end;
 end;
 
-procedure TGrid.UpdatePositions(ASamples, AComparisons: integer);
+procedure TGrid.UpdatePositions(ASamples, AComparisons: integer;
+    AGridOrientation : TGridOrientation);
 begin
-  if (FSamplesCount <> ASamples) or (FComparisonsCount <> AComparisons) then begin
+  if (FSamplesCount <> ASamples) or
+     (FComparisonsCount <> AComparisons) or
+     (FGridOrientation <> AGridOrientation) then begin
     FSamplesCount := ASamples;
     FComparisonsCount := AComparisons;
+    FGridOrientation := AGridOrientation;
     CreatePositions;
   end;
   RandomizePositions;
