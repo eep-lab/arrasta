@@ -523,6 +523,15 @@ begin
                       rsReportTrialID + #9 +
                       rsReportTrialNO + #9 +
                       rsReportTrialName + #9 +
+                      rsReportA1Position + #9 +
+                      rsReportA2Position + #9 +
+                      rsReportA3Position + #9 +
+                      rsReportB1Position + #9 +
+                      rsReportB2Position + #9 +
+                      rsReportB3Position + #9 +
+                      rsReportC1Position + #9 +
+                      rsReportC2Position + #9 +
+                      rsReportC3Position + #9 +
                       rsReportEvent;
 end;
 
