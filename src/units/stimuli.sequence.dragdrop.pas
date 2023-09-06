@@ -44,6 +44,7 @@ type
     FAnimation : TAnimation;
     FDoneAnimations : TAnimations;
     FGridOrientation : TGridOrientation;
+    FTeste: Integer;
     procedure OtherDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure RightDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure SetFocus(Sender: TObject; Button: TMouseButton;
@@ -69,12 +70,14 @@ type
     procedure Stop;
     procedure NewGridItems(ASamples, AComparisons : integer;
                             AGridOrientation : TGridOrientation);
+    function GetTop(AItem : TDragDropableItem) : Integer;
     property Parent : TWinControl read FParent write SetParent;
     property LogEvent : TDataProcedure read FLogEvent write SetLogEvent;
     property OnDragDropDone : TNotifyEvent read FOnDragDropDone write SetOnDragDropDone;
     property OnRightDragDrop : TDragDropEvent read FOnRightDragDrop write SetOnRightDragDrop;
     property OnWrongDragDrop : TDragDropEvent read FOnWrongDragDrop write SetOnWrongDragDrop;
     property OnOtherDragDrop : TDragDropEvent read FOnOtherDragDrop write SetOnOtherDragDrop;
+    property Teste : Integer read FTeste write FTeste;
   end;
 
 implementation
@@ -155,6 +158,10 @@ begin
       LItem.Cursor := Cursor;
       LItem.LoadFromFile(ComparLetter+(i+1).ToString);
       LItem.Parent := Parent;
+      WriteLn('- B -');
+      WriteLn('Top: ', LItem.Top);
+      WriteLn('Left: ', LItem.Left);
+      Teste := LItem.Top;
       LItem.Invalidate;
     end;
 
@@ -169,6 +176,9 @@ begin
         LItem.MoveToPoint(AParameters.Values[Distance].ToInteger);
       end;
       LItem.SetOriginalBounds(LItem.Left, LItem.Top, LItem.Width, LItem.Height);
+      WriteLn('- A -');
+      WriteLn('Top: ', LItem.Top);
+      WriteLn('Left: ', LItem.Left);
       LItem.Invalidate;
     end;
   end;
@@ -299,6 +309,11 @@ begin
     end;
     LComparisons.Free;
   end;
+end;
+
+function TDragDropStimuli.GetTop(AItem: TDragDropableItem): Integer;
+begin
+     Result := AItem.Top;
 end;
 
 procedure TDragDropStimuli.SetParent(AValue: TWinControl);
