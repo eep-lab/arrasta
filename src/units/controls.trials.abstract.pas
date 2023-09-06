@@ -514,7 +514,9 @@ begin
 
   // setup report header
   // descendents should concatenate its own data, if any, to their OnCreate method
-  Header := rsReportCsqRes;
+  Header := rsReportA1Position + #9 +
+            rsReportB1Position + #9 +
+            rsReportCsqRes;
 
   // setup timestamps header
   // descendents should concatenate its own data, if any, to their OnCreate method
