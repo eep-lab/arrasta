@@ -184,7 +184,9 @@ procedure TDragDrop.WriteData(Sender: TObject);
 begin
   inherited WriteData(Sender);
   with FReportData do begin
-    Data := Data + GetLatency(StimuliStart, Latency);
+    //Data := Data + GetLatency(StimuliStart, Latency);
+    Data := 'X and Y A1' + #9 + IntToStr(FStimuli.Teste) + #9 + Data +
+            GetLatency(StimuliStart, Latency);
   end;
 end;
 
