@@ -28,6 +28,7 @@ type
 
   TDragDropableItems = specialize TFPGList<TDragDropableItem>;
   TAnimations = specialize TFPGList<TAnimation>;
+  TPositions = array of integer;
 
   { TDragDropStimuli }
 
@@ -44,7 +45,8 @@ type
     FAnimation : TAnimation;
     FDoneAnimations : TAnimations;
     FGridOrientation : TGridOrientation;
-    FTeste: Integer;
+    FPositionInitialSmp: TPositions;
+    FPositionInitialCmp: TPositions;
     procedure OtherDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure RightDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure SetFocus(Sender: TObject; Button: TMouseButton;
@@ -55,6 +57,8 @@ type
     procedure SetOnRightDragDrop(AValue: TDragDropEvent);
     procedure SetOnWrongDragDrop(AValue: TDragDropEvent);
     procedure SetParent(AValue: TWinControl);
+    procedure SetPositionInitialSmp(Top, Left : Integer);
+    procedure SetPositionInitialCmp(Top, Left : Integer);
     function GetRandomSample : TDragDropableItem;
     procedure FreeGridItems;
     procedure WrongDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -70,14 +74,14 @@ type
     procedure Stop;
     procedure NewGridItems(ASamples, AComparisons : integer;
                             AGridOrientation : TGridOrientation);
-    function GetTop(AItem : TDragDropableItem) : Integer;
+    function GetPositionInitialSmp : string;
+    function GetPositionInitialCmp : string;
     property Parent : TWinControl read FParent write SetParent;
     property LogEvent : TDataProcedure read FLogEvent write SetLogEvent;
     property OnDragDropDone : TNotifyEvent read FOnDragDropDone write SetOnDragDropDone;
     property OnRightDragDrop : TDragDropEvent read FOnRightDragDrop write SetOnRightDragDrop;
     property OnWrongDragDrop : TDragDropEvent read FOnWrongDragDrop write SetOnWrongDragDrop;
     property OnOtherDragDrop : TDragDropEvent read FOnOtherDragDrop write SetOnOtherDragDrop;
-    property Teste : Integer read FTeste write FTeste;
   end;
 
 implementation
@@ -161,7 +165,7 @@ begin
       WriteLn('- B -');
       WriteLn('Top: ', LItem.Top);
       WriteLn('Left: ', LItem.Left);
-      Teste := LItem.Top;
+      SetPositionInitialCmp(LItem.Top, LItem.Left);
       LItem.Invalidate;
     end;
 
@@ -179,6 +183,7 @@ begin
       WriteLn('- A -');
       WriteLn('Top: ', LItem.Top);
       WriteLn('Left: ', LItem.Left);
+      SetPositionInitialSmp(LItem.Top, LItem.Left);
       LItem.Invalidate;
     end;
   end;
@@ -311,9 +316,24 @@ begin
   end;
 end;
 
-function TDragDropStimuli.GetTop(AItem: TDragDropableItem): Integer;
+function TDragDropStimuli.GetPositionInitialSmp: string;
+var
+  LTemp01 : string;
+  LTemp02 : string;
 begin
-     Result := AItem.Top;
+  LTemp01 := IntToStr(FPositionInitialSmp[0]);
+  LTemp02 := IntToStr(FPositionInitialSmp[1]);
+  Result := LTemp01 + '  ' + LTemp02;
+end;
+
+function TDragDropStimuli.GetPositionInitialCmp: string;
+var
+  LTemp01 : string;
+  LTemp02 : string;
+begin
+  LTemp01 := IntToStr(FPositionInitialCmp[0]);
+  LTemp02 := IntToStr(FPositionInitialCmp[1]);
+  Result := LTemp01 + '  ' + LTemp02;
 end;
 
 procedure TDragDropStimuli.SetParent(AValue: TWinControl);
@@ -328,6 +348,20 @@ begin
 
   for LItem in FComparisons do
     LItem.Parent := AValue;
+end;
+
+procedure TDragDropStimuli.SetPositionInitialSmp(Top, Left: Integer);
+begin
+  SetLength(FPositionInitialSmp, 2);
+  FPositionInitialSmp[0] := Top;
+  FPositionInitialSmp[1] := Left;
+end;
+
+procedure TDragDropStimuli.SetPositionInitialCmp(Top, Left: Integer);
+begin
+  SetLength(FPositionInitialCmp, 2);
+  FPositionInitialCmp[0] := Top;
+  FPositionInitialCmp[1] := Left;
 end;
 
 procedure TDragDropStimuli.OtherDragDrop(Sender, Source: TObject;

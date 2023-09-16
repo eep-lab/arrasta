@@ -185,7 +185,8 @@ begin
   inherited WriteData(Sender);
   with FReportData do begin
     //Data := Data + GetLatency(StimuliStart, Latency);
-    Data := 'X and Y A1' + #9 + IntToStr(FStimuli.Teste) + #9 + Data +
+    Data := Data + FStimuli.GetPositionInitialSmp + HeaderTabs +
+            FStimuli.GetPositionInitialCmp + HeaderTabs +
             GetLatency(StimuliStart, Latency);
   end;
 end;
@@ -199,9 +200,10 @@ end;
 
 function TDragDrop.GetHeader: string;
 begin
-  Result :=
-    rsReportRspLat // + HeaderTabs +
-    ;
+  Result := rsReportA1Position + HeaderTabs +
+            rsReportB1Position + HeaderTabs +
+            rsReportRspLat // + HeaderTabs +
+            ;
 end;
 
 procedure TDragDrop.Paint;
