@@ -20,6 +20,8 @@ uses LCLIntf, Controls, Classes, SysUtils, ExtCtrls
   , Session.Trial.HelpSeries.DragDrop
   , Controls.Trials.Abstract
   , Stimuli.Sequence.DragDrop
+  , Experiments.Grids
+  , Forms.Main
   , Consequences
   , Timestamps
   ;
@@ -199,11 +201,24 @@ begin
 end;
 
 function TDragDrop.GetHeader: string;
+var
+  ASamplesCount : integer;
 begin
+  ASamplesCount := Background.SpinEditSamples.Value;
   Result := rsReportA1Position + HeaderTabs +
-            rsReportB1Position + HeaderTabs +
-            rsReportRspLat // + HeaderTabs +
-            ;
+            rsReportB1Position + HeaderTabs;
+  if ASamplesCount = 2 then begin
+     Result := Result + rsReportA2Position + HeaderTabs +
+               rsReportB2Position + HeaderTabs +
+               rsReportRspLat;
+  end
+  else if ASamplesCount = 3 then begin
+    Result := Result + rsReportA2Position + HeaderTabs +
+              rsReportB2Position + HeaderTabs +
+              rsReportA3Position + HeaderTabs +
+              rsReportB3Position + HeaderTabs +
+              rsReportRspLat;
+  end;
 end;
 
 procedure TDragDrop.Paint;
