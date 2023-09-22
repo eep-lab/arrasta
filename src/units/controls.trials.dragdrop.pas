@@ -202,22 +202,42 @@ end;
 
 function TDragDrop.GetHeader: string;
 var
-  ASamplesCount : integer;
+  LSamplesCount : integer;
+  LComparisonsCount: integer;
 begin
-  ASamplesCount := Background.SpinEditSamples.Value;
-  Result := rsReportA1Position + HeaderTabs +
-            rsReportB1Position + HeaderTabs;
-  if ASamplesCount = 2 then begin
-     Result := Result + rsReportA2Position + HeaderTabs +
-               rsReportB2Position + HeaderTabs +
-               rsReportRspLat;
+  LSamplesCount := Background.SpinEditSamples.Value;
+  LComparisonsCount := Background.SpinEditComparisons.Value;
+  Result := rsReportA1PosInitial + HeaderTabs +
+            rsReportB1PosInitial + HeaderTabs;
+  if LSamplesCount = 1 then begin
+    case LComparisonsCount of
+      1 : Result := Result + rsReportRspLat;
+      2 : Result := Result + rsReportB2PosInitial +
+                    HeaderTabs + rsReportRspLat;
+      else
+        Result := Result + rsReportB2PosInitial +
+                  HeaderTabs + rsReportB3PosInitial +
+                  HeaderTabs + rsReportRspLat;
+    end;
   end
-  else if ASamplesCount = 3 then begin
-    Result := Result + rsReportA2Position + HeaderTabs +
-              rsReportB2Position + HeaderTabs +
-              rsReportA3Position + HeaderTabs +
-              rsReportB3Position + HeaderTabs +
-              rsReportRspLat;
+  else if LSamplesCount = 2 then begin
+    case LComparisonsCount of
+      2: Result := Result + rsReportA2PosInitial +
+                   HeaderTabs + rsReportB2PosInitial +
+                   HeaderTabs + rsReportRspLat;
+      else
+        Result := Result + rsReportA2PosInitial +
+                  HeaderTabs + rsReportB2PosInitial +
+                  HeaderTabs + rsReportB3PosInitial +
+                  HeaderTabs + rsReportRspLat;
+    end;
+  end
+  else begin
+    Result := Result + rsReportA2PosInitial +
+              HeaderTabs + rsReportB2PosInitial +
+              HeaderTabs + rsReportA3PosInitial +
+              HeaderTabs + rsReportB3PosInitial +
+              HeaderTabs + rsReportRspLat;
   end;
 end;
 
