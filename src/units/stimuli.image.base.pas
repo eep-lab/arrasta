@@ -52,7 +52,7 @@ type
     procedure LoadFromFile(AFilename : string);
     procedure SetOriginalBounds(aLeft, aTop, aWidth, aHeight: integer);
     procedure SetOriginalSize;
-    function GetOriginalBounds : string;
+    function GetOriginalBoundsAsString : string;
     procedure OriginalBounds;
     procedure Centralize;
     procedure CentralizeLeft;
@@ -393,7 +393,7 @@ begin
   end;
 end;
 
-function TLightImage.GetOriginalBounds: string;
+function TLightImage.GetOriginalBoundsAsString: string;
 var
   LTop : string;
   LLeft : string;
