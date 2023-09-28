@@ -17,7 +17,6 @@ uses LCLIntf, Controls, Classes, SysUtils, ExtCtrls
 
   , Session.Trials
   , Stimuli.Image.DragDropable
-  , Stimuli.Image.Base
   , Session.Trial.HelpSeries.DragDrop
   , Controls.Trials.Abstract
   , Stimuli.Sequence.DragDrop
@@ -190,10 +189,10 @@ begin
   with FReportData do begin
     with FStimuli do begin
       for i := 0 to Background.SpinEditSamples.Value - 1 do begin
-        Data := Data + Samples[i].GetOriginalBounds + HeaderTabs;
+        Data := Data + Samples[i].GetOriginalBoundsAsString + HeaderTabs;
       end;
       for i := 0 to Background.SpinEditComparisons.Value - 1 do begin
-        Data := Data + Comparisons[i].GetOriginalBounds + HeaderTabs;
+        Data := Data + Comparisons[i].GetOriginalBoundsAsString + HeaderTabs;
       end;
       Data := Data + GetLatency(StimuliStart, Latency);
     end;
