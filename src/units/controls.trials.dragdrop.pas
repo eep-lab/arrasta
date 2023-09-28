@@ -17,10 +17,10 @@ uses LCLIntf, Controls, Classes, SysUtils, ExtCtrls
 
   , Session.Trials
   , Stimuli.Image.DragDropable
+  , Stimuli.Image.Base
   , Session.Trial.HelpSeries.DragDrop
   , Controls.Trials.Abstract
   , Stimuli.Sequence.DragDrop
-  , Experiments.Grids
   , Forms.Main
   , Consequences
   , Timestamps
@@ -183,13 +183,20 @@ begin
 end;
 
 procedure TDragDrop.WriteData(Sender: TObject);
+var
+  i : integer;
 begin
   inherited WriteData(Sender);
   with FReportData do begin
-    //Data := Data + GetLatency(StimuliStart, Latency);
-    Data := Data + FStimuli.GetPositionInitialSmp + HeaderTabs +
-            FStimuli.GetPositionInitialCmp + HeaderTabs +
-            GetLatency(StimuliStart, Latency);
+    with FStimuli do begin
+      for i := 0 to Background.SpinEditSamples.Value - 1 do begin
+        Data := Data + Samples[i].GetOriginalBounds + HeaderTabs;
+      end;
+      for i := 0 to Background.SpinEditComparisons.Value - 1 do begin
+        Data := Data + Comparisons[i].GetOriginalBounds + HeaderTabs;
+      end;
+      Data := Data + GetLatency(StimuliStart, Latency);
+    end;
   end;
 end;
 
@@ -207,37 +214,47 @@ var
 begin
   LSamplesCount := Background.SpinEditSamples.Value;
   LComparisonsCount := Background.SpinEditComparisons.Value;
-  Result := rsReportA1PosInitial + HeaderTabs +
-            rsReportB1PosInitial + HeaderTabs;
   if LSamplesCount = 1 then begin
     case LComparisonsCount of
-      1 : Result := Result + rsReportRspLat;
-      2 : Result := Result + rsReportB2PosInitial +
-                    HeaderTabs + rsReportRspLat;
+      1 : Result := rsReportA1PosInitial + HeaderTabs +
+                    rsReportB1PosInitial + HeaderTabs +
+                    rsReportRspLat;
+      2 : Result := rsReportA1PosInitial + HeaderTabs +
+                    rsReportB1PosInitial + HeaderTabs +
+                    rsReportB2PosInitial + HeaderTabs +
+                    rsReportRspLat;
       else
-        Result := Result + rsReportB2PosInitial +
-                  HeaderTabs + rsReportB3PosInitial +
-                  HeaderTabs + rsReportRspLat;
+        Result := rsReportA1PosInitial + HeaderTabs +
+                  rsReportB1PosInitial + HeaderTabs +
+                  rsReportB2PosInitial + HeaderTabs +
+                  rsReportB3PosInitial + HeaderTabs +
+                  rsReportRspLat;
     end;
   end
   else if LSamplesCount = 2 then begin
     case LComparisonsCount of
-      2: Result := Result + rsReportA2PosInitial +
-                   HeaderTabs + rsReportB2PosInitial +
-                   HeaderTabs + rsReportRspLat;
+      2: Result := rsReportA1PosInitial + HeaderTabs +
+                   rsReportA2PosInitial + HeaderTabs +
+                   rsReportB1PosInitial + HeaderTabs +
+                   rsReportB2PosInitial + HeaderTabs +
+                   rsReportRspLat;
       else
-        Result := Result + rsReportA2PosInitial +
-                  HeaderTabs + rsReportB2PosInitial +
-                  HeaderTabs + rsReportB3PosInitial +
-                  HeaderTabs + rsReportRspLat;
+        Result := rsReportA1PosInitial + HeaderTabs +
+                  rsReportA2PosInitial + HeaderTabs +
+                  rsReportB1PosInitial + HeaderTabs +
+                  rsReportB2PosInitial + HeaderTabs +
+                  rsReportB3PosInitial + HeaderTabs +
+                  rsReportRspLat;
     end;
   end
   else begin
-    Result := Result + rsReportA2PosInitial +
-              HeaderTabs + rsReportB2PosInitial +
-              HeaderTabs + rsReportA3PosInitial +
-              HeaderTabs + rsReportB3PosInitial +
-              HeaderTabs + rsReportRspLat;
+    Result := rsReportA1PosInitial + HeaderTabs +
+              rsReportA2PosInitial + HeaderTabs +
+              rsReportA3PosInitial + HeaderTabs +
+              rsReportB1PosInitial + HeaderTabs +
+              rsReportB2PosInitial + HeaderTabs +
+              rsReportB3PosInitial + HeaderTabs +
+              rsReportRspLat;
   end;
 end;
 
