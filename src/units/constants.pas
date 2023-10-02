@@ -387,6 +387,15 @@ resourcestring
   rsReportITIBeg = 'IET.Inicio';
   rsReportITIEnd = 'IET.Fim';
   rsReportITI = 'IET';
+  rsReportA1PosInitial = 'A1.Posicao.Inicial';
+  rsReportA2PosInitial = 'A2.Posicao.Inicial';
+  rsReportA3PosInitial = 'A3.Posicao.Inicial';
+  rsReportB1PosInitial = 'B1.Posicao.Inicial';
+  rsReportB2PosInitial = 'B2.Posicao.Inicial';
+  rsReportB3PosInitial = 'B3.Posicao.Inicial';
+  rsReportC1PosInitial = 'C1.Posicao.Inicial';
+  rsReportC2PosInitial = 'C2.Posicao.Inicial';
+  rsReportC3PosInitial = 'C3.Posicao.Inicial';
 
   rsReportRspLft = 'Lft.Cmp.';
   rsReportRspTop = 'Top.Cmp.';

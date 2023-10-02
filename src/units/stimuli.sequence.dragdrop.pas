@@ -28,6 +28,7 @@ type
 
   TDragDropableItems = specialize TFPGList<TDragDropableItem>;
   TAnimations = specialize TFPGList<TAnimation>;
+  TPositions = array of integer;
 
   { TDragDropStimuli }
 
@@ -75,6 +76,8 @@ type
     property OnRightDragDrop : TDragDropEvent read FOnRightDragDrop write SetOnRightDragDrop;
     property OnWrongDragDrop : TDragDropEvent read FOnWrongDragDrop write SetOnWrongDragDrop;
     property OnOtherDragDrop : TDragDropEvent read FOnOtherDragDrop write SetOnOtherDragDrop;
+    property Samples : TDragDropableItems read FSamples;
+    property Comparisons : TDragDropableItems read FComparisons;
   end;
 
 implementation

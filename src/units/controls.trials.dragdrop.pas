@@ -20,6 +20,7 @@ uses LCLIntf, Controls, Classes, SysUtils, ExtCtrls
   , Session.Trial.HelpSeries.DragDrop
   , Controls.Trials.Abstract
   , Stimuli.Sequence.DragDrop
+  , Forms.Main
   , Consequences
   , Timestamps
   ;
@@ -181,10 +182,20 @@ begin
 end;
 
 procedure TDragDrop.WriteData(Sender: TObject);
+var
+  i : integer;
 begin
   inherited WriteData(Sender);
   with FReportData do begin
-    Data := Data + GetLatency(StimuliStart, Latency);
+    with FStimuli do begin
+      for i := 0 to Background.SpinEditSamples.Value - 1 do begin
+        Data := Data + Samples[i].GetOriginalBoundsAsString + HeaderTabs;
+      end;
+      for i := 0 to Background.SpinEditComparisons.Value - 1 do begin
+        Data := Data + Comparisons[i].GetOriginalBoundsAsString + HeaderTabs;
+      end;
+      Data := Data + GetLatency(StimuliStart, Latency);
+    end;
   end;
 end;
 
@@ -196,10 +207,54 @@ begin
 end;
 
 function TDragDrop.GetHeader: string;
+var
+  LSamplesCount : integer;
+  LComparisonsCount: integer;
 begin
-  Result :=
-    rsReportRspLat // + HeaderTabs +
-    ;
+  LSamplesCount := Background.SpinEditSamples.Value;
+  LComparisonsCount := Background.SpinEditComparisons.Value;
+  if LSamplesCount = 1 then begin
+    case LComparisonsCount of
+      1 : Result := rsReportA1PosInitial + HeaderTabs +
+                    rsReportB1PosInitial + HeaderTabs +
+                    rsReportRspLat;
+      2 : Result := rsReportA1PosInitial + HeaderTabs +
+                    rsReportB1PosInitial + HeaderTabs +
+                    rsReportB2PosInitial + HeaderTabs +
+                    rsReportRspLat;
+      else
+        Result := rsReportA1PosInitial + HeaderTabs +
+                  rsReportB1PosInitial + HeaderTabs +
+                  rsReportB2PosInitial + HeaderTabs +
+                  rsReportB3PosInitial + HeaderTabs +
+                  rsReportRspLat;
+    end;
+  end
+  else if LSamplesCount = 2 then begin
+    case LComparisonsCount of
+      2: Result := rsReportA1PosInitial + HeaderTabs +
+                   rsReportA2PosInitial + HeaderTabs +
+                   rsReportB1PosInitial + HeaderTabs +
+                   rsReportB2PosInitial + HeaderTabs +
+                   rsReportRspLat;
+      else
+        Result := rsReportA1PosInitial + HeaderTabs +
+                  rsReportA2PosInitial + HeaderTabs +
+                  rsReportB1PosInitial + HeaderTabs +
+                  rsReportB2PosInitial + HeaderTabs +
+                  rsReportB3PosInitial + HeaderTabs +
+                  rsReportRspLat;
+    end;
+  end
+  else begin
+    Result := rsReportA1PosInitial + HeaderTabs +
+              rsReportA2PosInitial + HeaderTabs +
+              rsReportA3PosInitial + HeaderTabs +
+              rsReportB1PosInitial + HeaderTabs +
+              rsReportB2PosInitial + HeaderTabs +
+              rsReportB3PosInitial + HeaderTabs +
+              rsReportRspLat;
+  end;
 end;
 
 procedure TDragDrop.Paint;
