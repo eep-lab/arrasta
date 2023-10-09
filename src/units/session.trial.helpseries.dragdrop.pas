@@ -230,11 +230,11 @@ var
 begin
   with AParameters do begin
     with DragDropKeys do begin
-      Data.HelpType := Values[SamplesDragMode].ToDragMouseMoveMode;
+      //Data.HelpType := Values[SamplesDragMode].ToDragMouseMoveMode;
       Data.Relation := Values[Relation].ToEquivalenceRelation;
       Data.Samples := Values[Samples].ToSampleValue;
       Data.Comparisons := Values[Comparisons].ToComparValue;
-      Data.Factor := Values[DragMoveFactor].ToInteger.ToFactor;
+      //Data.Factor := Values[DragMoveFactor].ToInteger.ToFactor;
       Data.Orientation := Values[DragDropOrientation].ToDragDropOrientation;
       Data.Distance := Values[Distance].ToDistanceValue;
     end;
@@ -255,11 +255,11 @@ begin
   Data := Iterator.GetCurrent;
   with AParameters do begin
     with DragDropKeys do begin
-      Values[SamplesDragMode] := Data.HelpType.ToString;
+      //Values[SamplesDragMode] := Data.HelpType.ToString;
       Values[Relation] := Data.Relation.ToString;
       Values[Samples] := Data.Samples.ToString;
       Values[Comparisons] := Data.Comparisons.ToString;
-      Values[DragMoveFactor] := Data.Factor.ToInteger.ToString;
+      //Values[DragMoveFactor] := Data.Factor.ToInteger.ToString;
       Values[DragDropOrientation] := Data.Orientation.ToString;
       Values[Distance] := Data.Distance.ToString;
     end;
@@ -290,9 +290,9 @@ var
   function DragDropDataFromSection(ASection : string) : TDragDropData;
   begin
     with DragDropKeys do begin
-      Result.HelpType :=
-        LIniFile.ReadString(
-          ASection, SamplesDragMode, 'Default').ToDragMouseMoveMode;
+      //Result.HelpType :=
+      //  LIniFile.ReadString(
+      //    ASection, SamplesDragMode, 'Default').ToDragMouseMoveMode;
       Result.Relation :=
         LIniFile.ReadString(
           ASection, Relation, 'Default').ToEquivalenceRelation;
@@ -302,9 +302,9 @@ var
       Result.Comparisons :=
         LIniFile.ReadString(
           ASection, Comparisons, 'Default').ToComparValue;
-      Result.Factor :=
-        LIniFile.ReadString(
-          ASection, DragMoveFactor, 'Default').ToInteger.ToFactor;
+      //Result.Factor :=
+      //  LIniFile.ReadString(
+      //    ASection, DragMoveFactor, 'Default').ToInteger.ToFactor;
       Result.Orientation :=
         LIniFile.ReadString(
           ASection, DragDropOrientation, 'Default').ToDragDropOrientation;
@@ -349,16 +349,16 @@ begin
   for Data in List do begin
     with DragDropKeys do begin
       with IniFile do begin
-        WriteString(GetSection,
-          SamplesDragMode, Data.HelpType.ToString);
+        //WriteString(GetSection,
+        //  SamplesDragMode, Data.HelpType.ToString);
         WriteString(GetSection,
           Relation, Data.Relation.ToString);
         WriteString(GetSection,
           Samples, Data.Samples.ToString);
         WriteString(GetSection,
           Comparisons, Data.Comparisons.ToString);
-        WriteString(GetSection,
-          DragMoveFactor, Data.Factor.ToInteger.ToString);
+        //WriteString(GetSection,
+        //  DragMoveFactor, Data.Factor.ToInteger.ToString);
         WriteString(GetSection,
           DragDropOrientation, Data.Orientation.ToString);
         WriteString(GetSection,

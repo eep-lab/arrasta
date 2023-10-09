@@ -142,8 +142,8 @@ begin
   inherited Play;
   FCounterType := ctNone;
   LParameters := Configurations.Parameters;
-  with DragDropKeys do
-    FUseHelpProgression := LParameters.Values[UseHelpProgression].ToBoolean;
+  //with DragDropKeys do
+  //  FUseHelpProgression := LParameters.Values[UseHelpProgression].ToBoolean;
   HasLimitedHold := StrToIntDef(LParameters.Values[_LimitedHold], -1) > 0;
   if FUseHelpProgression or HasLimitedHold then begin
     if Counters.BlcTrials = 0 then begin
@@ -159,14 +159,14 @@ procedure TDragDrop.LoadMockParameters;
 begin
   with Configurations.Parameters do begin
     with DragDropKeys do begin
-      Values[UseHelpProgression] := 'False';
+      //Values[UseHelpProgression] := 'False';
       Values[RepeatTrials] := '1';
-      Values[SamplesDragMode] := dragFree.ToString;
+      //Values[SamplesDragMode] := dragFree.ToString;
       Values[Distance] := '0';
       Values[Relation] := 'A-A';
       Values[Samples] := '3';
       Values[Comparisons] := '3';
-      Values[DragMoveFactor] := '10';
+      //Values[DragMoveFactor] := '10';
       Values[DragDropOrientation] := goRandom.ToString;
     end;
   end;

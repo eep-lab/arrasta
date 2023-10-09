@@ -144,15 +144,15 @@ begin
       GetOrientation.ToString,
       SpinEditTrials.Value,
       SpinEditITI.Value * 1000,
-      SpinEditLimitedHold.Value * 60000,
+      //SpinEditLimitedHold.Value * 60000,
       SpinEditDistance.Value,
       GetRelation,
       SpinEditSamples.Value,
       SpinEditComparisons.Value,
-      GetDragMouseMoveMode.ToString,
-      GetMouseMoveFactor.ToString,
-      CheckBoxHelpProgression.Checked,
-      CheckBoxHelpRegression.Checked,
+      //GetDragMouseMoveMode.ToString,
+      //GetMouseMoveFactor.ToString,
+      //CheckBoxHelpProgression.Checked,
+      //CheckBoxHelpRegression.Checked,
       CheckBoxShowMouse.Checked);
 
   {Existem duas formas de se criar uma configuração padrão do arquivo de
@@ -194,13 +194,13 @@ begin
   LTrial := TDragDrop.Create(Self);
   with LTrial.Configurations.Parameters do begin
     with DragDropKeys do begin
-      Values[UseHelpProgression] := CheckBoxHelpProgression.Checked.ToString;
+      //Values[UseHelpProgression] := CheckBoxHelpProgression.Checked.ToString;
       Values[RepeatTrials] := SpinEditTrials.Value.ToString;
-      Values[SamplesDragMode] := GetDragMouseMoveMode.ToString;
+      //Values[SamplesDragMode] := GetDragMouseMoveMode.ToString;
       Values[Relation] := GetRelation;
       Values[Samples] := SpinEditSamples.Value.ToString;
       Values[Comparisons] := SpinEditComparisons.Value.ToString;
-      Values[DragMoveFactor] := GetMouseMoveFactor.ToInteger.ToString;
+      //Values[DragMoveFactor] := GetMouseMoveFactor.ToInteger.ToString;
       Values[DragDropOrientation] := GetOrientation.ToString;
       Values[Distance] := SpinEditDistance.Value.ToString;
     end;
