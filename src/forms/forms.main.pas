@@ -41,6 +41,7 @@ type
     GroupBoxDesign: TGroupBox;
     IniPropStorage: TIniPropStorage;
     LabelDistance: TLabel;
+    LabelDistancePercentage1: TLabel;
     LabelDistancePercentage: TLabel;
     LabelDragDropOrientation: TLabel;
     LabelLimitedHoldTime: TLabel;
@@ -85,12 +86,14 @@ type
     procedure TabControlDesignChange(Sender: TObject);
     procedure TabSheet2ContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
+    procedure TabSheetSessionContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
   private
-    function GetDragMouseMoveMode : TDragMouseMoveMode;
+    //function GetDragMouseMoveMode : TDragMouseMoveMode;
     function GetRelation : string;
     function GetComparValue : TComparValue;
     function GetSampleValue : TSampleValue;
-    function GetMouseMoveFactor : TFactor;
+    //function GetMouseMoveFactor : TFactor;
     function GetSessionName : string;
     function GetOrientation : TDragDropOrientation;
     function GetDistance : TDistanceValue;
@@ -162,13 +165,13 @@ begin
   experimento. O valor padrão de um parâmetro selecionado na GUI será utilizado]
   na progressão de ajuda quando o valor não for encontrado no arquivo
   ComplexityGradient.ini}
-  DefaultDragMouveMoveMode := GetDragMouseMoveMode;
+  //DefaultDragMouveMoveMode := GetDragMouseMoveMode;
   with DefaultDragDropData do begin
     Relation := GetRelation.ToEquivalenceRelation;
     Comparisons := GetComparValue;
     Samples := GetSampleValue;
-    HelpType := DefaultDragMouveMoveMode;
-    Factor := GetMouseMoveFactor;
+    //HelpType := DefaultDragMouveMoveMode;
+    //Factor := GetMouseMoveFactor;
     Orientation := GetOrientation;
     Distance := GetDistance;
   end;
@@ -190,7 +193,7 @@ procedure TBackground.ButtonStartTrialClick(Sender: TObject);
 var
   DragMouseMoveMode : TDragMouseMoveMode;
 begin
-  DragMouseMoveMode := GetDragMouseMoveMode;
+  //DragMouseMoveMode := GetDragMouseMoveMode;
   LTrial := TDragDrop.Create(Self);
   with LTrial.Configurations.Parameters do begin
     with DragDropKeys do begin
@@ -331,14 +334,20 @@ begin
 
 end;
 
-function TBackground.GetDragMouseMoveMode: TDragMouseMoveMode;
+procedure TBackground.TabSheetSessionContextPopup(Sender: TObject;
+  MousePos: TPoint; var Handled: Boolean);
 begin
-  if CheckBoxMouseModeMode.Checked then begin
-    Result := dragChannel;
-  end else begin
-    Result := dragFree;
-  end;
+
 end;
+
+//function TBackground.GetDragMouseMoveMode: TDragMouseMoveMode;
+//begin
+//  if CheckBoxMouseModeMode.Checked then begin
+//    Result := dragChannel;
+//  end else begin
+//    Result := dragFree;
+//  end;
+//end;
 
 function TBackground.GetRelation: string;
 begin
@@ -363,38 +372,38 @@ begin
   end;
 end;
 
-function TBackground.GetMouseMoveFactor: TFactor;
-begin
-  case ComboBoxFactor.ItemIndex of
-    0 : Result := facVeryEasy;
-    1 : Result := facEasy;
-    2 : Result := facNormal;
-    3 : Result := facHard;
-    4 : Result := facVeryHard;
-  end;
-end;
+//function TBackground.GetMouseMoveFactor: TFactor;
+//begin
+//  case ComboBoxFactor.ItemIndex of
+//    0 : Result := facVeryEasy;
+//    1 : Result := facEasy;
+//    2 : Result := facNormal;
+//    3 : Result := facHard;
+//    4 : Result := facVeryHard;
+//  end;
+//end;
 
 function TBackground.GetSessionName: string;
 begin
   Result :=
     TabControlDesign.Tabs[TabControlDesign.TabIndex] + #32 +
-    GetRelation + #32 +
-    GetMouseMoveFactor.ToString;
+    GetRelation {+ #32 +
+    GetMouseMoveFactor.ToString};
 
-  if CheckBoxMouseModeMode.Checked then begin
-    Result := Result +
-      ', com movimentação retrita ao arrastar, na direção da comparação correta';
-  end else begin
-    Result := Result + ', com movimentação livre ao arrastar';
-  end;
-
-  if CheckBoxHelpProgression.Checked then begin
-    Result := Result + ', com progressão da complexidade ao acertar';
-  end;
-
-  if CheckBoxHelpRegression.Checked then begin
-    Result := Result + ', com regressão da complexidade após 1 min sem acertar';
-  end;
+  //if CheckBoxMouseModeMode.Checked then begin
+  //  Result := Result +
+  //    ', com movimentação retrita ao arrastar, na direção da comparação correta';
+  //end else begin
+  //  Result := Result + ', com movimentação livre ao arrastar';
+  //end;
+  //
+  //if CheckBoxHelpProgression.Checked then begin
+  //  Result := Result + ', com progressão da complexidade ao acertar';
+  //end;
+  //
+  //if CheckBoxHelpRegression.Checked then begin
+  //  Result := Result + ', com regressão da complexidade após 1 min sem acertar';
+  //end;
 end;
 
 function TBackground.GetOrientation : TDragDropOrientation;

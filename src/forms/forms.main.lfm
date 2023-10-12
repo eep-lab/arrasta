@@ -1,12 +1,12 @@
 object Background: TBackground
-  Left = 951
-  Height = 780
-  Top = 100
-  Width = 1041
+  Left = 983
+  Height = 741
+  Top = 106
+  Width = 928
   BorderStyle = bsNone
   Caption = 'Configurar sessão'
-  ClientHeight = 780
-  ClientWidth = 1041
+  ClientHeight = 741
+  ClientWidth = 928
   Color = clBlack
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -19,9 +19,9 @@ object Background: TBackground
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = Owner
     AnchorSideTop.Side = asrCenter
-    Left = 359
+    Left = 303
     Height = 500
-    Top = 140
+    Top = 120
     Width = 322
     Align = alCustom
     ClientHeight = 500
@@ -106,16 +106,17 @@ object Background: TBackground
       Height = 250
       Top = 21
       Width = 320
-      ActivePage = TabSheetSession
+      ActivePage = TabSheetComplexity
       Align = alClient
       BorderSpacing.Top = 5
       Constraints.MaxHeight = 250
-      TabIndex = 0
+      TabIndex = 1
       TabOrder = 2
       object TabSheetSession: TTabSheet
         Caption = 'Sessão'
         ClientHeight = 222
         ClientWidth = 312
+        OnContextPopup = TabSheetSessionContextPopup
         object SpinEditSessionTime: TSpinEdit
           Left = 168
           Height = 23
@@ -254,44 +255,6 @@ object Background: TBackground
           BorderSpacing.Bottom = 5
           Caption = 'Orientação do arrastar'
         end
-        object SpinEditDistance: TSpinEdit
-          Left = 168
-          Height = 23
-          Top = 48
-          Width = 74
-          Increment = 10
-          MaxValue = 60
-          TabOrder = 5
-          Visible = False
-        end
-        object LabelDistance: TLabel
-          AnchorSideLeft.Control = SpinEditDistance
-          AnchorSideBottom.Control = SpinEditDistance
-          Left = 168
-          Height = 15
-          Top = 28
-          Width = 132
-          Anchors = [akLeft, akBottom]
-          BorderSpacing.Bottom = 5
-          Caption = 'Distância entre estímulos'
-          Visible = False
-        end
-        object LabelDistancePercentage: TLabel
-          AnchorSideLeft.Control = SpinEditDistance
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideRight.Control = SpinEditDistance
-          AnchorSideBottom.Control = SpinEditDistance
-          AnchorSideBottom.Side = asrBottom
-          Left = 247
-          Height = 15
-          Top = 51
-          Width = 10
-          Anchors = [akLeft, akBottom]
-          BorderSpacing.Left = 5
-          BorderSpacing.Bottom = 5
-          Caption = '%'
-          Visible = False
-        end
       end
       object TabSheetComplexity: TTabSheet
         Caption = 'Tarefa'
@@ -316,7 +279,7 @@ object Background: TBackground
             AnchorSideBottom.Control = SpinEditSamples
             Left = 8
             Height = 15
-            Top = 100
+            Top = 60
             Width = 46
             Anchors = [akLeft, akBottom]
             BorderSpacing.Bottom = 5
@@ -328,7 +291,7 @@ object Background: TBackground
             AnchorSideBottom.Control = SpinEditComparisons
             Left = 8
             Height = 15
-            Top = 143
+            Top = 116
             Width = 73
             Anchors = [akLeft, akBottom]
             BorderSpacing.Bottom = 5
@@ -337,7 +300,7 @@ object Background: TBackground
           object SpinEditSamples: TSpinEdit
             Left = 8
             Height = 23
-            Top = 120
+            Top = 80
             Width = 58
             MaxValue = 3
             MinValue = 1
@@ -348,115 +311,58 @@ object Background: TBackground
           object SpinEditComparisons: TSpinEdit
             Left = 8
             Height = 23
-            Top = 163
+            Top = 136
             Width = 54
             MaxValue = 3
             MinValue = 1
             TabOrder = 1
             Value = 1
           end
-          object LabelDragMoveFactor: TLabel
-            AnchorSideLeft.Control = ComboBoxFactor
-            AnchorSideBottom.Control = ComboBoxFactor
-            Left = 176
-            Height = 15
-            Top = 100
-            Width = 109
-            Anchors = [akLeft, akBottom]
-            BorderSpacing.Bottom = 5
-            Caption = 'Fator do movimento'
-            Visible = False
-          end
-          object ComboBoxFactor: TComboBox
-            Left = 176
-            Height = 23
-            Top = 120
-            Width = 116
-            ItemHeight = 15
-            ItemIndex = 0
-            Items.Strings = (
-              'Muito Fácil'
-              'Fácil'
-              'Normal'
-              'Difícil'
-              'Muito Difícil'
-            )
-            ReadOnly = True
-            TabOrder = 2
-            Text = 'Muito Fácil'
-          end
-          object CheckBoxMouseModeMode: TCheckBox
-            Left = 8
-            Height = 19
-            Hint = 'O modelo irá na direção da comparação correta independente da direção do arrastar.'
-            Top = 4
-            Width = 298
-            Caption = 'Restringir modelo na direção da comparação correta.'
-            OnChange = CheckBoxMouseModeModeChange
-            ParentShowHint = False
-            ShowHint = True
-            TabOrder = 3
-          end
-          object CheckBoxHelpProgression: TCheckBox
-            Left = 8
-            Height = 19
-            Top = 28
-            Width = 216
-            Caption = 'Aumentar a complexidade ao acertar.'
-            TabOrder = 4
-          end
-          object CheckBoxHelpRegression: TCheckBox
-            Left = 8
-            Height = 19
-            Top = 52
-            Width = 271
-            Caption = 'Reduzir a complexidade após tempo sem acerto'
-            OnChange = CheckBoxHelpRegressionChange
-            TabOrder = 5
-          end
-          object SpinEditLimitedHold: TSpinEdit
-            Left = 176
-            Height = 23
-            Top = 163
-            Width = 50
-            MaxValue = 5
-            MinValue = 1
-            TabOrder = 6
-            Value = 1
-          end
-          object LabelLimitedHold: TLabel
-            AnchorSideLeft.Control = SpinEditLimitedHold
-            AnchorSideBottom.Control = SpinEditLimitedHold
-            Left = 176
-            Height = 15
-            Top = 143
-            Width = 97
-            Anchors = [akLeft, akBottom]
-            BorderSpacing.Bottom = 5
-            Caption = 'Tempo sem acerto'
-          end
-          object LabelLimitedHoldTime: TLabel
-            AnchorSideLeft.Control = SpinEditLimitedHold
-            AnchorSideLeft.Side = asrBottom
-            AnchorSideBottom.Control = SpinEditLimitedHold
-            AnchorSideBottom.Side = asrBottom
-            Left = 231
-            Height = 15
-            Top = 166
-            Width = 21
-            Anchors = [akLeft, akBottom]
-            BorderSpacing.Left = 5
-            BorderSpacing.Bottom = 5
-            Caption = 'min'
-          end
           object CheckBoxDistance: TCheckBox
             Left = 8
             Height = 19
-            Top = 75
+            Top = 8
             Width = 206
             Caption = 'Selecionar distância entre estímulos'
             OnChange = CheckBoxDistanceChange
-            TabOrder = 7
+            TabOrder = 2
+            Visible = False
+          end
+          object SpinEditDistance: TSpinEdit
+            Left = 160
+            Height = 23
+            Top = 80
+            Width = 74
+            Increment = 10
+            MaxValue = 60
+            TabOrder = 3
+            Visible = False
+          end
+          object LabelDistance: TLabel
+            AnchorSideLeft.Control = SpinEditDistance
+            AnchorSideBottom.Control = SpinEditDistance
+            Left = 160
+            Height = 15
+            Top = 60
+            Width = 132
+            Anchors = [akLeft, akBottom]
+            BorderSpacing.Bottom = 5
+            Caption = 'Distância entre estímulos'
+            Visible = False
+          end
+          object LabelDistancePercentage: TLabel
+            AnchorSideLeft.Control = SpinEditDistance
+            AnchorSideLeft.Side = asrBottom
+            AnchorSideBottom.Control = SpinEditDistance
+            AnchorSideBottom.Side = asrBottom
+            Left = 239
+            Height = 15
+            Top = 83
+            Width = 10
+            Anchors = [akLeft, akBottom]
+            BorderSpacing.Left = 5
+            BorderSpacing.Bottom = 5
+            Caption = '%'
             Visible = False
           end
         end
@@ -558,6 +464,19 @@ object Background: TBackground
       Font.Style = [fsBold]
       ParentFont = False
     end
+  end
+  object LabelDistancePercentage1: TLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideBottom.Side = asrBottom
+    Left = 247
+    Height = 15
+    Top = 51
+    Width = 10
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 5
+    BorderSpacing.Bottom = 5
+    Caption = '%'
+    Visible = False
   end
   object IniPropStorage: TIniPropStorage
     StoredValues = <>
