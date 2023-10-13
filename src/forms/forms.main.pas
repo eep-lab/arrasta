@@ -133,15 +133,10 @@ begin
       GetOrientation.ToString,
       SpinEditTrials.Value,
       SpinEditITI.Value * 1000,
-      //SpinEditLimitedHold.Value * 60000,
       SpinEditDistance.Value,
       GetRelation,
       SpinEditSamples.Value,
       SpinEditComparisons.Value,
-      //GetDragMouseMoveMode.ToString,
-      //GetMouseMoveFactor.ToString,
-      //CheckBoxHelpProgression.Checked,
-      //CheckBoxHelpRegression.Checked,
       CheckBoxShowMouse.Checked);
 
   {Existem duas formas de se criar uma configuração padrão do arquivo de
@@ -151,13 +146,10 @@ begin
   experimento. O valor padrão de um parâmetro selecionado na GUI será utilizado]
   na progressão de ajuda quando o valor não for encontrado no arquivo
   ComplexityGradient.ini}
-  //DefaultDragMouveMoveMode := GetDragMouseMoveMode;
   with DefaultDragDropData do begin
     Relation := GetRelation.ToEquivalenceRelation;
     Comparisons := GetComparValue;
     Samples := GetSampleValue;
-    //HelpType := DefaultDragMouveMoveMode;
-    //Factor := GetMouseMoveFactor;
     Orientation := GetOrientation;
     Distance := GetDistance;
   end;
@@ -176,20 +168,14 @@ var
   LTrial  : TDragDrop;
 
 procedure TBackground.ButtonStartTrialClick(Sender: TObject);
-var
-  DragMouseMoveMode : TDragMouseMoveMode;
 begin
-  //DragMouseMoveMode := GetDragMouseMoveMode;
   LTrial := TDragDrop.Create(Self);
   with LTrial.Configurations.Parameters do begin
     with DragDropKeys do begin
-      //Values[UseHelpProgression] := CheckBoxHelpProgression.Checked.ToString;
       Values[RepeatTrials] := SpinEditTrials.Value.ToString;
-      //Values[SamplesDragMode] := GetDragMouseMoveMode.ToString;
       Values[Relation] := GetRelation;
       Values[Samples] := SpinEditSamples.Value.ToString;
       Values[Comparisons] := SpinEditComparisons.Value.ToString;
-      //Values[DragMoveFactor] := GetMouseMoveFactor.ToInteger.ToString;
       Values[DragDropOrientation] := GetOrientation.ToString;
       Values[Distance] := SpinEditDistance.Value.ToString;
     end;
@@ -340,23 +326,7 @@ function TBackground.GetSessionName: string;
 begin
   Result :=
     TabControlDesign.Tabs[TabControlDesign.TabIndex] + #32 +
-    GetRelation {+ #32 +
-    GetMouseMoveFactor.ToString};
-
-  //if CheckBoxMouseModeMode.Checked then begin
-  //  Result := Result +
-  //    ', com movimentação retrita ao arrastar, na direção da comparação correta';
-  //end else begin
-  //  Result := Result + ', com movimentação livre ao arrastar';
-  //end;
-  //
-  //if CheckBoxHelpProgression.Checked then begin
-  //  Result := Result + ', com progressão da complexidade ao acertar';
-  //end;
-  //
-  //if CheckBoxHelpRegression.Checked then begin
-  //  Result := Result + ', com regressão da complexidade após 1 min sem acertar';
-  //end;
+    GetRelation;
 end;
 
 function TBackground.GetOrientation : TDragDropOrientation;
