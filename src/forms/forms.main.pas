@@ -16,7 +16,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Dialogs,
   ExtCtrls, StdCtrls, IniPropStorage, ComCtrls, Spin
-  , Stimuli.Image.DragDropable
+  //, Stimuli.Image.DragDropable
   , Session.Trial.HelpSeries.DragDrop
   , Types;
 
