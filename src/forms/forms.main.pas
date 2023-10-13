@@ -30,23 +30,16 @@ type
     ButtonStartTrial: TButton;
     CheckBoxDistance: TCheckBox;
     CheckBoxShowMouse: TCheckBox;
-    CheckBoxHelpRegression: TCheckBox;
-    CheckBoxHelpProgression: TCheckBox;
-    CheckBoxMouseModeMode: TCheckBox;
     ComboBoxOrientations: TComboBox;
-    ComboBoxFactor: TComboBox;
     ComboBoxParticipants: TComboBox;
     FloatSpinEditScreenWidth: TFloatSpinEdit;
     GroupBoxComplexity: TGroupBox;
     GroupBoxDesign: TGroupBox;
     IniPropStorage: TIniPropStorage;
     LabelDistance: TLabel;
-    LabelDistancePercentage1: TLabel;
     LabelDistancePercentage: TLabel;
     LabelDragDropOrientation: TLabel;
-    LabelLimitedHoldTime: TLabel;
     LabelITITime: TLabel;
-    LabelLimitedHold: TLabel;
     LabelScreenWidth: TLabel;
     LabelScreenWidthUnit: TLabel;
     LabelTrials: TLabel;
@@ -54,7 +47,6 @@ type
     LabelConfigurations: TLabel;
     LabelSessionTime: TLabel;
     LabelComparisons: TLabel;
-    LabelDragMoveFactor: TLabel;
     LabelSamples: TLabel;
     LabelITI: TLabel;
     PageControlConfigurations: TPageControl;
@@ -67,7 +59,6 @@ type
     SpinEditComparisons: TSpinEdit;
     SpinEditSamples: TSpinEdit;
     SpinEditITI: TSpinEdit;
-    SpinEditLimitedHold: TSpinEdit;
     TabControlDesign: TTabControl;
     TabSheetMisc: TTabSheet;
     TabSheetComplexity: TTabSheet;
@@ -75,8 +66,6 @@ type
     procedure ButtonStartTrialClick(Sender: TObject);
     procedure ButtonTestDispenserClick(Sender: TObject);
     procedure CheckBoxDistanceChange(Sender: TObject);
-    procedure CheckBoxHelpRegressionChange(Sender: TObject);
-    procedure CheckBoxMouseModeModeChange(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ButtonStartAllClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -89,15 +78,12 @@ type
     procedure TabSheetSessionContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
   private
-    //function GetDragMouseMoveMode : TDragMouseMoveMode;
     function GetRelation : string;
     function GetComparValue : TComparValue;
     function GetSampleValue : TSampleValue;
-    //function GetMouseMoveFactor : TFactor;
     function GetSessionName : string;
     function GetOrientation : TDragDropOrientation;
     function GetDistance : TDistanceValue;
-    //function GetOrientation : string;
   public
 
   end;
@@ -230,19 +216,6 @@ begin
   LabelDistancePercentage.Visible := CheckBoxDistance.Checked;
 end;
 
-procedure TBackground.CheckBoxHelpRegressionChange(Sender: TObject);
-begin
-  SpinEditLimitedHold.Visible:=CheckBoxHelpRegression.Checked;
-  LabelLimitedHold.Visible:=CheckBoxHelpRegression.Checked;
-  LabelLimitedHoldTime.Visible:=CheckBoxHelpRegression.Checked;
-end;
-
-procedure TBackground.CheckBoxMouseModeModeChange(Sender: TObject);
-begin
-  ComboBoxFactor.Visible := CheckBoxMouseModeMode.Checked;
-  LabelDragMoveFactor.Visible:=CheckBoxMouseModeMode.Checked;
-end;
-
 procedure TBackground.FormDestroy(Sender: TObject);
 begin
   DragDropHelpSerie.Free;
@@ -340,15 +313,6 @@ begin
 
 end;
 
-//function TBackground.GetDragMouseMoveMode: TDragMouseMoveMode;
-//begin
-//  if CheckBoxMouseModeMode.Checked then begin
-//    Result := dragChannel;
-//  end else begin
-//    Result := dragFree;
-//  end;
-//end;
-
 function TBackground.GetRelation: string;
 begin
   Result := RadioGroupRelation.Items[RadioGroupRelation.ItemIndex];
@@ -371,17 +335,6 @@ begin
     3 : Result := sampThree;
   end;
 end;
-
-//function TBackground.GetMouseMoveFactor: TFactor;
-//begin
-//  case ComboBoxFactor.ItemIndex of
-//    0 : Result := facVeryEasy;
-//    1 : Result := facEasy;
-//    2 : Result := facNormal;
-//    3 : Result := facHard;
-//    4 : Result := facVeryHard;
-//  end;
-//end;
 
 function TBackground.GetSessionName: string;
 begin
