@@ -134,11 +134,6 @@ begin
   Cursor := StrToIntDef(AParameters.Values['Cursor'], -1);
 
   with DragDropKeys do begin
-    //ChannelDragMouseMoveFactor :=
-    //  AParameters.Values[DragMoveFactor].ToInteger;
-    //DragMouseMoveMode :=
-    //  AParameters.Values[SamplesDragMode].ToDragMouseMoveMode;
-
     S1 := AParameters.Values[Relation];
     SampleLetter := ExtractDelimited(1,S1,['-']);
     ComparLetter := ExtractDelimited(2,S1,['-']);
