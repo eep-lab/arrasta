@@ -318,8 +318,8 @@ end;
 procedure TDragDrop.DragDropDone(Sender: TObject);
 begin
   LimitedHold := 0;
-  if FUseHelpProgression then
-    IDragDropHelpSerie.Iterator.Next;
+  //if FUseHelpProgression then
+  //  IDragDropHelpSerie.Iterator.Next;
   FTimer.Enabled:=True;
   if FReportData.WrongDragDrops = 0 then begin
     Result := 'Acerto1';

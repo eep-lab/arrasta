@@ -237,6 +237,7 @@ begin
   GSession := TSession.Create(Self);
   GSession.OnEndSession:=@EndSession;
   GSession.OnBeforeStart:=@BeforeStartSession;
+  SpinEditDistance.Value := 0;
 end;
 
 procedure TBackground.EndSession(Sender: TObject);
