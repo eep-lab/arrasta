@@ -196,9 +196,12 @@ end;
 
 procedure TBackground.CheckBoxDistanceChange(Sender: TObject);
 begin
-  SpinEditDistance.Visible := CheckBoxDistance.Checked;
-  LabelDistance.Visible := CheckBoxDistance.Checked;
-  LabelDistancePercentage.Visible := CheckBoxDistance.Checked;
+  //SpinEditDistance.Visible := CheckBoxDistance.Checked;
+  //LabelDistance.Visible := CheckBoxDistance.Checked;
+  //LabelDistancePercentage.Visible := CheckBoxDistance.Checked;
+  SpinEditDistance.Enabled := CheckBoxDistance.Checked;
+  LabelDistance.Enabled := CheckBoxDistance.Checked;
+  LabelDistancePercentage.Enabled := CheckBoxDistance.Checked;
 end;
 
 procedure TBackground.FormDestroy(Sender: TObject);
@@ -251,13 +254,19 @@ end;
 procedure TBackground.SpinEditSamplesChange(Sender: TObject);
 begin
   if SpinEditSamples.Value = 1 then begin
-    CheckBoxDistance.Visible := True;
+    //CheckBoxDistance.Visible := True;
+    CheckBoxDistance.Enabled := True;
   end
   else begin
-    CheckBoxDistance.Visible := False;
-    SpinEditDistance.Visible := False;
-    LabelDistance.Visible := False;
-    LabelDistancePercentage.Visible := False;
+    //CheckBoxDistance.Visible := False;
+    //SpinEditDistance.Visible := False;
+    //LabelDistance.Visible := False;
+    //LabelDistancePercentage.Visible := False;
+    CheckBoxDistance.Checked := False;
+    CheckBoxDistance.Enabled := False;
+    SpinEditDistance.Enabled := False;
+    LabelDistance.Enabled := False;
+    LabelDistancePercentage.Enabled := False;
     SpinEditDistance.Value := 0;
   end;
   SpinEditComparisons.Enabled := SpinEditSamples.Value <> 3;

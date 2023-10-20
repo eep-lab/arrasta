@@ -324,19 +324,19 @@ object Background: TBackground
             Top = 8
             Width = 206
             Caption = 'Selecionar distância entre estímulos'
+            Enabled = False
             OnChange = CheckBoxDistanceChange
             TabOrder = 2
-            Visible = False
           end
           object SpinEditDistance: TSpinEdit
             Left = 160
             Height = 23
             Top = 80
             Width = 74
+            Enabled = False
             Increment = 10
             MaxValue = 60
             TabOrder = 3
-            Visible = False
           end
           object LabelDistance: TLabel
             AnchorSideLeft.Control = SpinEditDistance
@@ -348,7 +348,7 @@ object Background: TBackground
             Anchors = [akLeft, akBottom]
             BorderSpacing.Bottom = 5
             Caption = 'Distância entre estímulos'
-            Visible = False
+            Enabled = False
           end
           object LabelDistancePercentage: TLabel
             AnchorSideLeft.Control = SpinEditDistance
@@ -363,7 +363,7 @@ object Background: TBackground
             BorderSpacing.Left = 5
             BorderSpacing.Bottom = 5
             Caption = '%'
-            Visible = False
+            Enabled = False
           end
         end
       end
