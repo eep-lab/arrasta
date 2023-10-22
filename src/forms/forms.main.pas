@@ -196,9 +196,6 @@ end;
 
 procedure TBackground.CheckBoxDistanceChange(Sender: TObject);
 begin
-  //SpinEditDistance.Visible := CheckBoxDistance.Checked;
-  //LabelDistance.Visible := CheckBoxDistance.Checked;
-  //LabelDistancePercentage.Visible := CheckBoxDistance.Checked;
   SpinEditDistance.Enabled := CheckBoxDistance.Checked;
   LabelDistance.Enabled := CheckBoxDistance.Checked;
   LabelDistancePercentage.Enabled := CheckBoxDistance.Checked;
@@ -254,14 +251,9 @@ end;
 procedure TBackground.SpinEditSamplesChange(Sender: TObject);
 begin
   if SpinEditSamples.Value = 1 then begin
-    //CheckBoxDistance.Visible := True;
     CheckBoxDistance.Enabled := True;
   end
   else begin
-    //CheckBoxDistance.Visible := False;
-    //SpinEditDistance.Visible := False;
-    //LabelDistance.Visible := False;
-    //LabelDistancePercentage.Visible := False;
     CheckBoxDistance.Checked := False;
     CheckBoxDistance.Enabled := False;
     SpinEditDistance.Enabled := False;
@@ -335,6 +327,13 @@ begin
   Result :=
     TabControlDesign.Tabs[TabControlDesign.TabIndex] + #32 +
     GetRelation;
+  if CheckBoxDistance.Checked then begin
+    Result := Result + ', com distância de ' +
+              IntToStr(SpinEditDistance.Value) + '% entre estímulos';
+  end
+  else begin
+    Result := Result + ', sem distância entre estímulos';
+  end;
 end;
 
 function TBackground.GetOrientation : TDragDropOrientation;
