@@ -33,8 +33,8 @@ type
   TComparValue = (compOne, compTwo, compThree);
   TComparRange = compOne..compThree;
 
-  TFactor = (facVeryEasy, facEasy, facNormal, facHard, facVeryHard);
-  TFactorRange = facVeryEasy..facVeryHard;
+  //TFactor = (facVeryEasy, facEasy, facNormal, facHard, facVeryHard);
+  //TFactorRange = facVeryEasy..facVeryHard;
 
   TDragDropOrientation =
     (goTopToBottom, goBottomToTop, goLeftToRight, goRightToLeft, goRandom);
@@ -49,8 +49,8 @@ type
     Relation : TEquivalenceRelation;
     Samples: TSampleValue;
     Comparisons: TComparValue;
-    HelpType: TDragMouseMoveMode;
-    Factor: TFactor;
+    //HelpType: TDragMouseMoveMode;
+    //Factor: TFactor;
     Orientation : TDragDropOrientation;
     Distance : TDistanceValue;
     class operator = (A, B: TDragDropData): Boolean;
@@ -106,10 +106,10 @@ type
 
   { TFactorHelper }
 
-  TFactorHelper = type helper for TFactor
-    function ToString : string;
-    function ToInteger: integer;
-  end;
+  //TFactorHelper = type helper for TFactor
+  //  function ToString : string;
+  //  function ToInteger: integer;
+  //end;
 
   { TDistanceValueHelper }
 
@@ -131,7 +131,7 @@ type
     function ToEquivalenceRelation : TEquivalenceRelation;
     function ToSampleValue : TSampleValue;
     function ToComparValue : TComparValue;
-    function ToFactor : TFactor;
+    //function ToFactor : TFactor;
     function ToDragDropOrientation : TDragDropOrientation;
     function ToDistanceValue : TDistanceValue;
   end;
@@ -139,7 +139,7 @@ type
     { THelpSeriesIntegerHelper }
 
     THelpSeriesIntegerHelper = type helper(TIntegerHelper) for integer
-      function ToFactor : TFactor;
+      //function ToFactor : TFactor;
     end;
 
 var
@@ -160,9 +160,9 @@ begin
   Result :=
     (A.Relation = B.Relation) and
     (A.Samples = B.Samples) and
-    (A.Comparisons = B.Comparisons) and
+    (A.Comparisons = B.Comparisons) {and
     (A.HelpType = B.HelpType) and
-    (A.Factor = B.Factor);
+    (A.Factor = B.Factor)};
 end;
 
 { TDragDropHelpSerie }
@@ -173,24 +173,24 @@ var
 begin
   with LDragDropData do begin
     Relation := eqrAA;
-    HelpType := dragChannel;
+    //HelpType := dragChannel;
     Samples := sampOne;
     Comparisons := compOne;
-    Factor := facVeryEasy;
+    //Factor := facVeryEasy;
   end;
   FList.Add(LDragDropData);
 
-  LDragDropData.Factor := facEasy;
-  FList.Add(LDragDropData);
-
-  LDragDropData.Factor := facNormal;
-  FList.Add(LDragDropData);
-
-  LDragDropData.Factor := facHard;
-  FList.Add(LDragDropData);
-
-  LDragDropData.Factor := facVeryHard;
-  FList.Add(LDragDropData);
+  //LDragDropData.Factor := facEasy;
+  //FList.Add(LDragDropData);
+  //
+  //LDragDropData.Factor := facNormal;
+  //FList.Add(LDragDropData);
+  //
+  //LDragDropData.Factor := facHard;
+  //FList.Add(LDragDropData);
+  //
+  //LDragDropData.Factor := facVeryHard;
+  //FList.Add(LDragDropData);
 end;
 
 procedure TDragDropHelpSerie.LoadPreTrainingHelpSerie;
@@ -230,11 +230,11 @@ var
 begin
   with AParameters do begin
     with DragDropKeys do begin
-      Data.HelpType := Values[SamplesDragMode].ToDragMouseMoveMode;
+      //Data.HelpType := Values[SamplesDragMode].ToDragMouseMoveMode;
       Data.Relation := Values[Relation].ToEquivalenceRelation;
       Data.Samples := Values[Samples].ToSampleValue;
       Data.Comparisons := Values[Comparisons].ToComparValue;
-      Data.Factor := Values[DragMoveFactor].ToInteger.ToFactor;
+      //Data.Factor := Values[DragMoveFactor].ToInteger.ToFactor;
       Data.Orientation := Values[DragDropOrientation].ToDragDropOrientation;
       Data.Distance := Values[Distance].ToDistanceValue;
     end;
@@ -255,11 +255,11 @@ begin
   Data := Iterator.GetCurrent;
   with AParameters do begin
     with DragDropKeys do begin
-      Values[SamplesDragMode] := Data.HelpType.ToString;
+      //Values[SamplesDragMode] := Data.HelpType.ToString;
       Values[Relation] := Data.Relation.ToString;
       Values[Samples] := Data.Samples.ToString;
       Values[Comparisons] := Data.Comparisons.ToString;
-      Values[DragMoveFactor] := Data.Factor.ToInteger.ToString;
+      //Values[DragMoveFactor] := Data.Factor.ToInteger.ToString;
       Values[DragDropOrientation] := Data.Orientation.ToString;
       Values[Distance] := Data.Distance.ToString;
     end;
@@ -290,9 +290,9 @@ var
   function DragDropDataFromSection(ASection : string) : TDragDropData;
   begin
     with DragDropKeys do begin
-      Result.HelpType :=
-        LIniFile.ReadString(
-          ASection, SamplesDragMode, 'Default').ToDragMouseMoveMode;
+      //Result.HelpType :=
+      //  LIniFile.ReadString(
+      //    ASection, SamplesDragMode, 'Default').ToDragMouseMoveMode;
       Result.Relation :=
         LIniFile.ReadString(
           ASection, Relation, 'Default').ToEquivalenceRelation;
@@ -302,9 +302,9 @@ var
       Result.Comparisons :=
         LIniFile.ReadString(
           ASection, Comparisons, 'Default').ToComparValue;
-      Result.Factor :=
-        LIniFile.ReadString(
-          ASection, DragMoveFactor, 'Default').ToInteger.ToFactor;
+      //Result.Factor :=
+      //  LIniFile.ReadString(
+      //    ASection, DragMoveFactor, 'Default').ToInteger.ToFactor;
       Result.Orientation :=
         LIniFile.ReadString(
           ASection, DragDropOrientation, 'Default').ToDragDropOrientation;
@@ -349,16 +349,16 @@ begin
   for Data in List do begin
     with DragDropKeys do begin
       with IniFile do begin
-        WriteString(GetSection,
-          SamplesDragMode, Data.HelpType.ToString);
+        //WriteString(GetSection,
+        //  SamplesDragMode, Data.HelpType.ToString);
         WriteString(GetSection,
           Relation, Data.Relation.ToString);
         WriteString(GetSection,
           Samples, Data.Samples.ToString);
         WriteString(GetSection,
           Comparisons, Data.Comparisons.ToString);
-        WriteString(GetSection,
-          DragMoveFactor, Data.Factor.ToInteger.ToString);
+        //WriteString(GetSection,
+        //  DragMoveFactor, Data.Factor.ToInteger.ToString);
         WriteString(GetSection,
           DragDropOrientation, Data.Orientation.ToString);
         WriteString(GetSection,
@@ -416,21 +416,21 @@ begin
   Result := ComparValues[Self];
 end;
 
-{ TFactorHelper }
+//{ TFactorHelper }
+//
+//function TFactorHelper.ToString: string;
+//begin
+//  WriteStr(Result, Self);
+//  Result := Result.Replace('fac', '');
+//end;
 
-function TFactorHelper.ToString: string;
-begin
-  WriteStr(Result, Self);
-  Result := Result.Replace('fac', '');
-end;
+//var
+//  Factors   : array [TFactorRange] of integer = (16, 8, 5, 4, 2);
 
-var
-  Factors   : array [TFactorRange] of integer = (16, 8, 5, 4, 2);
-
-function TFactorHelper.ToInteger: integer;
-begin
-  Result := Factors[Self];
-end;
+//function TFactorHelper.ToInteger: integer;
+//begin
+//  Result := Factors[Self];
+//end;
 
 { TDistanceValueHelper }
 
@@ -510,20 +510,20 @@ begin
   end;
 end;
 
-function THelpSeriesStringHelper.ToFactor: TFactor;
-begin
-  case UpperCase(Self) of
-    'VERYEASY' : Result := facVeryEasy;
-    'EASY' : Result := facEasy;
-    'NORMAL' : Result := facNormal;
-    'HARD' : Result := facHard;
-    'VERYHARD' : Result := facVeryHard;
-    'DEFAULT' : Result := DefaultDragDropData.Factor;
-    else
-      raise Exception.Create(
-        'THelpSeriesStringHelper.ToFactor: ' + Self);
-  end;
-end;
+//function THelpSeriesStringHelper.ToFactor: TFactor;
+//begin
+//  case UpperCase(Self) of
+//    'VERYEASY' : Result := facVeryEasy;
+//    'EASY' : Result := facEasy;
+//    'NORMAL' : Result := facNormal;
+//    'HARD' : Result := facHard;
+//    'VERYHARD' : Result := facVeryHard;
+//    'DEFAULT' : Result := DefaultDragDropData.Factor;
+//    else
+//      raise Exception.Create(
+//        'THelpSeriesStringHelper.ToFactor: ' + Self);
+//  end;
+//end;
 
 function THelpSeriesStringHelper.ToDragDropOrientation: TDragDropOrientation;
 begin
@@ -559,12 +559,12 @@ end;
 
 { THelpSeriesIntegerHelper }
 
-function THelpSeriesIntegerHelper.ToFactor: TFactor;
-begin
-  for Result in TFactorRange do
-    if Factors[Result] = Self then
-      Break;
-end;
+//function THelpSeriesIntegerHelper.ToFactor: TFactor;
+//begin
+//  for Result in TFactorRange do
+//    if Factors[Result] = Self then
+//      Break;
+//end;
 
 end.
 

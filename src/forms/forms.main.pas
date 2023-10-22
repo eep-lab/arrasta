@@ -16,7 +16,6 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Dialogs,
   ExtCtrls, StdCtrls, IniPropStorage, ComCtrls, Spin
-  , Stimuli.Image.DragDropable
   , Session.Trial.HelpSeries.DragDrop
   , Types;
 
@@ -30,11 +29,7 @@ type
     ButtonStartTrial: TButton;
     CheckBoxDistance: TCheckBox;
     CheckBoxShowMouse: TCheckBox;
-    CheckBoxHelpRegression: TCheckBox;
-    CheckBoxHelpProgression: TCheckBox;
-    CheckBoxMouseModeMode: TCheckBox;
     ComboBoxOrientations: TComboBox;
-    ComboBoxFactor: TComboBox;
     ComboBoxParticipants: TComboBox;
     FloatSpinEditScreenWidth: TFloatSpinEdit;
     GroupBoxComplexity: TGroupBox;
@@ -43,9 +38,7 @@ type
     LabelDistance: TLabel;
     LabelDistancePercentage: TLabel;
     LabelDragDropOrientation: TLabel;
-    LabelLimitedHoldTime: TLabel;
     LabelITITime: TLabel;
-    LabelLimitedHold: TLabel;
     LabelScreenWidth: TLabel;
     LabelScreenWidthUnit: TLabel;
     LabelTrials: TLabel;
@@ -53,7 +46,6 @@ type
     LabelConfigurations: TLabel;
     LabelSessionTime: TLabel;
     LabelComparisons: TLabel;
-    LabelDragMoveFactor: TLabel;
     LabelSamples: TLabel;
     LabelITI: TLabel;
     PageControlConfigurations: TPageControl;
@@ -66,7 +58,6 @@ type
     SpinEditComparisons: TSpinEdit;
     SpinEditSamples: TSpinEdit;
     SpinEditITI: TSpinEdit;
-    SpinEditLimitedHold: TSpinEdit;
     TabControlDesign: TTabControl;
     TabSheetMisc: TTabSheet;
     TabSheetComplexity: TTabSheet;
@@ -74,8 +65,6 @@ type
     procedure ButtonStartTrialClick(Sender: TObject);
     procedure ButtonTestDispenserClick(Sender: TObject);
     procedure CheckBoxDistanceChange(Sender: TObject);
-    procedure CheckBoxHelpRegressionChange(Sender: TObject);
-    procedure CheckBoxMouseModeModeChange(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ButtonStartAllClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -85,16 +74,15 @@ type
     procedure TabControlDesignChange(Sender: TObject);
     procedure TabSheet2ContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
+    procedure TabSheetSessionContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
   private
-    function GetDragMouseMoveMode : TDragMouseMoveMode;
     function GetRelation : string;
     function GetComparValue : TComparValue;
     function GetSampleValue : TSampleValue;
-    function GetMouseMoveFactor : TFactor;
     function GetSessionName : string;
     function GetOrientation : TDragDropOrientation;
     function GetDistance : TDistanceValue;
-    //function GetOrientation : string;
   public
 
   end;
@@ -144,15 +132,10 @@ begin
       GetOrientation.ToString,
       SpinEditTrials.Value,
       SpinEditITI.Value * 1000,
-      SpinEditLimitedHold.Value * 60000,
       SpinEditDistance.Value,
       GetRelation,
       SpinEditSamples.Value,
       SpinEditComparisons.Value,
-      GetDragMouseMoveMode.ToString,
-      GetMouseMoveFactor.ToString,
-      CheckBoxHelpProgression.Checked,
-      CheckBoxHelpRegression.Checked,
       CheckBoxShowMouse.Checked);
 
   {Existem duas formas de se criar uma configuração padrão do arquivo de
@@ -162,13 +145,10 @@ begin
   experimento. O valor padrão de um parâmetro selecionado na GUI será utilizado]
   na progressão de ajuda quando o valor não for encontrado no arquivo
   ComplexityGradient.ini}
-  DefaultDragMouveMoveMode := GetDragMouseMoveMode;
   with DefaultDragDropData do begin
     Relation := GetRelation.ToEquivalenceRelation;
     Comparisons := GetComparValue;
     Samples := GetSampleValue;
-    HelpType := DefaultDragMouveMoveMode;
-    Factor := GetMouseMoveFactor;
     Orientation := GetOrientation;
     Distance := GetDistance;
   end;
@@ -187,20 +167,14 @@ var
   LTrial  : TDragDrop;
 
 procedure TBackground.ButtonStartTrialClick(Sender: TObject);
-var
-  DragMouseMoveMode : TDragMouseMoveMode;
 begin
-  DragMouseMoveMode := GetDragMouseMoveMode;
   LTrial := TDragDrop.Create(Self);
   with LTrial.Configurations.Parameters do begin
     with DragDropKeys do begin
-      Values[UseHelpProgression] := CheckBoxHelpProgression.Checked.ToString;
       Values[RepeatTrials] := SpinEditTrials.Value.ToString;
-      Values[SamplesDragMode] := GetDragMouseMoveMode.ToString;
       Values[Relation] := GetRelation;
       Values[Samples] := SpinEditSamples.Value.ToString;
       Values[Comparisons] := SpinEditComparisons.Value.ToString;
-      Values[DragMoveFactor] := GetMouseMoveFactor.ToInteger.ToString;
       Values[DragDropOrientation] := GetOrientation.ToString;
       Values[Distance] := SpinEditDistance.Value.ToString;
     end;
@@ -222,22 +196,9 @@ end;
 
 procedure TBackground.CheckBoxDistanceChange(Sender: TObject);
 begin
-  SpinEditDistance.Visible := CheckBoxDistance.Checked;
-  LabelDistance.Visible := CheckBoxDistance.Checked;
-  LabelDistancePercentage.Visible := CheckBoxDistance.Checked;
-end;
-
-procedure TBackground.CheckBoxHelpRegressionChange(Sender: TObject);
-begin
-  SpinEditLimitedHold.Visible:=CheckBoxHelpRegression.Checked;
-  LabelLimitedHold.Visible:=CheckBoxHelpRegression.Checked;
-  LabelLimitedHoldTime.Visible:=CheckBoxHelpRegression.Checked;
-end;
-
-procedure TBackground.CheckBoxMouseModeModeChange(Sender: TObject);
-begin
-  ComboBoxFactor.Visible := CheckBoxMouseModeMode.Checked;
-  LabelDragMoveFactor.Visible:=CheckBoxMouseModeMode.Checked;
+  SpinEditDistance.Enabled := CheckBoxDistance.Checked;
+  LabelDistance.Enabled := CheckBoxDistance.Checked;
+  LabelDistancePercentage.Enabled := CheckBoxDistance.Checked;
 end;
 
 procedure TBackground.FormDestroy(Sender: TObject);
@@ -290,13 +251,14 @@ end;
 procedure TBackground.SpinEditSamplesChange(Sender: TObject);
 begin
   if SpinEditSamples.Value = 1 then begin
-    CheckBoxDistance.Visible := True;
+    CheckBoxDistance.Enabled := True;
   end
   else begin
-    CheckBoxDistance.Visible := False;
-    SpinEditDistance.Visible := False;
-    LabelDistance.Visible := False;
-    LabelDistancePercentage.Visible := False;
+    CheckBoxDistance.Checked := False;
+    CheckBoxDistance.Enabled := False;
+    SpinEditDistance.Enabled := False;
+    LabelDistance.Enabled := False;
+    LabelDistancePercentage.Enabled := False;
     SpinEditDistance.Value := 0;
   end;
   SpinEditComparisons.Enabled := SpinEditSamples.Value <> 3;
@@ -331,13 +293,10 @@ begin
 
 end;
 
-function TBackground.GetDragMouseMoveMode: TDragMouseMoveMode;
+procedure TBackground.TabSheetSessionContextPopup(Sender: TObject;
+  MousePos: TPoint; var Handled: Boolean);
 begin
-  if CheckBoxMouseModeMode.Checked then begin
-    Result := dragChannel;
-  end else begin
-    Result := dragFree;
-  end;
+
 end;
 
 function TBackground.GetRelation: string;
@@ -363,37 +322,17 @@ begin
   end;
 end;
 
-function TBackground.GetMouseMoveFactor: TFactor;
-begin
-  case ComboBoxFactor.ItemIndex of
-    0 : Result := facVeryEasy;
-    1 : Result := facEasy;
-    2 : Result := facNormal;
-    3 : Result := facHard;
-    4 : Result := facVeryHard;
-  end;
-end;
-
 function TBackground.GetSessionName: string;
 begin
   Result :=
     TabControlDesign.Tabs[TabControlDesign.TabIndex] + #32 +
-    GetRelation + #32 +
-    GetMouseMoveFactor.ToString;
-
-  if CheckBoxMouseModeMode.Checked then begin
-    Result := Result +
-      ', com movimentação retrita ao arrastar, na direção da comparação correta';
-  end else begin
-    Result := Result + ', com movimentação livre ao arrastar';
-  end;
-
-  if CheckBoxHelpProgression.Checked then begin
-    Result := Result + ', com progressão da complexidade ao acertar';
-  end;
-
-  if CheckBoxHelpRegression.Checked then begin
-    Result := Result + ', com regressão da complexidade após 1 min sem acertar';
+    GetRelation;
+  if CheckBoxDistance.Checked then begin
+    Result := Result + ', com distância de ' +
+              IntToStr(SpinEditDistance.Value) + '% entre estímulos';
+  end
+  else begin
+    Result := Result + ', sem distância entre estímulos';
   end;
 end;
 

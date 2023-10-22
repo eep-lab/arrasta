@@ -17,15 +17,10 @@ function MakeConfigurationFile(
   AOrientation : string;
   ATrials : integer;
   AITI    : integer;
-  ALimitedHold : integer;
   ADistance : integer;
   ADesign : string;
   ASamples: integer;
   AComparisons: integer;
-  AMouseMoveMode: string;
-  AFactor: string;
-  AUseHelpProgression : Boolean;
-  AHasLimitedHold: Boolean;
   AShowMouse: Boolean) : string;
 
 implementation
@@ -36,17 +31,13 @@ uses FileMethods
    ;
 
 function MakeConfigurationFile(AOrientation: string; ATrials : integer;
-  AITI : integer; ALimitedHold : integer; ADistance : integer; ADesign: string; ASamples: integer;
-  AComparisons: integer; AMouseMoveMode: string; AFactor: string;
-  AUseHelpProgression : Boolean; AHasLimitedHold: Boolean;
-  AShowMouse: Boolean): string;
+  AITI : integer; ADistance : integer; ADesign: string; ASamples: integer;
+  AComparisons: integer; AShowMouse: Boolean): string;
 begin
   Result := NewConfigurationFile;
   Experiments.DragDrop.ITI := AITI;
-  Experiments.DragDrop.LimitedHold:=ALimitedHold;
   Experiments.DragDrop.WriteToConfigurationFile(AOrientation, ATrials,
-    ADistance, ADesign, ASamples, AComparisons, AMouseMoveMode, AFactor,
-    AUseHelpProgression, AHasLimitedHold, AShowMouse);
+    ADistance, ADesign, ASamples, AComparisons, AShowMouse);
   ConfigurationFile.Invalidate;
   ConfigurationFile.UpdateFile;
 end;
