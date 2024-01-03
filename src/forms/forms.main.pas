@@ -37,6 +37,7 @@ type
     IniPropStorage: TIniPropStorage;
     LabelDistance: TLabel;
     LabelDistancePercentage: TLabel;
+    LabelDistancePercentage1: TLabel;
     LabelDragDropOrientation: TLabel;
     LabelITITime: TLabel;
     LabelScreenWidth: TLabel;
@@ -59,6 +60,7 @@ type
     SpinEditSamples: TSpinEdit;
     SpinEditITI: TSpinEdit;
     TabControlDesign: TTabControl;
+    TabSheet1: TTabSheet;
     TabSheetMisc: TTabSheet;
     TabSheetComplexity: TTabSheet;
     TabSheetSession: TTabSheet;
