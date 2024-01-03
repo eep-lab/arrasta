@@ -31,6 +31,9 @@ type
     CheckBoxShowMouse: TCheckBox;
     ComboBoxOrientations: TComboBox;
     ComboBoxParticipants: TComboBox;
+    EditArrasta: TEdit;
+    EditVersion: TEdit;
+    EditAuthors: TEdit;
     FloatSpinEditScreenWidth: TFloatSpinEdit;
     GroupBoxComplexity: TGroupBox;
     GroupBoxDesign: TGroupBox;
@@ -59,7 +62,7 @@ type
     SpinEditSamples: TSpinEdit;
     SpinEditITI: TSpinEdit;
     TabControlDesign: TTabControl;
-    TabSheet1: TTabSheet;
+    TabSheetAbout: TTabSheet;
     TabSheetMisc: TTabSheet;
     TabSheetComplexity: TTabSheet;
     TabSheetSession: TTabSheet;
