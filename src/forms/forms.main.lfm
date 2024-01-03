@@ -1,12 +1,12 @@
 object Background: TBackground
-  Left = 983
-  Height = 741
+  Left = 979
+  Height = 737
   Top = 106
-  Width = 928
+  Width = 931
   BorderStyle = bsNone
   Caption = 'Configurar sessão'
-  ClientHeight = 741
-  ClientWidth = 928
+  ClientHeight = 737
+  ClientWidth = 931
   Color = clBlack
   Position = poScreenCenter
   SessionProperties = 'CheckBoxCheatsMode.Checked;CheckBoxHelpProgression.Checked;CheckBoxHelpRegression.Checked;CheckBoxMouseModeMode.Checked;CheckBoxShowMouse.Checked;ComboBoxFactor.ItemIndex;ComboBoxOrientations.ItemIndex;ComboBoxParticipants.ItemIndex;ComboBoxParticipants.Items;EditParticipant.Text;FloatSpinEditScreenWidth.Value;LabelDragMoveFactor.Visible;LabelLimitedHold.Visible;LabelLimitedHoldTime.Visible;PageControl1.ActivePage;PageControlConfigurations.TabIndex;RadioGroupCondition.ItemIndex;RadioGroupDesign.ItemIndex;RadioGroupDesign.Items;RadioGroupDesign1.ItemIndex;RadioGroupDesign2.ItemIndex;RadioGroupDispenser.ItemIndex;RadioGroupHelpType.ItemIndex;RadioGroupRestriction.ItemIndex;SpinEditComparisons.Enabled;SpinEditComparisons.Value;SpinEditDragMoveFactor.Value;SpinEditDragMoveFactor.Visible;SpinEditITI.Value;SpinEditLimitedHold.Value;SpinEditLimitedHold.Visible;SpinEditParticipant.Value;SpinEditSamples.Value;SpinEditSessionTime.Value;SpinEditTrials.Value;TabControlDesign.TabIndex;SpinEditDistance.Value'
@@ -19,9 +19,9 @@ object Background: TBackground
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = Owner
     AnchorSideTop.Side = asrCenter
-    Left = 303
+    Left = 304
     Height = 500
-    Top = 120
+    Top = 118
     Width = 322
     Align = alCustom
     ClientHeight = 500
@@ -106,11 +106,11 @@ object Background: TBackground
       Height = 250
       Top = 21
       Width = 320
-      ActivePage = TabSheet1
+      ActivePage = TabSheetSession
       Align = alClient
       BorderSpacing.Top = 5
       Constraints.MaxHeight = 250
-      TabIndex = 3
+      TabIndex = 0
       TabOrder = 2
       object TabSheetSession: TTabSheet
         Caption = 'Sessão'
@@ -467,19 +467,6 @@ object Background: TBackground
       Font.Style = [fsBold]
       ParentFont = False
     end
-  end
-  object LabelDistancePercentage1: TLabel
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideBottom.Side = asrBottom
-    Left = 247
-    Height = 15
-    Top = 51
-    Width = 10
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.Left = 5
-    BorderSpacing.Bottom = 5
-    Caption = '%'
-    Visible = False
   end
   object IniPropStorage: TIniPropStorage
     StoredValues = <>

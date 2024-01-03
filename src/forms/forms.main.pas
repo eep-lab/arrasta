@@ -37,7 +37,6 @@ type
     IniPropStorage: TIniPropStorage;
     LabelDistance: TLabel;
     LabelDistancePercentage: TLabel;
-    LabelDistancePercentage1: TLabel;
     LabelDragDropOrientation: TLabel;
     LabelITITime: TLabel;
     LabelScreenWidth: TLabel;
