@@ -30,7 +30,7 @@ type
     CheckBoxDistance: TCheckBox;
     CheckBoxShowMouse: TCheckBox;
     ComboBoxOrientations: TComboBox;
-    ComboBoxParticipants: TComboBox;
+    ComboBoxParticipants1: TComboBox;
     EditArrasta: TEdit;
     EditVersion: TEdit;
     EditAuthors: TEdit;
@@ -38,6 +38,7 @@ type
     GroupBoxComplexity: TGroupBox;
     GroupBoxDesign: TGroupBox;
     IniPropStorage: TIniPropStorage;
+    LabelSubjectName: TLabel;
     LabelDistance: TLabel;
     LabelDistancePercentage: TLabel;
     LabelDragDropOrientation: TLabel;
@@ -125,7 +126,7 @@ begin
     3 : RS232.DefaultDispenser := disp4;
   end;
   GlobalContainer.RootData := GlobalContainer.RootData +
-    ComboBoxParticipants.Text + DirectorySeparator;
+    ComboBoxParticipants1.Text + DirectorySeparator;
   ForceDirectories(GlobalContainer.RootData);
   CheatsModeOn := False;
   PanelConfigurations.Hide;
@@ -164,7 +165,7 @@ begin
   IDragDropHelpSerie := DragDropHelpSerie;
 
   GSession.Timer.Interval := SpinEditSessionTime.Value * 60000;
-  GSession.Play(GetSessionName, ComboBoxParticipants.Text);
+  GSession.Play(GetSessionName, ComboBoxParticipants1.Text);
 end;
 
 var

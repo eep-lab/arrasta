@@ -106,11 +106,11 @@ object Background: TBackground
       Height = 250
       Top = 21
       Width = 320
-      ActivePage = TabSheetAbout
+      ActivePage = TabSheetSession
       Align = alClient
       BorderSpacing.Top = 5
       Constraints.MaxHeight = 250
-      TabIndex = 3
+      TabIndex = 0
       TabOrder = 2
       object TabSheetSession: TTabSheet
         Caption = 'Sessão'
@@ -118,7 +118,7 @@ object Background: TBackground
         ClientWidth = 312
         OnContextPopup = TabSheetSessionContextPopup
         object SpinEditSessionTime: TSpinEdit
-          Left = 168
+          Left = 8
           Height = 23
           Top = 184
           Width = 72
@@ -131,7 +131,7 @@ object Background: TBackground
         object LabelSessionTime: TLabel
           AnchorSideLeft.Control = SpinEditSessionTime
           AnchorSideBottom.Control = SpinEditSessionTime
-          Left = 168
+          Left = 8
           Height = 15
           Top = 164
           Width = 136
@@ -145,7 +145,7 @@ object Background: TBackground
           AnchorSideRight.Control = SpinEditSessionTime
           AnchorSideBottom.Control = SpinEditSessionTime
           AnchorSideBottom.Side = asrBottom
-          Left = 245
+          Left = 85
           Height = 15
           Top = 187
           Width = 21
@@ -155,9 +155,9 @@ object Background: TBackground
           Caption = 'min'
         end
         object SpinEditTrials: TSpinEdit
-          Left = 168
+          Left = 8
           Height = 23
-          Top = 101
+          Top = 107
           Width = 72
           Increment = 3
           MaxValue = 90
@@ -168,18 +168,18 @@ object Background: TBackground
         object LabelTrials: TLabel
           AnchorSideLeft.Control = SpinEditTrials
           AnchorSideBottom.Control = SpinEditTrials
-          Left = 168
+          Left = 8
           Height = 15
-          Top = 81
+          Top = 87
           Width = 52
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 5
           Caption = 'Tentativas'
         end
         object SpinEditITI: TSpinEdit
-          Left = 8
+          Left = 168
           Height = 23
-          Top = 182
+          Top = 107
           Width = 72
           MaxValue = 6
           TabOrder = 2
@@ -188,9 +188,9 @@ object Background: TBackground
         object LabelITI: TLabel
           AnchorSideLeft.Control = SpinEditITI
           AnchorSideBottom.Control = SpinEditITI
-          Left = 8
+          Left = 168
           Height = 15
-          Top = 162
+          Top = 87
           Width = 130
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 5
@@ -202,35 +202,27 @@ object Background: TBackground
           AnchorSideRight.Control = SpinEditSessionTime
           AnchorSideBottom.Control = SpinEditITI
           AnchorSideBottom.Side = asrBottom
-          Left = 85
+          Left = 245
           Height = 15
-          Top = 185
+          Top = 110
           Width = 5
           Anchors = [akLeft, akBottom]
           BorderSpacing.Left = 5
           BorderSpacing.Bottom = 5
           Caption = 's'
         end
-        object ComboBoxParticipants: TComboBox
+        object ComboBoxParticipants1: TComboBox
           Left = 8
           Height = 23
-          Top = 8
+          Top = 32
           Width = 136
           ItemHeight = 15
-          Items.Strings = (
-            'Sujeito 1'
-            'Sujeito 2'
-            'Sujeito 3'
-            'Sujeito 4'
-          )
-          ReadOnly = True
           TabOrder = 3
-          Text = 'Sujeito'
         end
         object ComboBoxOrientations: TComboBox
-          Left = 5
+          Left = 168
           Height = 23
-          Top = 101
+          Top = 32
           Width = 128
           ItemHeight = 15
           ItemIndex = 0
@@ -241,19 +233,31 @@ object Background: TBackground
             'Direita para a esquerda'
             'Aleatório'
           )
+          ReadOnly = True
           TabOrder = 4
           Text = 'Cima para Baixo'
         end
         object LabelDragDropOrientation: TLabel
           AnchorSideLeft.Control = ComboBoxOrientations
           AnchorSideBottom.Control = ComboBoxOrientations
-          Left = 5
+          Left = 168
           Height = 15
-          Top = 81
+          Top = 12
           Width = 117
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 5
           Caption = 'Orientação do arrastar'
+        end
+        object LabelSubjectName: TLabel
+          AnchorSideLeft.Control = ComboBoxParticipants1
+          AnchorSideBottom.Control = ComboBoxParticipants1
+          Left = 8
+          Height = 15
+          Top = 12
+          Width = 88
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Bottom = 5
+          Caption = 'Nome do sujeito'
         end
       end
       object TabSheetComplexity: TTabSheet

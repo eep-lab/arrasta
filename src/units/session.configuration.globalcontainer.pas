@@ -52,7 +52,7 @@ initialization
     BaseFileName := '';
     ExeName := Application.ExeName;
     RootData := ExtractFilePath(ExeName) + 'data' + DirectorySeparator;
-    RootMedia := ExtractFilePath(ExeName) +  'media' + DirectorySeparator;
+    RootMedia := ExtractFilePath(ExeName) + 'media' + DirectorySeparator;
     ForceDirectories(RootData);
     ForceDirectories(RootMedia);
     MonitorToShow := 0;
