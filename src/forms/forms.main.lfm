@@ -248,16 +248,16 @@ object Background: TBackground
           BorderSpacing.Bottom = 5
           Caption = 'Orientação do arrastar'
         end
-        object LabelSubjectName: TLabel
+        object LabelNameParticipants: TLabel
           AnchorSideLeft.Control = ComboBoxParticipants1
           AnchorSideBottom.Control = ComboBoxParticipants1
           Left = 8
           Height = 15
           Top = 12
-          Width = 88
+          Width = 116
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 5
-          Caption = 'Nome do sujeito'
+          Caption = 'Nome do participante'
         end
       end
       object TabSheetComplexity: TTabSheet

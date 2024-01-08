@@ -38,7 +38,7 @@ type
     GroupBoxComplexity: TGroupBox;
     GroupBoxDesign: TGroupBox;
     IniPropStorage: TIniPropStorage;
-    LabelSubjectName: TLabel;
+    LabelNameParticipants: TLabel;
     LabelDistance: TLabel;
     LabelDistancePercentage: TLabel;
     LabelDragDropOrientation: TLabel;
