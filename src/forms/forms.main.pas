@@ -31,13 +31,13 @@ type
     CheckBoxShowMouse: TCheckBox;
     ComboBoxOrientations: TComboBox;
     ComboBoxParticipants1: TComboBox;
-    EditArrasta: TEdit;
-    EditVersion: TEdit;
-    EditAuthors: TEdit;
     FloatSpinEditScreenWidth: TFloatSpinEdit;
     GroupBoxComplexity: TGroupBox;
     GroupBoxDesign: TGroupBox;
     IniPropStorage: TIniPropStorage;
+    LabelAuthors: TLabel;
+    LabelTitle: TLabel;
+    LabelVersion: TLabel;
     LabelNameParticipants: TLabel;
     LabelDistance: TLabel;
     LabelDistancePercentage: TLabel;
