@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs,
-  ExtCtrls, StdCtrls, IniPropStorage, ComCtrls, Spin
+  ExtCtrls, StdCtrls, IniPropStorage, ComCtrls, Spin, Menus
   , Session.Trial.HelpSeries.DragDrop
   , Types;
 
@@ -24,6 +24,7 @@ type
   { TBackground }
 
   TBackground = class(TForm)
+    ButtonAddParticipant: TButton;
     ButtonTestDispenser: TButton;
     ButtonStartAll: TButton;
     ButtonStartTrial: TButton;
@@ -52,8 +53,10 @@ type
     LabelComparisons: TLabel;
     LabelSamples: TLabel;
     LabelITI: TLabel;
+    MenuItemRemoveParticipant: TMenuItem;
     PageControlConfigurations: TPageControl;
     PanelConfigurations: TPanel;
+    PopupMenuParticipants: TPopupMenu;
     RadioGroupDispenser: TRadioGroup;
     RadioGroupRelation: TRadioGroup;
     SpinEditDistance: TSpinEdit;
@@ -67,6 +70,7 @@ type
     TabSheetMisc: TTabSheet;
     TabSheetComplexity: TTabSheet;
     TabSheetSession: TTabSheet;
+    procedure ButtonAddParticipantClick(Sender: TObject);
     procedure ButtonStartTrialClick(Sender: TObject);
     procedure ButtonTestDispenserClick(Sender: TObject);
     procedure CheckBoxDistanceChange(Sender: TObject);
@@ -75,6 +79,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure EndSession(Sender: TObject);
     procedure BeforeStartSession(Sender: TObject);
+    procedure MenuItemRemoveParticipantClick(Sender: TObject);
     procedure SpinEditSamplesChange(Sender: TObject);
     procedure TabControlDesignChange(Sender: TObject);
     procedure TabSheet2ContextPopup(Sender: TObject; MousePos: TPoint;
@@ -88,6 +93,7 @@ type
     function GetSessionName : string;
     function GetOrientation : TDragDropOrientation;
     function GetDistance : TDistanceValue;
+    function Validated : Boolean;
   public
 
   end;
@@ -125,6 +131,7 @@ begin
     2 : RS232.DefaultDispenser := disp3;
     3 : RS232.DefaultDispenser := disp4;
   end;
+  if not Validated then Exit;
   GlobalContainer.RootData := GlobalContainer.RootData +
     ComboBoxParticipants1.Text + DirectorySeparator;
   ForceDirectories(GlobalContainer.RootData);
@@ -189,6 +196,18 @@ begin
   PanelConfigurations.Hide;
 end;
 
+procedure TBackground.ButtonAddParticipantClick(Sender: TObject);
+var
+  LNewParticipant : string;
+begin
+  with ComboBoxParticipants1 do begin
+    LNewParticipant := InputBox('Arrasta', 'Nome: mínimo de 3 caracteres',
+                         '');
+    if LNewParticipant.IsEmpty or (Length(LNewParticipant) < 3) then Exit;
+    Items.Append(LNewParticipant);
+  end;
+end;
+
 procedure TBackground.ButtonTestDispenserClick(Sender: TObject);
 begin
   case RadioGroupDispenser.ItemIndex of
@@ -251,6 +270,12 @@ end;
 procedure TBackground.BeforeStartSession(Sender: TObject);
 begin
   CopyFile(ConfigurationFilename, GSession.BaseFilename+'.ini');
+end;
+
+procedure TBackground.MenuItemRemoveParticipantClick(Sender: TObject);
+begin
+  with ComboBoxParticipants1 do
+    Items.Delete(ItemIndex);
 end;
 
 procedure TBackground.SpinEditSamplesChange(Sender: TObject);
@@ -363,6 +388,20 @@ begin
     6 : Result := distFifty;
     7 : Result := distSixty;
   end;
+end;
+
+function TBackground.Validated: Boolean;
+begin
+  Result := False;
+  if ComboBoxParticipants1.Items.Count = 0 then begin
+    ShowMessage('ATENÇÃO! Adicione um novo participante.');
+    Exit;
+  end;
+  if ComboBoxParticipants1.ItemIndex < 0 then begin
+    ShowMessage('ATENÇÃO! Escolha um participante.');
+    Exit;
+  end;
+  Result := True;
 end;
 
 end.

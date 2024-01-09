@@ -106,11 +106,11 @@ object Background: TBackground
       Height = 250
       Top = 21
       Width = 320
-      ActivePage = TabSheetAbout
+      ActivePage = TabSheetSession
       Align = alClient
       BorderSpacing.Top = 5
       Constraints.MaxHeight = 250
-      TabIndex = 3
+      TabIndex = 0
       TabOrder = 2
       object TabSheetSession: TTabSheet
         Caption = 'Sessão'
@@ -155,7 +155,7 @@ object Background: TBackground
           Caption = 'min'
         end
         object SpinEditTrials: TSpinEdit
-          Left = 8
+          Left = 176
           Height = 23
           Top = 107
           Width = 72
@@ -168,7 +168,7 @@ object Background: TBackground
         object LabelTrials: TLabel
           AnchorSideLeft.Control = SpinEditTrials
           AnchorSideBottom.Control = SpinEditTrials
-          Left = 8
+          Left = 176
           Height = 15
           Top = 87
           Width = 52
@@ -177,9 +177,9 @@ object Background: TBackground
           Caption = 'Tentativas'
         end
         object SpinEditITI: TSpinEdit
-          Left = 168
+          Left = 176
           Height = 23
-          Top = 107
+          Top = 184
           Width = 72
           MaxValue = 6
           TabOrder = 2
@@ -188,9 +188,9 @@ object Background: TBackground
         object LabelITI: TLabel
           AnchorSideLeft.Control = SpinEditITI
           AnchorSideBottom.Control = SpinEditITI
-          Left = 168
+          Left = 176
           Height = 15
-          Top = 87
+          Top = 164
           Width = 130
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 5
@@ -202,9 +202,9 @@ object Background: TBackground
           AnchorSideRight.Control = SpinEditSessionTime
           AnchorSideBottom.Control = SpinEditITI
           AnchorSideBottom.Side = asrBottom
-          Left = 245
+          Left = 253
           Height = 15
-          Top = 110
+          Top = 187
           Width = 5
           Anchors = [akLeft, akBottom]
           BorderSpacing.Left = 5
@@ -217,12 +217,13 @@ object Background: TBackground
           Top = 32
           Width = 136
           ItemHeight = 15
+          ReadOnly = True
           TabOrder = 3
         end
         object ComboBoxOrientations: TComboBox
-          Left = 168
+          Left = 8
           Height = 23
-          Top = 32
+          Top = 107
           Width = 128
           ItemHeight = 15
           ItemIndex = 0
@@ -240,9 +241,9 @@ object Background: TBackground
         object LabelDragDropOrientation: TLabel
           AnchorSideLeft.Control = ComboBoxOrientations
           AnchorSideBottom.Control = ComboBoxOrientations
-          Left = 168
+          Left = 8
           Height = 15
-          Top = 12
+          Top = 87
           Width = 117
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 5
@@ -258,6 +259,19 @@ object Background: TBackground
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 5
           Caption = 'Nome do participante'
+        end
+        object ButtonAddParticipant: TButton
+          Left = 160
+          Height = 25
+          Hint = 'É possível adicionar novos participantes nesta'#13#10'área.'#13#10#13#10'Para excluir um participante da lista, basta'#13#10'selecionar o nome na caixa, clicar com o botão'#13#10'direito do mouse no botão correspondente e'#13#10'escolher a opção para remover.'
+          Top = 32
+          Width = 146
+          Caption = 'Adicionar participante'
+          ParentShowHint = False
+          PopupMenu = PopupMenuParticipants
+          ShowHint = True
+          TabOrder = 5
+          OnClick = ButtonAddParticipantClick
         end
       end
       object TabSheetComplexity: TTabSheet
@@ -520,5 +534,13 @@ object Background: TBackground
     IniFileName = 'configuracoes'
     Left = 32
     Top = 16
+  end
+  object PopupMenuParticipants: TPopupMenu
+    Left = 448
+    Top = 40
+    object MenuItemRemoveParticipant: TMenuItem
+      Caption = 'Retirar participante da lista'
+      OnClick = MenuItemRemoveParticipantClick
+    end
   end
 end
