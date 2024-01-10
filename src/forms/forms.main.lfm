@@ -214,7 +214,6 @@ object Background: TBackground
         object ComboBoxParticipants1: TComboBox
           Left = 8
           Height = 23
-          Hint = 'tete'
           Top = 32
           Width = 136
           ItemHeight = 15
