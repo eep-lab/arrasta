@@ -94,8 +94,9 @@ type
     function GetOrientation : TDragDropOrientation;
     function GetDistance : TDistanceValue;
     function Validated : Boolean;
+    procedure SaveParticipants(const AFileName: string);
+    procedure LoadParticipants(const AFileName: string);
   public
-
   end;
 
 var
@@ -206,6 +207,7 @@ begin
     if LNewParticipant.IsEmpty or (Length(LNewParticipant) < 3) then Exit;
     Items.Append(LNewParticipant);
   end;
+  SaveParticipants('participants.txt');
 end;
 
 procedure TBackground.ButtonTestDispenserClick(Sender: TObject);
@@ -260,6 +262,7 @@ begin
   GSession := TSession.Create(Self);
   GSession.OnEndSession:=@EndSession;
   GSession.OnBeforeStart:=@BeforeStartSession;
+  LoadParticipants('participants.txt');
 end;
 
 procedure TBackground.EndSession(Sender: TObject);
@@ -276,6 +279,7 @@ procedure TBackground.MenuItemRemoveParticipantClick(Sender: TObject);
 begin
   with ComboBoxParticipants1 do
     Items.Delete(ItemIndex);
+  SaveParticipants('participants.txt');
 end;
 
 procedure TBackground.SpinEditSamplesChange(Sender: TObject);
@@ -402,6 +406,17 @@ begin
     Exit;
   end;
   Result := True;
+end;
+
+procedure TBackground.SaveParticipants(const AFileName: string);
+begin
+  ComboBoxParticipants1.Items.SaveToFile(AFileName);
+end;
+
+procedure TBackground.LoadParticipants(const AFileName: string);
+begin
+  if FileExists(AFileName) then
+    ComboBoxParticipants1.Items.LoadFromFile(AFileName);
 end;
 
 end.
