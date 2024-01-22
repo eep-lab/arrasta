@@ -20,7 +20,8 @@ procedure WriteToConfigurationFile(
   ARelation : string;
   ASamples: integer;
   AComparisons: integer;
-  AShowMouse : Boolean);
+  AShowMouse : Boolean;
+  AStimulusSize : string);
 
 var
   ITI : integer;
@@ -58,7 +59,8 @@ var Writer : TConfigurationWriter;
 }
 procedure WriteTrials(AOrientation : string; ATrials: integer;
   ADistance : integer; AName: string; ARelation: string;
-  ASamples: string; AComparisons: string; AShowMouse: Boolean);
+  ASamples: string; AComparisons: string; AShowMouse: Boolean;
+  AStimulusSize : string);
 begin
   case Writer.CurrentBloc of
     0, 1, 2, 3, 4, 5 : begin
@@ -78,6 +80,7 @@ begin
           Values[Relation] := ARelation;
           Values[Samples] := ASamples;
           Values[Comparisons] := AComparisons;
+          Values[StimulusSize] := AStimulusSize;
         end;
       end;
       Writer.WriteTrial;
@@ -87,7 +90,7 @@ end;
 
 procedure WriteToConfigurationFile(AOrientation : string; ATrials: integer;
   ADistance : integer; ARelation: string; ASamples: integer;
-  AComparisons: integer; AShowMouse: Boolean);
+  AComparisons: integer; AShowMouse: Boolean; AStimulusSize : string);
 var
   LBloc : integer = 0;
   LName : string;
@@ -103,7 +106,7 @@ begin
     end;
     Writer.WriteBloc;
     WriteTrials(AOrientation, ATrials, ADistance, LName,  ARelation,
-      ASamples.ToString, AComparisons.ToString, AShowMouse);
+      ASamples.ToString, AComparisons.ToString, AShowMouse, AStimulusSize);
 
   finally
     Writer.Free;

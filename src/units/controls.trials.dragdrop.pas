@@ -163,6 +163,7 @@ begin
       Values[Samples] := '3';
       Values[Comparisons] := '3';
       Values[DragDropOrientation] := goRandom.ToString;
+      Values[StimulusSize] := sizeBig.ToString;
     end;
   end;
 end;

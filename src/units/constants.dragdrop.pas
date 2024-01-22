@@ -12,6 +12,7 @@ type
     Relation : string;
     Samples : string;
     Comparisons : string;
+    StimulusSize : string;
   end;
 
 const
@@ -21,7 +22,8 @@ const
     Distance : 'Distance';
     Relation : 'Relation';
     Samples : 'Samples';
-    Comparisons : 'Comparisons');
+    Comparisons : 'Comparisons';
+    StimulusSize : 'StimulusSize');
 
 implementation
 

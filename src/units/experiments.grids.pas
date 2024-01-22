@@ -77,7 +77,7 @@ type
       property Seed : integer read FSeed write FSeed;
       property Orientation: TGridOrientation read FGridOrientation write SetGridOrientation;
       procedure UpdatePositions(ASamples, AComparisons: integer;
-                                 AGridOrientation : TGridOrientation);
+        AGridOrientation : TGridOrientation; AStimulusSize : real);
       {Cria seleção randômica de modelos e comparações em posições diferentes no AGrid}
       procedure RandomizePositions;
       procedure RandomizeOrientations;
@@ -548,13 +548,16 @@ begin
 end;
 
 procedure TGrid.UpdatePositions(ASamples, AComparisons: integer;
-    AGridOrientation : TGridOrientation);
+    AGridOrientation : TGridOrientation; AStimulusSize: real);
 begin
   if (FSamplesCount <> ASamples) or
      (FComparisonsCount <> AComparisons) or
-     (FGridOrientation <> AGridOrientation) then begin
+     (FGridOrientation <> AGridOrientation) or
+     (FCellsSize <> AStimulusSize) then begin
     FSamplesCount := ASamples;
     FComparisonsCount := AComparisons;
+    FCellsSize := AStimulusSize;
+    FGrid := GetCentralGrid(FSeed, FCellsSize, DispersionStyle);
     FGridOrientation := AGridOrientation;
     CreatePositions;
   end;
