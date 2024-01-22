@@ -39,7 +39,7 @@ type
     IniPropStorage: TIniPropStorage;
     LabelStimulusSizeUnit: TLabel;
     LabelStimulusSize: TLabel;
-    LabelAuthors: TLabel;
+    LabelCredits: TLabel;
     LabelTitle: TLabel;
     LabelVersion: TLabel;
     LabelNameParticipants: TLabel;
