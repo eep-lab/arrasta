@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs,
-  ExtCtrls, StdCtrls, IniPropStorage, ComCtrls, Spin
+  ExtCtrls, StdCtrls, IniPropStorage, ComCtrls, Spin, Menus
   , Session.Trial.HelpSeries.DragDrop
   , Types;
 
@@ -24,17 +24,25 @@ type
   { TBackground }
 
   TBackground = class(TForm)
+    ButtonAddParticipant: TButton;
     ButtonTestDispenser: TButton;
     ButtonStartAll: TButton;
     ButtonStartTrial: TButton;
     CheckBoxDistance: TCheckBox;
     CheckBoxShowMouse: TCheckBox;
     ComboBoxOrientations: TComboBox;
-    ComboBoxParticipants: TComboBox;
+    ComboBoxParticipants1: TComboBox;
+    FloatSpinEditSize: TFloatSpinEdit;
     FloatSpinEditScreenWidth: TFloatSpinEdit;
     GroupBoxComplexity: TGroupBox;
     GroupBoxDesign: TGroupBox;
     IniPropStorage: TIniPropStorage;
+    LabelStimulusSizeUnit: TLabel;
+    LabelStimulusSize: TLabel;
+    LabelCredits: TLabel;
+    LabelTitle: TLabel;
+    LabelVersion: TLabel;
+    LabelNameParticipants: TLabel;
     LabelDistance: TLabel;
     LabelDistancePercentage: TLabel;
     LabelDragDropOrientation: TLabel;
@@ -48,8 +56,10 @@ type
     LabelComparisons: TLabel;
     LabelSamples: TLabel;
     LabelITI: TLabel;
+    MenuItemRemoveParticipant: TMenuItem;
     PageControlConfigurations: TPageControl;
     PanelConfigurations: TPanel;
+    PopupMenuParticipants: TPopupMenu;
     RadioGroupDispenser: TRadioGroup;
     RadioGroupRelation: TRadioGroup;
     SpinEditDistance: TSpinEdit;
@@ -59,17 +69,21 @@ type
     SpinEditSamples: TSpinEdit;
     SpinEditITI: TSpinEdit;
     TabControlDesign: TTabControl;
+    TabSheetAbout: TTabSheet;
     TabSheetMisc: TTabSheet;
     TabSheetComplexity: TTabSheet;
     TabSheetSession: TTabSheet;
+    procedure ButtonAddParticipantClick(Sender: TObject);
     procedure ButtonStartTrialClick(Sender: TObject);
     procedure ButtonTestDispenserClick(Sender: TObject);
     procedure CheckBoxDistanceChange(Sender: TObject);
+    procedure FloatSpinEditSizeChange(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ButtonStartAllClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure EndSession(Sender: TObject);
     procedure BeforeStartSession(Sender: TObject);
+    procedure MenuItemRemoveParticipantClick(Sender: TObject);
     procedure SpinEditSamplesChange(Sender: TObject);
     procedure TabControlDesignChange(Sender: TObject);
     procedure TabSheet2ContextPopup(Sender: TObject; MousePos: TPoint;
@@ -83,8 +97,11 @@ type
     function GetSessionName : string;
     function GetOrientation : TDragDropOrientation;
     function GetDistance : TDistanceValue;
+    function GetStimulusSize : TStimulusSizeValue;
+    function Validated : Boolean;
+    procedure SaveParticipants(const AFileName: string);
+    procedure LoadParticipants(const AFileName: string);
   public
-
   end;
 
 var
@@ -114,6 +131,7 @@ var
 
 procedure TBackground.ButtonStartAllClick(Sender: TObject);
 begin
+  if not Validated then Exit;
   case RadioGroupDispenser.ItemIndex of
     0 : RS232.DefaultDispenser := disp1;
     1 : RS232.DefaultDispenser := disp2;
@@ -121,7 +139,7 @@ begin
     3 : RS232.DefaultDispenser := disp4;
   end;
   GlobalContainer.RootData := GlobalContainer.RootData +
-    ComboBoxParticipants.Text + DirectorySeparator;
+    ComboBoxParticipants1.Text + DirectorySeparator;
   ForceDirectories(GlobalContainer.RootData);
   CheatsModeOn := False;
   PanelConfigurations.Hide;
@@ -136,7 +154,8 @@ begin
       GetRelation,
       SpinEditSamples.Value,
       SpinEditComparisons.Value,
-      CheckBoxShowMouse.Checked);
+      CheckBoxShowMouse.Checked,
+      GetStimulusSize.ToString);
 
   {Existem duas formas de se criar uma configuração padrão do arquivo de
   configuração. Uma forma é o hard coding. A segunda forma é usando o
@@ -151,6 +170,7 @@ begin
     Samples := GetSampleValue;
     Orientation := GetOrientation;
     Distance := GetDistance;
+    StimulusSize := GetStimulusSize;
   end;
   if FileExists(DefaultComplexityFilename) then begin
     DragDropHelpSerie := TDragDropHelpSerie.Create(DefaultComplexityFilename);
@@ -160,7 +180,7 @@ begin
   IDragDropHelpSerie := DragDropHelpSerie;
 
   GSession.Timer.Interval := SpinEditSessionTime.Value * 60000;
-  GSession.Play(GetSessionName, ComboBoxParticipants.Text);
+  GSession.Play(GetSessionName, ComboBoxParticipants1.Text);
 end;
 
 var
@@ -177,11 +197,25 @@ begin
       Values[Comparisons] := SpinEditComparisons.Value.ToString;
       Values[DragDropOrientation] := GetOrientation.ToString;
       Values[Distance] := SpinEditDistance.Value.ToString;
+      Values[StimulusSize] := GetStimulusSize.ToString;
     end;
   end;
   LTrial.OnTrialEnd:=@EndSession;
   LTrial.Play;
   PanelConfigurations.Hide;
+end;
+
+procedure TBackground.ButtonAddParticipantClick(Sender: TObject);
+var
+  LNewParticipant : string;
+begin
+  with ComboBoxParticipants1 do begin
+    LNewParticipant := InputBox('Arrasta', 'Nome: mínimo de 3 caracteres',
+                         '');
+    if LNewParticipant.IsEmpty or (Length(LNewParticipant) < 3) then Exit;
+    Items.Append(LNewParticipant);
+  end;
+  SaveParticipants('participants.txt');
 end;
 
 procedure TBackground.ButtonTestDispenserClick(Sender: TObject);
@@ -199,6 +233,23 @@ begin
   SpinEditDistance.Enabled := CheckBoxDistance.Checked;
   LabelDistance.Enabled := CheckBoxDistance.Checked;
   LabelDistancePercentage.Enabled := CheckBoxDistance.Checked;
+end;
+
+procedure TBackground.FloatSpinEditSizeChange(Sender: TObject);
+begin
+  if FloatSpinEditSize.Value = 6.5 then begin
+    CheckBoxDistance.Enabled := False;
+    CheckBoxDistance.Checked := False;
+    SpinEditDistance.Value := 0;
+    SpinEditSamples.Value := 1;
+    SpinEditComparisons.Value := 1;
+    SpinEditSamples.Enabled := False;
+    SpinEditComparisons.Enabled := False;
+  end
+  else begin
+    SpinEditSamples.Enabled := True;
+    SpinEditComparisons.Enabled := True;
+  end;
 end;
 
 procedure TBackground.FormDestroy(Sender: TObject);
@@ -236,6 +287,7 @@ begin
   GSession := TSession.Create(Self);
   GSession.OnEndSession:=@EndSession;
   GSession.OnBeforeStart:=@BeforeStartSession;
+  LoadParticipants('participants.txt');
 end;
 
 procedure TBackground.EndSession(Sender: TObject);
@@ -248,10 +300,19 @@ begin
   CopyFile(ConfigurationFilename, GSession.BaseFilename+'.ini');
 end;
 
+procedure TBackground.MenuItemRemoveParticipantClick(Sender: TObject);
+begin
+  with ComboBoxParticipants1 do
+    Items.Delete(ItemIndex);
+  SaveParticipants('participants.txt');
+end;
+
 procedure TBackground.SpinEditSamplesChange(Sender: TObject);
 begin
   if SpinEditSamples.Value = 1 then begin
-    CheckBoxDistance.Enabled := True;
+    if FloatSpinEditSize.Value <> 6.5 then begin
+      CheckBoxDistance.Enabled := True;
+    end;
   end
   else begin
     CheckBoxDistance.Checked := False;
@@ -358,6 +419,43 @@ begin
     6 : Result := distFifty;
     7 : Result := distSixty;
   end;
+end;
+
+function TBackground.GetStimulusSize: TStimulusSizeValue;
+var
+  LValue: Double;
+begin
+  LValue := FloatSpinEditSize.Value;
+  case Round((LValue - 2.5) / 2) of
+    0: Result := sizeSmall;
+    1: Result := sizeNormal;
+    2: Result := sizeBig;
+  end;
+end;
+
+function TBackground.Validated: Boolean;
+begin
+  Result := False;
+  if ComboBoxParticipants1.Items.Count = 0 then begin
+    ShowMessage('ATENÇÃO! Adicione um novo participante.');
+    Exit;
+  end;
+  if ComboBoxParticipants1.ItemIndex < 0 then begin
+    ShowMessage('ATENÇÃO! Escolha um participante.');
+    Exit;
+  end;
+  Result := True;
+end;
+
+procedure TBackground.SaveParticipants(const AFileName: string);
+begin
+  ComboBoxParticipants1.Items.SaveToFile(AFileName);
+end;
+
+procedure TBackground.LoadParticipants(const AFileName: string);
+begin
+  if FileExists(AFileName) then
+    ComboBoxParticipants1.Items.LoadFromFile(AFileName);
 end;
 
 end.

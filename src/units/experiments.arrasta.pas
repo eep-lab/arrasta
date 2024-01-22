@@ -21,7 +21,8 @@ function MakeConfigurationFile(
   ADesign : string;
   ASamples: integer;
   AComparisons: integer;
-  AShowMouse: Boolean) : string;
+  AShowMouse: Boolean;
+  AStimulusSize : string) : string;
 
 implementation
 
@@ -32,12 +33,12 @@ uses FileMethods
 
 function MakeConfigurationFile(AOrientation: string; ATrials : integer;
   AITI : integer; ADistance : integer; ADesign: string; ASamples: integer;
-  AComparisons: integer; AShowMouse: Boolean): string;
+  AComparisons: integer; AShowMouse: Boolean; AStimulusSize : string): string;
 begin
   Result := NewConfigurationFile;
   Experiments.DragDrop.ITI := AITI;
   Experiments.DragDrop.WriteToConfigurationFile(AOrientation, ATrials,
-    ADistance, ADesign, ASamples, AComparisons, AShowMouse);
+    ADistance, ADesign, ASamples, AComparisons, AShowMouse, AStimulusSize);
   ConfigurationFile.Invalidate;
   ConfigurationFile.UpdateFile;
 end;

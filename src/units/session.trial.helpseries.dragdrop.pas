@@ -45,6 +45,9 @@ type
       distSixty);
   TDistanceRange = distZero..distSixty;
 
+  TStimulusSizeValue = (sizeSmall, sizeNormal, sizeBig);
+  TStimulusSizeRange = sizeSmall..sizeBig;
+
   TDragDropData = record
     Relation : TEquivalenceRelation;
     Samples: TSampleValue;
@@ -53,6 +56,7 @@ type
     //Factor: TFactor;
     Orientation : TDragDropOrientation;
     Distance : TDistanceValue;
+    StimulusSize : TStimulusSizeValue;
     class operator = (A, B: TDragDropData): Boolean;
   end;
 
@@ -125,6 +129,14 @@ type
     //function ToInteger : integer;
   end;
 
+  { TStimulusSizeHelper }
+
+  TStimulusSizeHelper = type helper for TStimulusSizeValue
+    function ToString : string;
+    //function ToInteger: Integer;
+    function ToReal: real;
+  end;
+
   { THelpSeriesStringHelper }
 
   THelpSeriesStringHelper = type helper(TCustomStringHelper) for string
@@ -134,6 +146,7 @@ type
     //function ToFactor : TFactor;
     function ToDragDropOrientation : TDragDropOrientation;
     function ToDistanceValue : TDistanceValue;
+    function ToStimulusSize : TStimulusSizeValue;
   end;
 
     { THelpSeriesIntegerHelper }
@@ -237,6 +250,7 @@ begin
       //Data.Factor := Values[DragMoveFactor].ToInteger.ToFactor;
       Data.Orientation := Values[DragDropOrientation].ToDragDropOrientation;
       Data.Distance := Values[Distance].ToDistanceValue;
+      Data.StimulusSize := Values[StimulusSize].ToStimulusSize;
     end;
   end;
 
@@ -262,6 +276,7 @@ begin
       //Values[DragMoveFactor] := Data.Factor.ToInteger.ToString;
       Values[DragDropOrientation] := Data.Orientation.ToString;
       Values[Distance] := Data.Distance.ToString;
+      Values[StimulusSize] := Data.StimulusSize.ToString;
     end;
   end;
 end;
@@ -311,6 +326,9 @@ var
       Result.Distance :=
         LIniFile.ReadString(
           ASection, Distance, 'Default').ToDistanceValue;
+      Result.StimulusSize :=
+        LIniFile.ReadString(
+          ASection, StimulusSize, 'Default').ToStimulusSize;
     end;
     Inc(i);
   end;
@@ -363,6 +381,8 @@ begin
           DragDropOrientation, Data.Orientation.ToString);
         WriteString(GetSection,
           Distance, Data.Distance.ToString);
+        WriteString(GetSection,
+          StimulusSize, Data.StimulusSize.ToString);
       end;
     end;
     Inc(i);
@@ -463,6 +483,21 @@ begin
   Result := Result.Replace('go', '');
 end;
 
+{ TStimulusSizeHelper }
+
+function TStimulusSizeHelper.ToString: string;
+begin
+  WriteStr(Result, Self);
+  Result := Result.Replace('size', '');
+end;
+
+function TStimulusSizeHelper.ToReal: real;
+var
+  StimulusSizeValues : array [TStimulusSizeRange] of Real = (2.5, 4.5, 6.5);
+begin
+  Result := StimulusSizeValues[Self];
+end;
+
 { THelpSeriesStringHelper }
 
 function THelpSeriesStringHelper.ToEquivalenceRelation: TEquivalenceRelation;
@@ -554,6 +589,32 @@ begin
     else
       raise Exception.Create(
         'THelpSeriesStringHelper.ToDistanceValue: ' + Self);
+  end;
+end;
+
+//function THelpSeriesStringHelper.ToStimulusSize: TStimulusSizeValue;
+//begin
+//  case UpperCase(Self) of
+//    '2.5' : Result := sizeSmall;
+//    '4.5' : Result := sizeNormal;
+//    '6.5' : Result := sizeBig;
+//    'DEFAULT' : Result := DefaultDragDropData.StimulusSize;
+//    else
+//      raise Exception.Create(
+//        'THelpSeriesStringHelper.ToStimulusSize: ' + Self);
+//  end;
+//end;
+
+function THelpSeriesStringHelper.ToStimulusSize: TStimulusSizeValue;
+begin
+  case UpperCase(Self) of
+    'SMALL' : Result := sizeSmall;
+    'NORMAL' : Result := sizeNormal;
+    'BIG' : Result := sizeBig;
+    'DEFAULT' : Result := DefaultDragDropData.StimulusSize;
+    else
+      raise Exception.Create(
+        'THelpSeriesStringHelper.ToStimulusSize: ' + Self);
   end;
 end;
 
