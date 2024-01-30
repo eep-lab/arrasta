@@ -77,7 +77,7 @@ type
     procedure ButtonStartTrialClick(Sender: TObject);
     procedure ButtonTestDispenserClick(Sender: TObject);
     procedure CheckBoxDistanceChange(Sender: TObject);
-    procedure FloatSpinEditSizeChange(Sender: TObject);
+    //procedure FloatSpinEditSizeChange(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ButtonStartAllClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -235,22 +235,22 @@ begin
   LabelDistancePercentage.Enabled := CheckBoxDistance.Checked;
 end;
 
-procedure TBackground.FloatSpinEditSizeChange(Sender: TObject);
-begin
-  if FloatSpinEditSize.Value = 6.5 then begin
-    CheckBoxDistance.Enabled := False;
-    CheckBoxDistance.Checked := False;
-    SpinEditDistance.Value := 0;
-    SpinEditSamples.Value := 1;
-    SpinEditComparisons.Value := 1;
-    SpinEditSamples.Enabled := False;
-    SpinEditComparisons.Enabled := False;
-  end
-  else begin
-    SpinEditSamples.Enabled := True;
-    SpinEditComparisons.Enabled := True;
-  end;
-end;
+//procedure TBackground.FloatSpinEditSizeChange(Sender: TObject);
+//begin
+//  if FloatSpinEditSize.Value = 6.5 then begin
+//    CheckBoxDistance.Enabled := False;
+//    CheckBoxDistance.Checked := False;
+//    SpinEditDistance.Value := 0;
+//    SpinEditSamples.Value := 1;
+//    SpinEditComparisons.Value := 1;
+//    SpinEditSamples.Enabled := False;
+//    SpinEditComparisons.Enabled := False;
+//  end
+//  else begin
+//    SpinEditSamples.Enabled := True;
+//    SpinEditComparisons.Enabled := True;
+//  end;
+//end;
 
 procedure TBackground.FormDestroy(Sender: TObject);
 begin

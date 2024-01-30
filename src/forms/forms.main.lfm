@@ -106,11 +106,11 @@ object Background: TBackground
       Height = 250
       Top = 21
       Width = 320
-      ActivePage = TabSheetSession
+      ActivePage = TabSheetComplexity
       Align = alClient
       BorderSpacing.Top = 5
       Constraints.MaxHeight = 250
-      TabIndex = 0
+      TabIndex = 1
       TabOrder = 2
       object TabSheetSession: TTabSheet
         Caption = 'Sessão'
@@ -404,7 +404,6 @@ object Background: TBackground
             MinValue = 2.5
             TabOrder = 4
             Value = 4.5
-            OnChange = FloatSpinEditSizeChange
           end
           object LabelStimulusSizeUnit: TLabel
             AnchorSideLeft.Control = FloatSpinEditSize
