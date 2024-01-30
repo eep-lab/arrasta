@@ -207,15 +207,29 @@ end;
 
 procedure TBackground.ButtonAddParticipantClick(Sender: TObject);
 var
-  LNewParticipant : string;
+  LNewParticipant: string;
+  LParticipantsList: TStringList;
 begin
-  with ComboBoxParticipants1 do begin
-    LNewParticipant := InputBox('Arrasta', 'Nome: mínimo de 3 caracteres',
-                         '');
+  with ComboBoxParticipants1 do
+  begin
+    LNewParticipant := InputBox('Arrasta', 'Nome: mínimo de 3 caracteres', '');
     if LNewParticipant.IsEmpty or (Length(LNewParticipant) < 3) then Exit;
-    Items.Append(LNewParticipant);
+    LParticipantsList := TStringList.Create;
+    try
+      if FileExists('participants.txt') then
+        LParticipantsList.LoadFromFile('participants.txt');
+      if LParticipantsList.IndexOf(LNewParticipant) <> -1 then
+      begin
+        ShowMessage('Este participante já existe.');
+        Exit;
+      end;
+      Items.Append(LNewParticipant);
+      LParticipantsList.Add(LNewParticipant);
+      LParticipantsList.SaveToFile('participants.txt');
+    finally
+      LParticipantsList.Free;
+    end;
   end;
-  SaveParticipants('participants.txt');
 end;
 
 procedure TBackground.ButtonTestDispenserClick(Sender: TObject);
